@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "google-closure-compiler": "^20220803.0.0",
+    "uglify-js": "^3.17.0"
+  }
+}
