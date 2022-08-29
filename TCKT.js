@@ -51,6 +51,8 @@ const TokenData = {
 };
 
 /**
+ * @param {string} chainId
+ * @param {string} address
  * @param {string} value value in native tokens, encoded as a hex string.
  * @param {string} calldata hex encoded calldata.
  * @return {Promise<*>}
@@ -96,26 +98,30 @@ const handleOf = (address) => {
 }
 
 /**
+ * @param {string} chainId
+ * @param {string} address
  * @param {number} weight revoker weight.
- * @param {string} address revoker address.
+ * @param {string} revokerAddress revoker address.
  * @return {Promise<*>}
  */
-const addRevoker = (weight, address) =>
-  sendTransaction("0", "0xf02b3297" + evm.uint96(weight) + address.slice(2).toLowerCase());
+const addRevoker = (chainId, address, weight, revokerAddress) =>
+  sendTransaction(chainId, address, "0", "0xf02b3297" + evm.uint96(weight) + revokerAddress.slice(2).toLowerCase());
 
 /**
+ * @param {string} chainId
+ * @param {string} address
  * @param {string} cid
  * @param {number} revokeThreshold
  * @param {Object<string, number>} revokers
  * @return {Promise<*>}
  */
-const createWithRevokers = (cid, revokeThreshold, revokers) =>
-  priceIn(0).then(([high, low]) => {
+const createWithRevokers = (chainId, address, cid, revokeThreshold, revokers) =>
+  priceIn(chainId, 0).then(([high, low]) => {
     const priceHigh = (TRILLION * BigInt(high)).toString(16);
     const priceLow = (TRILLION * BigInt(low)).toString(16);
     return revokeThreshold == 0
-      ? sendTransaction(priceHigh, "0x780900dc" + cid)
-      : sendTransaction(priceLow, "0xd3cfebc1" + cid +
+      ? sendTransaction(chainId, address, priceHigh, "0x780900dc" + cid)
+      : sendTransaction(chainId, address, priceLow, "0xd3cfebc1" + cid +
         serializeRevokers(revokeThreshold, revokers));
   });
 
@@ -139,9 +145,9 @@ const serializeRevokers = (revokeThreshold, revokers) => {
  * @return {Promise<*>}
  */
 const createWithRevokersWithTokenPermit =
-  (cid, revokeThreshold, revokers, signature) => revokeThreshold == 0
-    ? sendTransaction("0", "0xb744aef4" + cid + signature)
-    : sendTransaction("0", "0xa6c98d44" + cid +
+  (chainId, address, cid, revokeThreshold, revokers, signature) => revokeThreshold == 0
+    ? sendTransaction(chainId, address, "0", "0xb744aef4" + cid + signature)
+    : sendTransaction(chainId, address, "0", "0xa6c98d44" + cid +
       serializeRevokers(revokeThreshold, revokers) + signature);
 
 /**
@@ -184,6 +190,8 @@ const getDeadline = () => {
 }
 
 /**
+ * @param {string} chainId
+ * @param {string} address
  * @param {number} token         dApp internal currency code, currently in
  *                               [1..3].
  * @param {boolean} withRevokers Whether the user has set up valid revokers to
@@ -191,7 +199,7 @@ const getDeadline = () => {
  * @return {Promise<string>}     Calldata serialized permission.
  */
 const getPermissionFor = (chainId, address, token, withRevokers) =>
-  priceIn(token).then((price) => {
+  priceIn(chainId, token).then((price) => {
     const deadline = evm.uint96(getDeadline());
     const tokenData = TokenData[chainId][token];
     const typedSignData = JSON.stringify({

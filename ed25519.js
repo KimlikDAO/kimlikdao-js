@@ -3,23 +3,22 @@ import { base64, base64ten } from './çevir';
 let nacl = {};
 
 /**
- * @param {string} publicKey base64 olarak publicKey
- * @param {Uint8Array} data
+ * @param {string} açıkAnahtar base64 olarak publicKey
+ * @param {Uint8Array} veri
  * @return Şifreleme nonce'ı publikeKey ve şifrelenmiş veri.
  */
-export const encrypt = (publicKey, data) => {
-  const keypair = nacl.box.keyPair();
-  const pubKeyUInt8Array = base64ten(publicKey);
+export const kutula = (açıkAnahtar, veri) => {
+  const anahtarlar = nacl.box.keyPair();
   const nonce = new Uint8Array(nacl.box.nonceLength);
   crypto.getRandomValues(nonce);
 
   const encrypted = nacl.box(
-    data,
+    veri,
     nonce,
-    pubKeyUInt8Array,
-    keypair.secretKey,
+    base64ten(açıkAnahtar),
+    anahtarlar.secretKey,
   );
-  return [base64(nonce), base64(keypair.publicKey), base64(encrypted)];
+  return [base64(nonce), base64(anahtarlar.publicKey), base64(encrypted)];
 }
 
 /**
