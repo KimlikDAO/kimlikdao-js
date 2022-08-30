@@ -53,7 +53,7 @@ const yaz = (veri) => {
   const encoded = new TextEncoder().encode(veri);
   console.log(veri.length);
   const formData = new FormData()
-  formData.append("blob", new Blob([encoded]));
+  formData.set("blob", new Blob([encoded]));
   const gelenSöz = fetch(IPFS_URL + "api/v0/add", {
     method: "POST",
     body: formData

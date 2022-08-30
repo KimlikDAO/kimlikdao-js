@@ -69,15 +69,65 @@ EthEncryptedData.prototype.ciphertext;
 
 /**
  * @interface
- * @struct
  */
 function TCKTTemelBilgileri() { };
 
-/** @type {string} */
-TCKTTemelBilgileri.prototype.ad;
+/** @interface */
+TCKTTemelBilgileri.prototype.kişi;
 
 /** @type {string} */
-TCKTTemelBilgileri.prototype.soyad;
+TCKTTemelBilgileri.prototype.kişi.ad;
+
+/** @type {string} */
+TCKTTemelBilgileri.prototype.kişi.soyad;
+
+/** @type {number} */
+TCKTTemelBilgileri.prototype.kişi.TCKN;
+
+/** @type {string} */
+TCKTTemelBilgileri.prototype.kişi.dt;
+
+/** @type {string} */
+TCKTTemelBilgileri.prototype.kişi.dyeri;
+
+/** @interface */
+TCKTTemelBilgileri.prototype.aile;
+
+/** @type {string} */
+TCKTTemelBilgileri.prototype.aile.annead;
+
+/** @type {string} */
+TCKTTemelBilgileri.prototype.aile.babaad;
+
+/** @type {number} */
+TCKTTemelBilgileri.prototype.aile.BSN;
+
+/** @type {number} */
+TCKTTemelBilgileri.prototype.aile.cilt;
+
+/** @type {number} */
+TCKTTemelBilgileri.prototype.aile.hane;
+
+/** @type {string} */
+TCKTTemelBilgileri.prototype.aile.mhali;
+
+/** @type {string} */
+TCKTTemelBilgileri.prototype.aile.din;
+
+/** @interface */
+TCKTTemelBilgileri.prototype.kütük;
+
+/** @type {string} */
+TCKTTemelBilgileri.prototype.kütük.il;
+
+/** @type {string} */
+TCKTTemelBilgileri.prototype.kütük.ilçe;
+
+/** @type {string} */
+TCKTTemelBilgileri.prototype.kütük.mahalle;
+
+/** @type {string} */
+TCKTTemelBilgileri.prototype.kütük.tescil;
 
 /** @type {string} */
 TCKTTemelBilgileri.prototype.taahhüt;
