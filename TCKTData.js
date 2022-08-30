@@ -90,6 +90,9 @@ TCKTTemelBilgileri.prototype.kişi.dt;
 /** @type {string} */
 TCKTTemelBilgileri.prototype.kişi.dyeri;
 
+/** @type {string} */
+TCKTTemelBilgileri.prototype.kişi.c;
+
 /** @interface */
 TCKTTemelBilgileri.prototype.aile;
 
