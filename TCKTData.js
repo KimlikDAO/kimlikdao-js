@@ -136,4 +136,4 @@ TCKTTemelBilgileri.prototype.kütük.tescil;
 TCKTTemelBilgileri.prototype.taahhüt;
 
 /** @type {string} */
-TCKTTemelBilgileri.prototype.rasgele;
+TCKTTemelBilgileri.prototype.rastgele;

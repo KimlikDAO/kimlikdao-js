@@ -108,6 +108,9 @@ const addRevoker = (chainId, address, deltaWeight, revokerAddress) =>
   sendTransaction(chainId, address, "0",
     "0xf02b3297" + evm.uint96(deltaWeight) + revokerAddress.slice(2).toLowerCase());
 
+const revoke = (chainId, address) =>
+  sendTransaction(chainId, address, "0", "0xb6549f75");
+
 /**
  * @param {string} chainId
  * @param {string} address
@@ -118,9 +121,7 @@ const addRevoker = (chainId, address, deltaWeight, revokerAddress) =>
  */
 const createWithRevokers = (chainId, address, cid, revokeThreshold, revokers) =>
   priceIn(chainId, 0).then(([high, low]) => {
-    const price = revokeThreshold == 0
-      ? (TRILLION * BigInt(high)).toString(16)
-      : (TRILLION * BigInt(low)).toString(16);
+    const price = (TRILLION * BigInt(revokeThreshold == 0 ? high : low)).toString(16);
     return revokeThreshold == 0
       ? sendTransaction(chainId, address, price, "0x780900dc" + cid)
       : sendTransaction(chainId, address, price, "0xd3cfebc1" + cid +
@@ -276,4 +277,5 @@ export default {
   handleOf,
   isTokenAvailable,
   priceIn,
+  revoke,
 };
