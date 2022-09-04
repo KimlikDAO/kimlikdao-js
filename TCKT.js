@@ -100,12 +100,13 @@ const handleOf = (address) => {
 /**
  * @param {string} chainId
  * @param {string} address
- * @param {number} weight revoker weight.
+ * @param {number} deltaWeight revoker weight.
  * @param {string} revokerAddress revoker address.
  * @return {Promise<*>}
  */
-const addRevoker = (chainId, address, weight, revokerAddress) =>
-  sendTransaction(chainId, address, "0", "0xf02b3297" + evm.uint96(weight) + revokerAddress.slice(2).toLowerCase());
+const addRevoker = (chainId, address, deltaWeight, revokerAddress) =>
+  sendTransaction(chainId, address, "0",
+    "0xf02b3297" + evm.uint96(deltaWeight) + revokerAddress.slice(2).toLowerCase());
 
 /**
  * @param {string} chainId
@@ -117,20 +118,28 @@ const addRevoker = (chainId, address, weight, revokerAddress) =>
  */
 const createWithRevokers = (chainId, address, cid, revokeThreshold, revokers) =>
   priceIn(chainId, 0).then(([high, low]) => {
-    const priceHigh = (TRILLION * BigInt(high)).toString(16);
-    const priceLow = (TRILLION * BigInt(low)).toString(16);
+    const price = revokeThreshold == 0
+      ? (TRILLION * BigInt(high)).toString(16)
+      : (TRILLION * BigInt(low)).toString(16);
     return revokeThreshold == 0
-      ? sendTransaction(chainId, address, priceHigh, "0x780900dc" + cid)
-      : sendTransaction(chainId, address, priceLow, "0xd3cfebc1" + cid +
+      ? sendTransaction(chainId, address, price, "0x780900dc" + cid)
+      : sendTransaction(chainId, address, price, "0xd3cfebc1" + cid +
         serializeRevokers(revokeThreshold, revokers));
   });
 
+/**
+ * @param {number} revokeThreshold The threshold for vote weight after which
+ *                                 the TCKT is revoked.
+ * @param {Object<string, number>} revokers (Address, weight) pairs for the
+ *                                          revokers.
+ */
 const serializeRevokers = (revokeThreshold, revokers) => {
   /** @type {string} */
   let ser = "";
   /** @type {number} */
   let count = 0;
   for (let address in revokers) {
+    if (address === "length") continue;
     count += 1;
     ser += evm.uint96(revokers[address]) + address.slice(2).toLowerCase();
   }
@@ -190,15 +199,15 @@ const getDeadline = () => {
 }
 
 /**
- * @param {string} chainId
- * @param {string} address
+ * @param {string} chainId       chainId for the chain we want the permit for
+ * @param {string} address       Permit should be issues to this address.
  * @param {number} token         dApp internal currency code, currently in
  *                               [1..3].
  * @param {boolean} withRevokers Whether the user has set up valid revokers to
  *                               qualify for a discount.
  * @return {Promise<string>}     Calldata serialized permission.
  */
-const getPermissionFor = (chainId, address, token, withRevokers) =>
+const getPermitFor = (chainId, address, token, withRevokers) =>
   priceIn(chainId, token).then((price) => {
     const deadline = evm.uint96(getDeadline());
     const tokenData = TokenData[chainId][token];
@@ -220,7 +229,7 @@ const getPermissionFor = (chainId, address, token, withRevokers) =>
       },
       "domain": {
         "name": tokenData[1],
-        "version": tokenData[3].toString(),
+        "version": "" + tokenData[3],
         "chainId": chainId,
         "verifyingContract": "0x" + tokenData[0]
       },
@@ -255,7 +264,7 @@ const getPermissionFor = (chainId, address, token, withRevokers) =>
  * @return {boolean}
  */
 const isTokenAvailable = (chainId, token) =>
-  TokenData[chainId][token][0] != "";
+  TokenData[chainId][token][0] !== "";
 
 export default {
   addRevoker,
@@ -263,7 +272,7 @@ export default {
   createWithRevokers,
   createWithRevokersWithTokenPermit,
   estimateNetworkFee,
-  getPermissionFor,
+  getPermitFor,
   handleOf,
   isTokenAvailable,
   priceIn,
