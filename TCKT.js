@@ -85,10 +85,12 @@ const addToWallet = () =>
   }))
 
 /**
- * @param {string} address
+ * @param {number} order The variable order of the mapping.
+ * @param {string} address The key for an address keyed mapping.
  */
-const handleOf = (address) => {
+const getFromMapping = (order, address) => {
   const buff = new Uint8Array(64);
+  buff[63] = order;
   for (let i = 1; i <= 20; ++i)
     buff[i + 11] = parseInt(address.substring(2 * i, 2 * i + 2), 16);
   return ethereum.request(/** @const {RequestParams} */({
@@ -96,6 +98,27 @@ const handleOf = (address) => {
     params: [TCKT_ADDR, "0x" + keccak256Uint32(new Uint32Array(buff.buffer)), "latest"]
   }));
 }
+
+/**
+ * @param {string} address
+ * @return {Promise<string>}
+ */
+const handleOf = (address) => getFromMapping(0, address);
+
+/**
+ * @param {string} address
+ * @return {Promise<number>}
+ */
+const revokesRemaining = (address) => getFromMapping(2, address)
+  .then((revokes) => parseInt(revokes.slice(-4), 16));
+
+/**
+ * @param {string} chainId
+ * @param {string} address
+ * @param {number} deltaWeight
+ * @return {Promise<*>}
+ */
+const reduceRevokeThreshold = (chainId, address, deltaWeight) => { }
 
 /**
  * @param {string} chainId
@@ -277,5 +300,7 @@ export default {
   handleOf,
   isTokenAvailable,
   priceIn,
+  reduceRevokeThreshold,
   revoke,
+  revokesRemaining,
 };
