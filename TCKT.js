@@ -92,6 +92,31 @@ const addToWallet = () =>
     }),
   }))
 
+
+/** @const {Object<string, string>} */
+const NonceCache = {};
+
+/**
+ * @param {string} chainId
+ * @param {string} address Owner address including the 0x.
+ * @param {number} token
+ * @return {Promise<string>} The nonce for (chain, token, address).
+ */
+const getNonce = (chainId, address, token) => {
+  const cached = NonceCache[chainId + address + token];
+  return cached
+    ? Promise.resolve(cached) : ethereum.request(/** @type {RequestParams} */({
+      method: "eth_call",
+      params: [/** @type {Transaction} */({
+        to: "0x" + TokenData[chainId][token][0],
+        data: "0x7ecebe00" + evm.address(address)
+      }), "latest"]
+    })).then((nonce) => {
+      NonceCache[chainId + address + token] = nonce;
+      return nonce;
+    })
+}
+
 /**
  * @param {number} order The variable order of the mapping.
  * @param {string} address The key for an address keyed mapping.
@@ -255,7 +280,7 @@ const getDeadline = () => {
 const getApprovalFor = (chainId, address, token) => sendTransactionTo(
   address,
   "0x" + TokenData[chainId][token][0],
-  "0", "0x095ea7b3" + evm.uint96(0) + TCKT_ADDR.toLowerCase().slice(2) + evm.Uint256Max);
+  "0", "0x095ea7b3" + evm.address(TCKT_ADDR) + evm.Uint256Max);
 
 /**
  * @param {string} chainId       chainId for the chain we want the permit for
@@ -267,55 +292,57 @@ const getApprovalFor = (chainId, address, token) => sendTransactionTo(
  * @return {Promise<string>}     Calldata serialized permission.
  */
 const getPermitFor = (chainId, owner, token, withRevokers) =>
-  priceIn(chainId, token).then((price) => {
-    const deadline = evm.uint96(getDeadline());
-    const tokenData = TokenData[chainId][token];
-    const typedSignData = JSON.stringify({
-      "types": {
-        "EIP712Domain": [
-          { "name": "name", "type": "string" },
-          { "name": "version", "type": "string" },
-          { "name": "chainId", "type": "uint256" },
-          { "name": "verifyingContract", "type": "address" },
-        ],
-        "Permit": [
-          { "name": "owner", "type": "address" },
-          { "name": "spender", "type": "address" },
-          { "name": "value", "type": "uint256" },
-          { "name": "nonce", "type": "uint256" },
-          { "name": "deadline", "type": "uint256" }
-        ]
-      },
-      "domain": {
-        "name": tokenData[1],
-        "version": "" + tokenData[3],
-        "chainId": chainId,
-        "verifyingContract": "0x" + tokenData[0]
-      },
-      "primaryType": "Permit",
-      "message": {
-        "owner": owner,
-        "spender": TCKT_ADDR,
-        "value": "0x" + price[+withRevokers].toString(16),
-        "nonce": 0,
-        "deadline": "0x" + deadline
-      }
+  Promise.all([priceIn(chainId, token), getNonce(chainId, owner, token)])
+    .then(([price, nonce]) => {
+      const deadline = evm.uint96(getDeadline());
+      const tokenData = TokenData[chainId][token];
+      const typedSignData = JSON.stringify({
+        "types": {
+          "EIP712Domain": [
+            { "name": "name", "type": "string" },
+            { "name": "version", "type": "string" },
+            { "name": "chainId", "type": "uint256" },
+            { "name": "verifyingContract", "type": "address" },
+          ],
+          "Permit": [
+            { "name": "owner", "type": "address" },
+            { "name": "spender", "type": "address" },
+            { "name": "value", "type": "uint256" },
+            { "name": "nonce", "type": "uint256" },
+            { "name": "deadline", "type": "uint256" }
+          ]
+        },
+        "domain": {
+          "name": tokenData[1],
+          "version": "" + tokenData[3],
+          "chainId": chainId,
+          "verifyingContract": "0x" + tokenData[0]
+        },
+        "primaryType": "Permit",
+        "message": {
+          "owner": owner,
+          "spender": TCKT_ADDR,
+          "value": "0x" + price[+withRevokers].toString(16),
+          "nonce": nonce,
+          "deadline": "0x" + deadline
+        }
+      });
+      return ethereum.request(/** @type {RequestParams} */({
+        method: "eth_signTypedData_v4",
+        params: [owner, typedSignData]
+      })).then((signature) => {
+        /** @const {boolean} */
+        const highBit = signature.slice(-2) == "1c";
+        signature = signature.slice(2, -2);
+        if (highBit) {
+          /** @const {string} */
+          const t = (parseInt(signature[64], 16) + 8).toString(16);
+          signature = signature.slice(0, 64) + t + signature.slice(65, 128);
+        }
+        return deadline + tokenData[0].toLowerCase() + signature;
+      });
     });
-    return ethereum.request(/** @type {RequestParams} */({
-      method: "eth_signTypedData_v4",
-      params: [owner, typedSignData]
-    })).then((signature) => {
-      /** @const {boolean} */
-      const highBit = signature.slice(-2) == "1c";
-      signature = signature.slice(2, -2);
-      if (highBit) {
-        /** @const {string} */
-        const t = (parseInt(signature[64], 16) + 8).toString(16);
-        signature = signature.slice(0, 64) + t + signature.slice(65, 128);
-      }
-      return deadline + tokenData[0].toLowerCase() + signature;
-    });
-  });
+
 
 /**
  * @param {string} chainId
@@ -337,6 +364,7 @@ export default {
   estimateNetworkFee,
   getApprovalFor,
   getPermitFor,
+  getNonce,
   handleOf,
   isTokenAvailable,
   isTokenERC20Permit,

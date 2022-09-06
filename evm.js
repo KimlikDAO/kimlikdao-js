@@ -76,11 +76,17 @@ const adresGeçerli = (adres) => {
   return true;
 }
 
+/**
+ * @param {string} addr EVM adresi; 0x ile başlayabilir.
+ * @return {string} calldata için hazırlanmış adres.
+ */
+const address = (addr) => "0".repeat(24) + addr.slice(2).toLowerCase();
+
 /** @type {function(number):string} */
 const uint256 = (sayı) => sayı.toString(16).padStart(64, "0");
 
 /** @type {function(number):string} */
-const uint160 = (sayı) => sayı.toString(16).padStart(48, "0");
+const uint160 = (sayı) => sayı.toString(16).padStart(40, "0");
 
 /** @type {function(number):string} */
 const uint96 = (sayı) => sayı.toString(16).padStart(24, "0");
@@ -92,6 +98,7 @@ const uint64 = (sayı) => sayı.toString(16).padStart(16, "0");
 const Uint256Max = "f".repeat(64);
 
 export default {
+  address,
   adresDüzelt,
   adresGeçerli,
   uint160,
