@@ -279,7 +279,7 @@ const getPermitFor = (chainId, address, token, withRevokers) =>
         const t = (parseInt(signature[64], 16) + 8).toString(16);
         signature = signature.slice(0, 64) + t + signature.slice(65, 128);
       }
-      return deadline + tokenData[0] + signature;
+      return deadline + tokenData[0].toLowerCase() + signature;
     });
   });
 
