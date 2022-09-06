@@ -118,7 +118,8 @@ const revokesRemaining = (address) => getFromMapping(2, address)
  * @param {number} deltaWeight
  * @return {Promise<*>}
  */
-const reduceRevokeThreshold = (chainId, address, deltaWeight) => { }
+const reduceRevokeThreshold = (chainId, address, deltaWeight) =>
+  sendTransaction(chainId, address, "0", "0xab505b1c" + evm.uint256(deltaWeight));
 
 /**
  * @param {string} chainId
