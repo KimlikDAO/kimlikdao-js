@@ -51,25 +51,33 @@ const TokenData = {
 };
 
 /**
- * @param {string} chainId
- * @param {string} address
+ * @param {string} from
+ * @param {string} to
  * @param {string} value value in native tokens, encoded as a hex string.
  * @param {string} calldata hex encoded calldata.
  * @return {Promise<*>}
  */
-const sendTransaction = (chainId, address, value, calldata) => {
+const sendTransactionTo = (from, to, value, calldata) => {
   const tx = /** @type {Transaction} */({
-    to: TCKT_ADDR,
-    from: address,
+    from: from,
+    to: to,
     value: "0x" + value,
     data: calldata,
-    chainId: chainId,
   });
   return ethereum.request(/** @type {RequestParams} */({
     method: "eth_sendTransaction",
     params: [tx]
   }))
 }
+
+/**
+ * @param {string} address
+ * @param {string} value value in native tokens, encoded as a hex string.
+ * @param {string} calldata hex encoded calldata.
+ * @return {Promise<*>}
+ */
+const sendTransaction = (address, value, calldata) =>
+  sendTransactionTo(address, TCKT_ADDR, value, calldata);
 
 const addToWallet = () =>
   ethereum.request(/** @type {RequestParams} */({
@@ -113,27 +121,25 @@ const revokesRemaining = (address) => getFromMapping(2, address)
   .then((revokes) => parseInt(revokes.slice(-4), 16));
 
 /**
- * @param {string} chainId
  * @param {string} address
  * @param {number} deltaWeight
  * @return {Promise<*>}
  */
-const reduceRevokeThreshold = (chainId, address, deltaWeight) =>
-  sendTransaction(chainId, address, "0", "0xab505b1c" + evm.uint256(deltaWeight));
+const reduceRevokeThreshold = (address, deltaWeight) =>
+  sendTransaction(address, "0", "0xab505b1c" + evm.uint256(deltaWeight));
 
 /**
- * @param {string} chainId
  * @param {string} address
  * @param {number} deltaWeight revoker weight.
  * @param {string} revokerAddress revoker address.
  * @return {Promise<*>}
  */
-const addRevoker = (chainId, address, deltaWeight, revokerAddress) =>
-  sendTransaction(chainId, address, "0",
-    "0xf02b3297" + evm.uint96(deltaWeight) + revokerAddress.slice(2).toLowerCase());
+const addRevoker = (address, deltaWeight, revokerAddress) =>
+  sendTransaction(address, "0", "0xf02b3297" +
+    evm.uint96(deltaWeight) + revokerAddress.slice(2).toLowerCase());
 
-const revoke = (chainId, address) =>
-  sendTransaction(chainId, address, "0", "0xb6549f75");
+const revoke = (address) =>
+  sendTransaction(address, "0", "0xb6549f75");
 
 /**
  * @param {string} chainId
@@ -147,8 +153,8 @@ const createWithRevokers = (chainId, address, cid, revokeThreshold, revokers) =>
   priceIn(chainId, 0).then(([high, low]) => {
     const price = (TRILLION * BigInt(revokeThreshold == 0 ? high : low)).toString(16);
     return revokeThreshold == 0
-      ? sendTransaction(chainId, address, price, "0x780900dc" + cid)
-      : sendTransaction(chainId, address, price, "0xd3cfebc1" + cid +
+      ? sendTransaction(address, price, "0x780900dc" + cid)
+      : sendTransaction(address, price, "0xd3cfebc1" + cid +
         serializeRevokers(revokeThreshold, revokers));
   });
 
@@ -178,13 +184,31 @@ const serializeRevokers = (revokeThreshold, revokers) => {
  * @param {Object<string, number>} revokers
  * @return {Promise<*>}
  */
-const createWithRevokersWithTokenPermit =
-  (chainId, address, cid, revokeThreshold, revokers, signature) => revokeThreshold == 0
-    ? sendTransaction(chainId, address, "0", "0xb744aef4" + cid + signature)
-    : sendTransaction(chainId, address, "0", "0xa6c98d44" + cid +
+const createWithRevokersWithTokenPermit = (address, cid, revokeThreshold, revokers, signature) =>
+  revokeThreshold == 0
+    ? sendTransaction(address, "0", "0xb744aef4" + cid + signature)
+    : sendTransaction(address, "0", "0xa6c98d44" + cid +
       serializeRevokers(revokeThreshold, revokers) + signature);
 
 /**
+ * @param {string} chainId
+ * @param {string} address
+ * @param {string} cid
+ * @param {number} revokeThreshold
+ * @param {Object<string, number>} revokers
+ * @param {number} token
+ * @return {Promise<*>}
+ */
+const createWithRevokersWithTokenPayment = (chainId, address, cid, revokeThreshold, revokers, token) => {
+  const tokenSerialized = evm.uint96(0) + TokenData[chainId][token][0];
+  return revokeThreshold == 0
+    ? sendTransaction(address, "0", "0xdaca45f7" + cid + tokenSerialized)
+    : sendTransaction(address, "0", "0x3e36b2f7" + cid +
+      serializeRevokers(revokeThreshold, revokers) + tokenSerialized);
+}
+
+/**
+ * @param {string} chainId
  * @param {number} token
  * @return {Promise<!Array<number>>} price of TCKT in the given currency
  */
@@ -224,15 +248,25 @@ const getDeadline = () => {
 }
 
 /**
+ * @param {string} chainId
+ * @param {string} address     Address of the message sender (asset owner also).
+ * @param {number} token       A ERC20 token address to get the approval from.
+ */
+const getApprovalFor = (chainId, address, token) => sendTransactionTo(
+  address,
+  "0x" + TokenData[chainId][token][0],
+  "0", "0x095ea7b3" + evm.uint96(0) + TCKT_ADDR.toLowerCase().slice(2) + evm.Uint256Max);
+
+/**
  * @param {string} chainId       chainId for the chain we want the permit for
- * @param {string} address       Permit should be issues to this address.
+ * @param {string} owner         Owner of the asset.
  * @param {number} token         dApp internal currency code, currently in
  *                               [1..3].
  * @param {boolean} withRevokers Whether the user has set up valid revokers to
  *                               qualify for a discount.
  * @return {Promise<string>}     Calldata serialized permission.
  */
-const getPermitFor = (chainId, address, token, withRevokers) =>
+const getPermitFor = (chainId, owner, token, withRevokers) =>
   priceIn(chainId, token).then((price) => {
     const deadline = evm.uint96(getDeadline());
     const tokenData = TokenData[chainId][token];
@@ -260,7 +294,7 @@ const getPermitFor = (chainId, address, token, withRevokers) =>
       },
       "primaryType": "Permit",
       "message": {
-        "owner": address,
+        "owner": owner,
         "spender": TCKT_ADDR,
         "value": "0x" + price[+withRevokers].toString(16),
         "nonce": 0,
@@ -269,7 +303,7 @@ const getPermitFor = (chainId, address, token, withRevokers) =>
     });
     return ethereum.request(/** @type {RequestParams} */({
       method: "eth_signTypedData_v4",
-      params: [address, typedSignData]
+      params: [owner, typedSignData]
     })).then((signature) => {
       /** @const {boolean} */
       const highBit = signature.slice(-2) == "1c";
@@ -291,15 +325,21 @@ const getPermitFor = (chainId, address, token, withRevokers) =>
 const isTokenAvailable = (chainId, token) =>
   TokenData[chainId][token][0] !== "";
 
+const isTokenERC20Permit = (chainId, token) =>
+  TokenData[chainId][token].length > 3 && TokenData[chainId][token][3]
+
 export default {
   addRevoker,
   addToWallet,
   createWithRevokers,
+  createWithRevokersWithTokenPayment,
   createWithRevokersWithTokenPermit,
   estimateNetworkFee,
+  getApprovalFor,
   getPermitFor,
   handleOf,
   isTokenAvailable,
+  isTokenERC20Permit,
   priceIn,
   reduceRevokeThreshold,
   revoke,

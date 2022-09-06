@@ -88,4 +88,15 @@ const uint96 = (sayı) => sayı.toString(16).padStart(24, "0");
 /** @type {function(number):string} */
 const uint64 = (sayı) => sayı.toString(16).padStart(16, "0");
 
-export default { adresDüzelt, adresGeçerli, uint64, uint96, uint160, uint256 }
+/** @const {string} */
+const Uint256Max = "f".repeat(64);
+
+export default {
+  adresDüzelt,
+  adresGeçerli,
+  uint160,
+  uint256,
+  Uint256Max,
+  uint64,
+  uint96,
+}
