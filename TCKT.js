@@ -16,7 +16,7 @@ const MILLION = 1000_000;
 /** @const {!bigint} */
 const TRILLION = 1_000_000n * 1_000_000n;
 
-/** @const {Object<string,Array<Array<string>>>} */
+/** @const {Object<string,Array<Array<*>>>} */
 const TokenData = {
   "0x1": [
     [""],
@@ -53,22 +53,20 @@ const TokenData = {
 /**
  * @param {string} from
  * @param {string} to
- * @param {string} value value in native tokens, encoded as a hex string.
+ * @param {string} value value in native token, encoded as a hex string.
  * @param {string} calldata hex encoded calldata.
  * @return {Promise<*>}
  */
-const sendTransactionTo = (from, to, value, calldata) => {
-  const tx = /** @type {Transaction} */({
-    from: from,
-    to: to,
-    value: "0x" + value,
-    data: calldata,
-  });
-  return ethereum.request(/** @type {RequestParams} */({
+const sendTransactionTo = (from, to, value, calldata) =>
+  ethereum.request(/** @type {RequestParams} */({
     method: "eth_sendTransaction",
-    params: [tx]
+    params: [/** @type {Transaction} */({
+      from,
+      to,
+      value: "0x" + value,
+      data: calldata
+    })]
   }))
-}
 
 /**
  * @param {string} address
@@ -342,7 +340,6 @@ const getPermitFor = (chainId, owner, token, withRevokers) =>
         return deadline + tokenData[0].toLowerCase() + signature;
       });
     });
-
 
 /**
  * @param {string} chainId
