@@ -4,7 +4,7 @@ import { base58 } from './çevir';
  * @const {string}
  * @noinline
  */
-const IPFS_URL = "//ipfs.kimlikdao.org/";
+const IPFS_URL = "https://ipfs.kimlikdao.org/";
 
 /**
  * @param {!Uint8Array} data heş
