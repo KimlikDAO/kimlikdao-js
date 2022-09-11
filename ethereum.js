@@ -22,10 +22,27 @@ ethereum.isConnected = function () { };
  */
 ethereum.on = function (eventName, handler) { };
 
+
+/**
+ * The container object that is passed to the provider.
+ *
+ * @interface 
+ * @struct
+ */
+function RequestParams() { }
+
+/** @type {string} */
+RequestParams.prototype.method;
+
+/** @type {Array<*>} */
+RequestParams.prototype.params;
+
+
 /**
  * Represents an ethereum transaction, to be sent to a provider.
  * 
  * @interface
+ * @struct
  */
 function Transaction() { }
 
@@ -44,20 +61,13 @@ Transaction.prototype.data;
 /** @type {string} */
 Transaction.prototype.chainId;
 
+
 /**
+ * The struct that is passed to the wallet to add an asset.
+ * Currently most wallet support only ERC20 assets.
  *
- * @interface 
- */
-function RequestParams() { }
-
-/** @type {string} */
-RequestParams.prototype.method;
-
-/** @type {Array<*>} */
-RequestParams.prototype.params;
-
-/**
  * @interface
+ * @struct
  */
 function WatchAssetParams() { }
 
@@ -75,3 +85,24 @@ WatchAssetParams.prototype.options.symbol;
 
 /** @type {string} */
 WatchAssetParams.prototype.options.decimals;
+
+
+/**
+ * Parameter to a `eth_decrypt` rpc.
+ *
+ * @interface
+ * @struct
+ */
+function EthEncryptedData() { }
+
+/** @type {string} */
+EthEncryptedData.prototype.version;
+
+/** @type {string} */
+EthEncryptedData.prototype.nonce;
+
+/** @type {string} */
+EthEncryptedData.prototype.ephemPublicKey;
+
+/** @type {string} */
+EthEncryptedData.prototype.ciphertext;

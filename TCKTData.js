@@ -52,21 +52,6 @@ TCKTData.prototype.animation_url;
 /** @type {Unlockable} */
 TCKTData.prototype.unlockable;
 
-/** @interface */
-function EthEncryptedData() { }
-
-/** @type {string} */
-EthEncryptedData.prototype.version;
-
-/** @type {string} */
-EthEncryptedData.prototype.nonce;
-
-/** @type {string} */
-EthEncryptedData.prototype.ephemPublicKey;
-
-/** @type {string} */
-EthEncryptedData.prototype.ciphertext;
-
 /**
  * @interface
  */
