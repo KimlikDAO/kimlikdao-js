@@ -16,6 +16,33 @@ const TR = goog.define('TR', true);
  */
 const adla = (ad) => document.getElementById(ad);
 
+/**
+ * @noinline
+ * @param {Element} birim
+ */
+const gizle = (birim) => birim.style.display = "none";
+
+/**
+ * @noinline
+ * @param {Element} birim
+ */
+const göster = (birim) => birim.style.display = "";
+
+/**
+ * @noinline
+ * @param {string} ad
+ */
+const adlaGizle = (ad) => adla(ad).style.display = "none";
+
+/**
+ * @noinline
+ * @param {string} ad
+ */
+const adlaGöster = (ad) => adla(ad).style.display = "";
+
+/**
+ * @param {Element} buton Durdurulacak düğme.
+ */
 const butonDurdur = (buton) => {
   buton.onclick = null;
   buton.disabled = true;
@@ -29,7 +56,7 @@ const butonDurdur = (buton) => {
 const menüYarat = (düğme, menü) => {
   const kapat = (event) => {
     düğme.classList.remove("sel");
-    menü.style.display = "none";
+    gizle(menü);
     window.onclick = null;
   }
   düğme.onclick = (event) => {
@@ -51,4 +78,14 @@ const paradanMetne = (para) => TR
   : ("" + (para / 1_000_000))
 
 
-export default { adla, butonDurdur, menüYarat, paradanMetne, TR };
+export default {
+  adla,
+  adlaGizle,
+  adlaGöster,
+  butonDurdur,
+  gizle,
+  göster,
+  menüYarat,
+  paradanMetne,
+  TR
+};
