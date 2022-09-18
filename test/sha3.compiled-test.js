@@ -44,7 +44,7 @@ assert(
   "a5b68ade127ab4046c0555468bb3b1553f47ce6df2831b5d17e7ed27501cda51"
 );
 
-for (let i = 0; i < 5000; ++i) {
+for (let i = 0; i < 1000; ++i) {
   let test = "abracadabra".repeat(i);
   const ours = keccak256(test);
   const prev = keccak256_prev(test);
@@ -53,7 +53,7 @@ for (let i = 0; i < 5000; ++i) {
   assert(ours == orig)
 }
 
-for (let i = 0; i < 5000; ++i) {
+for (let i = 0; i < 1000; ++i) {
   let test = "c".repeat(i);
   const ours = keccak256(test);
   const prev = keccak256_prev(test);
@@ -68,7 +68,7 @@ console.log(`${color}${TrueAsserts} / ${TrueAsserts + FalseAsserts} assers true\
 {
   console.time("1k keccak256_orig");
   let c = 0;
-  for (let i = 0; i < 5000; ++i)
+  for (let i = 0; i < 1000; ++i)
     c += parseInt(keccak256_orig("z".repeat(i))[0], 16);
   console.log(c);
   console.timeEnd("1k keccak256_orig");
@@ -76,7 +76,7 @@ console.log(`${color}${TrueAsserts} / ${TrueAsserts + FalseAsserts} assers true\
 {
   console.time("1k keccak256_prev");
   let c = 0;
-  for (let i = 0; i < 5000; ++i)
+  for (let i = 0; i < 1000; ++i)
     c += parseInt(keccak256_prev("z".repeat(i))[0], 16);
   console.log(c);
   console.timeEnd("1k keccak256_prev");
@@ -84,7 +84,7 @@ console.log(`${color}${TrueAsserts} / ${TrueAsserts + FalseAsserts} assers true\
 {
   console.time("1k keccak256");
   let c = 0;
-  for (let i = 0; i < 5000; ++i)
+  for (let i = 0; i < 1000; ++i)
     c += parseInt(keccak256("z".repeat(i))[0], 16);
   console.log(c);
   console.timeEnd("1k keccak256");
