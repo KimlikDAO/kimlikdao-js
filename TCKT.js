@@ -2,7 +2,6 @@
  * @fileoverview TCKT akıllı sözleşmesinin js önyüzu.
  */
 import evm from './evm';
-import { keccak256Uint32 } from './sha3';
 
 /**
  * @const {string}
@@ -50,6 +49,19 @@ const TokenData = {
   ]
 };
 
+const addToWallet = () =>
+  ethereum.request(/** @type {RequestParams} */({
+    method: 'wallet_watchAsset',
+    params: /** @type {WatchAssetParams} */({
+      type: 'ERC721',
+      options: {
+        address: TCKT_ADDR,
+        symbol: 'TCKT',
+        decimals: "0",
+      }
+    }),
+  }))
+
 /**
  * @param {string} from
  * @param {string} to
@@ -77,19 +89,19 @@ const sendTransactionTo = (from, to, value, calldata) =>
 const sendTransaction = (address, value, calldata) =>
   sendTransactionTo(address, TCKT_ADDR, value, calldata);
 
-const addToWallet = () =>
-  ethereum.request(/** @type {RequestParams} */({
-    method: 'wallet_watchAsset',
-    params: /** @type {WatchAssetParams} */({
-      type: 'ERC721',
-      options: {
-        address: TCKT_ADDR,
-        symbol: 'TCKT',
-        decimals: "0",
-      }
-    }),
-  }))
-
+/**
+ * @param {string} contract Contract adddress given with the 0x prefix
+ * @param {string} calldata Calldata transmitted to the contract verbatim.
+ */
+const callMethod = (contract, calldata) => ethereum.request(
+   /** @type {RequestParams} */({
+    method: "eth_call",
+    params: [/** @type {Transaction} */({
+      to: contract,
+      data: calldata
+    }), "latest"]
+  })
+)
 
 /** @const {Object<string, string>} */
 const NonceCache = {};
@@ -103,45 +115,30 @@ const NonceCache = {};
 const getNonce = (chainId, address, token) => {
   const cached = NonceCache[chainId + address + token];
   return cached
-    ? Promise.resolve(cached) : ethereum.request(/** @type {RequestParams} */({
-      method: "eth_call",
-      params: [/** @type {Transaction} */({
-        to: "0x" + TokenData[chainId][token][0],
-        data: "0x7ecebe00" + evm.address(address)
-      }), "latest"]
-    })).then((nonce) => {
+    ? Promise.resolve(cached) : callMethod(
+      "0x" + TokenData[chainId][token][0], "0x7ecebe00" + evm.address(address)
+    ).then((nonce) => {
       NonceCache[chainId + address + token] = nonce;
       return nonce;
     })
 }
 
 /**
- * @param {number} order The variable order of the mapping.
- * @param {string} address The key for an address keyed mapping.
- */
-const getFromMapping = (order, address) => {
-  const buff = new Uint8Array(64);
-  buff[63] = order;
-  for (let i = 1; i <= 20; ++i)
-    buff[i + 11] = parseInt(address.substring(2 * i, 2 * i + 2), 16);
-  return ethereum.request(/** @const {RequestParams} */({
-    method: "eth_getStorageAt",
-    params: [TCKT_ADDR, "0x" + keccak256Uint32(new Uint32Array(buff.buffer)), "latest"]
-  }));
-}
-
-/**
+ * TODO(KimlikDAO-bot): Update to the new method signature
+ *
  * @param {string} address
  * @return {Promise<string>}
  */
-const handleOf = (address) => getFromMapping(0, address);
+const handleOf = (address) =>
+  callMethod(TCKT_ADDR, "0x8a591c8a" + evm.address(address));
 
 /**
  * @param {string} address
  * @return {Promise<number>}
  */
-const revokesRemaining = (address) => getFromMapping(2, address)
-  .then((revokes) => parseInt(revokes.slice(-4), 16));
+const revokesRemaining = (address) =>
+  callMethod(TCKT_ADDR, "0x11ac4634" + evm.address(address))
+    .then((revokes) => parseInt(revokes.slice(-6), 16));
 
 /**
  * @param {string} address
