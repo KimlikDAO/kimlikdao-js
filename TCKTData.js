@@ -10,10 +10,11 @@
 
 /**
  * @interface
+ * @struct
  */
 function Unlockable() { }
 
-/** @type {Object<string,Array<string>>} */
+/** @type {Object<string, Array<string>>} */
 Unlockable.prototype.user_prompt;
 
 /** @type {string} */
@@ -49,76 +50,74 @@ TCKTData.prototype.external_url;
 /** @type {string} */
 TCKTData.prototype.animation_url;
 
-/** @type {Unlockable} */
-TCKTData.prototype.unlockable;
+/** @type {Object<string, Unlockable>} */
+TCKTData.prototype.unlockables;
 
 /**
  * @interface
+ * @type {Object<string, Object>}
  */
-function TCKTTemelBilgileri() { };
+function AçıkTCKT() { };
 
 /** @interface */
-TCKTTemelBilgileri.prototype.kişi;
+function KişiBilgileri() { };
 
 /** @type {string} */
-TCKTTemelBilgileri.prototype.kişi.ad;
+KişiBilgileri.prototype.ad;
 
 /** @type {string} */
-TCKTTemelBilgileri.prototype.kişi.soyad;
+KişiBilgileri.prototype.soyad;
 
 /** @type {number} */
-TCKTTemelBilgileri.prototype.kişi.TCKN;
+KişiBilgileri.prototype.TCKN;
 
 /** @type {string} */
-TCKTTemelBilgileri.prototype.kişi.dt;
+KişiBilgileri.prototype.dt;
 
 /** @type {string} */
-TCKTTemelBilgileri.prototype.kişi.dyeri;
+KişiBilgileri.prototype.dyeri;
 
 /** @type {string} */
-TCKTTemelBilgileri.prototype.kişi.c;
+KişiBilgileri.prototype.c;
 
 /** @interface */
-TCKTTemelBilgileri.prototype.aile;
+function AileBilgileri() { }
 
 /** @type {string} */
-TCKTTemelBilgileri.prototype.aile.annead;
+AileBilgileri.prototype.annead;
 
 /** @type {string} */
-TCKTTemelBilgileri.prototype.aile.babaad;
+AileBilgileri.prototype.babaad;
 
 /** @type {number} */
-TCKTTemelBilgileri.prototype.aile.BSN;
+AileBilgileri.prototype.BSN;
 
 /** @type {number} */
-TCKTTemelBilgileri.prototype.aile.cilt;
+AileBilgileri.prototype.cilt;
 
 /** @type {number} */
-TCKTTemelBilgileri.prototype.aile.hane;
+AileBilgileri.prototype.hane;
 
 /** @type {string} */
-TCKTTemelBilgileri.prototype.aile.mhali;
+AileBilgileri.prototype.mhali;
 
 /** @type {string} */
-TCKTTemelBilgileri.prototype.aile.din;
+AileBilgileri.prototype.din;
 
 /** @interface */
-TCKTTemelBilgileri.prototype.kütük;
+function KütükBilgileri() { };
 
 /** @type {string} */
-TCKTTemelBilgileri.prototype.kütük.il;
+KütükBilgileri.prototype.il;
 
 /** @type {string} */
-TCKTTemelBilgileri.prototype.kütük.ilçe;
+KütükBilgileri.prototype.ilçe;
 
 /** @type {string} */
-TCKTTemelBilgileri.prototype.kütük.mahalle;
+KütükBilgileri.prototype.mahalle;
 
 /** @type {string} */
-TCKTTemelBilgileri.prototype.kütük.tescil;
+KütükBilgileri.prototype.tescil;
 
 /** @type {string} */
-TCKTTemelBilgileri.prototype.taahhüt;
-
-/** @type {string} */
-TCKTTemelBilgileri.prototype.rastgele;
+KütükBilgileri.prototype.taahhüt;
