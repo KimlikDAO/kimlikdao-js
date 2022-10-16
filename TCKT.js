@@ -22,23 +22,27 @@ const TokenData = {
     ["dAC17F958D2ee523a2206206994597C13D831ec7", "Tether USD", 6, 0],
     ["A0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", "USD Coin", 6, 2],
     ["2C537E5624e4af88A7ae4060C022609376C8D0EB", "BiLira", 6, 0],
+    ["4Fabb145d64652a948d72533023f6E7A623C7C53", "Binance USD", 18, 0]
   ],
   "0xa86a": [
     [""],
     ["9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7", "TetherToken", 6, 1],
     ["B97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E", "USD Coin", 6, 2],
     ["564A341Df6C126f90cf3ECB92120FD7190ACb401", "BiLira", 6, 2],
+    ["9C9e5fD8bbc25984B178FdCE6117Defa39d2db39", "BUSD Token", 18, 1]
   ],
   "0x89": [
     [""],
     ["c2132D05D31c914a87C6611C10748AEb04B58e8F", "(PoS) Tether USD", 6, 0],
     ["2791Bca1f2de4661ED88A30C99A7a9449Aa84174", "USD Coin (PoS)", 6, 1],
     ["4Fb71290Ac171E1d144F7221D882BECAc7196EB5", "BiLira", 6, 0],
+    ["9C9e5fD8bbc25984B178FdCE6117Defa39d2db39", "BUSD Token", 18, 1]
   ],
   "0xa4b1": [
     [""],
     ["Fd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9", "Tether USD", 6, 1],
     ["FF970A61A04b1cA14834A43f5dE4533eBDDB5CC8", "USD Coin (Arb1)", 6, 1],
+    [""],
     [""]
   ],
   "0xfa": [
@@ -46,6 +50,14 @@ const TokenData = {
     [""],
     ["04068DA6C83AFCFA0e13ba15A6696662335D5B75", "USD Coin", 6, 1],
     [""],
+    [""]
+  ],
+  "0x38": [
+    [""],
+    [""],
+    [""],
+    [""],
+    ["e9e7CEA3DedcA5984780Bafc599bD69ADd087D56", "BUSD Token", 18, 0],
   ]
 };
 
@@ -235,11 +247,12 @@ const createWithRevokersWithTokenPayment = (chainId, address, cid, revokeThresho
 const priceIn = (chainId, token) => {
   const chain = chainId;
   const fiyat = {
-    "0x1": [0, 1 * MILLION, 1 * MILLION, 19 * MILLION],
-    "0xa86a": [0, 1 * MILLION, 1 * MILLION, 19 * MILLION],
-    "0x89": [0, 1 * MILLION, 1 * MILLION, 19 * MILLION],
-    "0xa4b1": [0, 1 * MILLION, 1 * MILLION, 19 * MILLION],
-    "0xfa": [0, 1 * MILLION, 1 * MILLION, 19 * MILLION]
+    "0x1": [0, 1 * MILLION, 1 * MILLION, 19 * MILLION, 0],
+    "0xa86a": [0, 1 * MILLION, 1 * MILLION, 19 * MILLION, 0],
+    "0x89": [0, 1 * MILLION, 1 * MILLION, 19 * MILLION, 0],
+    "0xa4b1": [0, 1 * MILLION, 1 * MILLION, 19 * MILLION, 0],
+    "0xfa": [0, 1 * MILLION, 1 * MILLION, 19 * MILLION, 0],
+    "0x38": [0, 1 * MILLION, 1 * MILLION, 19 * MILLION, 0],
   }
   return Promise.resolve([
     fiyat[chain][token] * 1.5, fiyat[chain][token]
@@ -255,7 +268,8 @@ const estimateNetworkFee = (chainId) => {
     "0xa86a": 800,
     "0x89": 400,
     "0xa4b1": 200,
-    "0xfa": 200
+    "0xfa": 200,
+    "0x38": 400
   }
   return Promise.resolve(hack[chainId]);
 }
