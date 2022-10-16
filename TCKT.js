@@ -235,11 +235,11 @@ const createWithRevokersWithTokenPayment = (chainId, address, cid, revokeThresho
 const priceIn = (chainId, token) => {
   const chain = chainId;
   const fiyat = {
-    "0x1": [600, 1 * MILLION, 1 * MILLION, 19 * MILLION],
-    "0xa86a": [40000, 1 * MILLION, 1 * MILLION, 19 * MILLION],
-    "0x89": [1010000, 1 * MILLION, 1 * MILLION, 19 * MILLION],
-    "0xa4b1": [600, 1 * MILLION, 1 * MILLION, 19 * MILLION],
-    "0xfa": [3000000, 1 * MILLION, 1 * MILLION, 19 * MILLION]
+    "0x1": [0, 1 * MILLION, 1 * MILLION, 19 * MILLION],
+    "0xa86a": [0, 1 * MILLION, 1 * MILLION, 19 * MILLION],
+    "0x89": [0, 1 * MILLION, 1 * MILLION, 19 * MILLION],
+    "0xa4b1": [0, 1 * MILLION, 1 * MILLION, 19 * MILLION],
+    "0xfa": [0, 1 * MILLION, 1 * MILLION, 19 * MILLION]
   }
   return Promise.resolve([
     fiyat[chain][token] * 1.5, fiyat[chain][token]
