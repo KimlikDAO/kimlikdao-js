@@ -6,8 +6,15 @@
 
 /**
  * @interface
+ * @struct
  */
 function InfoSection() { }
+
+/** @type {string} */
+InfoSection.prototype.ed25519;
+
+/** @type {string} */
+InfoSection.prototype.secp256k1;
 
 /**
  * Contains the fundamental identification data of a person such as
@@ -36,44 +43,22 @@ PersonInfo.prototype.cityOfBirth;
 /** @type {string} */
 PersonInfo.prototype.gender;
 
-
-/**
- * Kişinin aile bilgilerini içerir bilgi kartı.
- *
- * @interface
- * @extends {InfoSection}
- */
-function AileBilgileri() { }
-
-/** @type {string} */
-AileBilgileri.prototype.annead;
-
-/** @type {string} */
-AileBilgileri.prototype.babaad;
-
-/** @type {number} */
-AileBilgileri.prototype.BSN;
-
-/** @type {number} */
-AileBilgileri.prototype.cilt;
-
-/** @type {number} */
-AileBilgileri.prototype.hane;
-
-/** @type {string} */
-AileBilgileri.prototype.mhali;
-
-/** @type {string} */
-AileBilgileri.prototype.din;
-
-
 /**
  * Kişinin kütük bilgilerini içerir bilgi kartı.
  *
  * @interface
  * @extends {InfoSection}
  */
-function KütükBilgileri() { };
+function KütükBilgileri() { }
+
+/** @type {string} */
+KütükBilgileri.prototype.annead;
+
+/** @type {string} */
+KütükBilgileri.prototype.babaad;
+
+/** @type {string} */
+KütükBilgileri.prototype.mhali;
 
 /** @type {string} */
 KütükBilgileri.prototype.il;
@@ -84,15 +69,26 @@ KütükBilgileri.prototype.ilçe;
 /** @type {string} */
 KütükBilgileri.prototype.mahalle;
 
+/** @type {number} */
+KütükBilgileri.prototype.cilt;
+
+/** @type {number} */
+KütükBilgileri.prototype.hane;
+
+/** @type {number} */
+KütükBilgileri.prototype.BSN;
+
 /** @type {string} */
 KütükBilgileri.prototype.tescil;
 
 /** @type {string} */
-KütükBilgileri.prototype.taahhüt;
-
+KütükBilgileri.prototype.din;
 
 /**
  * @interface
- * @type {Object<string, InfoSection>}
+ * @extends {InfoSection}
  */
-function AçıkTCKT() { };
+function HumanID() { }
+
+/** @type {string} */
+HumanID.prototype.generic;
