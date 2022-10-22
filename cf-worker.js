@@ -4,20 +4,39 @@
  * @externs
  */
 
-const KV = {};
+/**
+ * @constructor
+ * @extends {Request}
+ */
+function CFWorkersRequest() {}
+
+/** @type {Object} */
+CFWorkersRequest.prototype.cf;
+
+/** @type {?string} */
+CFWorkersRequest.prototype.cf.clientAcceptEncoding
+
+/**
+ * @interface
+ */
+function KeyValue() { }
 
 /**
  * @param {string} key
  * @param {string} type
  * @return {Promise<ArrayBuffer>}
  */
-KV.get = function(key, type) {};
+KeyValue.prototype.get = function (key, type) { };
 
 /**
- * @param {string} eventName
- * @param {function(Object)} listener
+ * @interface
  */
-function addEventListener(eventName, listener) {};
+function RequestContext() { }
+
+/**
+ * @param {Promise<*>} promise
+ */
+RequestContext.prototype.waitUntil = function (promise) { };
 
 const caches = {};
 
@@ -27,10 +46,10 @@ caches.default = {};
  * @param {string} key
  * @return {Promise<Response>}
  */
-caches.default.match = function(key) {};
+caches.default.match = function (key) { };
 
 /**
  * @param {string} key
  * @param {Response} value
  */
-caches.default.put = function(key, value) {};
+caches.default.put = function (key, value) { };
