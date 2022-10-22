@@ -1,86 +1,48 @@
 /**
- * @fileoverview TCKTData externi; TCKT'nin zincir dışı saklanan verisinin
- * şeklini tanımlar. Not: zincir dışı saklanan veri IPFS hash'leri sayesinde
- * blokzincirin garantisindedir.
- *
- * `ERC721Metadata` verisinin genişletilmiş halidir.
- *
+ * @fileoverview TCKT'nin içerdiği bilgilerin şekil tanımları.
+ * @author KimlikDAO
  * @externs
  */
 
 /**
  * @interface
- * @struct
  */
-function Unlockable() { }
-
-/** @type {Object<string, Array<string>>} */
-Unlockable.prototype.user_prompt;
-
-/** @type {string} */
-Unlockable.prototype.algorithm;
-
-/** @type {string} */
-Unlockable.prototype.nonce;
-
-/** @type {string} */
-Unlockable.prototype.ephem_pub_key;
-
-/** @type {string} */
-Unlockable.prototype.ciphertext;
+function InfoSection() { }
 
 /**
+ * Contains the fundamental identification data of a person such as
+ * name, date of birth, national id etc.
+ *
  * @interface
- * @struct
+ * @extends {InfoSection}
  */
-function TCKTData() { }
+function PersonInfo() { };
 
 /** @type {string} */
-TCKTData.prototype.name;
+PersonInfo.prototype.first;
 
 /** @type {string} */
-TCKTData.prototype.description;
+PersonInfo.prototype.last;
 
 /** @type {string} */
-TCKTData.prototype.image;
+PersonInfo.prototype.localIdNumber;
 
 /** @type {string} */
-TCKTData.prototype.external_url;
+PersonInfo.prototype.dateOfBirth;
 
 /** @type {string} */
-TCKTData.prototype.animation_url;
+PersonInfo.prototype.cityOfBirth;
 
-/** @type {Object<string, Unlockable>} */
-TCKTData.prototype.unlockables;
+/** @type {string} */
+PersonInfo.prototype.gender;
+
 
 /**
+ * Kişinin aile bilgilerini içerir bilgi kartı.
+ *
  * @interface
- * @type {Object<string, Object>}
+ * @extends {InfoSection}
  */
-function AçıkTCKT() { };
-
-/** @interface */
-function KişiBilgileri() { };
-
-/** @type {string} */
-KişiBilgileri.prototype.ad;
-
-/** @type {string} */
-KişiBilgileri.prototype.soyad;
-
-/** @type {number} */
-KişiBilgileri.prototype.TCKN;
-
-/** @type {string} */
-KişiBilgileri.prototype.dt;
-
-/** @type {string} */
-KişiBilgileri.prototype.dyeri;
-
-/** @type {string} */
-KişiBilgileri.prototype.c;
-
-/** @interface */
 function AileBilgileri() { }
 
 /** @type {string} */
@@ -104,7 +66,13 @@ AileBilgileri.prototype.mhali;
 /** @type {string} */
 AileBilgileri.prototype.din;
 
-/** @interface */
+
+/**
+ * Kişinin kütük bilgilerini içerir bilgi kartı.
+ *
+ * @interface
+ * @extends {InfoSection}
+ */
 function KütükBilgileri() { };
 
 /** @type {string} */
@@ -121,3 +89,10 @@ KütükBilgileri.prototype.tescil;
 
 /** @type {string} */
 KütükBilgileri.prototype.taahhüt;
+
+
+/**
+ * @interface
+ * @type {Object<string, InfoSection>}
+ */
+function AçıkTCKT() { };
