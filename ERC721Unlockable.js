@@ -35,23 +35,12 @@ ERC721Metadata.prototype.youtube_url;
 /**
  * @interface
  * @struct
+ * @extends {EthEncryptedData}
  */
 function Unlockable() { }
 
 /** @type {Object<string, Array<string>>} */
-Unlockable.prototype.user_prompt;
-
-/** @type {string} */
-Unlockable.prototype.algorithm;
-
-/** @type {string} */
-Unlockable.prototype.nonce;
-
-/** @type {string} */
-Unlockable.prototype.ephem_pub_key;
-
-/** @type {string} */
-Unlockable.prototype.ciphertext;
+Unlockable.prototype.userPrompt;
 
 /**
  * @interface

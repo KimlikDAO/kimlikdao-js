@@ -5,7 +5,7 @@ let nacl = {};
 /**
  * @param {string} açıkAnahtar base64 olarak publicKey
  * @param {Uint8Array} veri
- * @return Şifreleme nonce'ı publikeKey ve şifrelenmiş veri.
+ * @return {EthEncryptedData}
  */
 export const kutula = (açıkAnahtar, veri) => {
   const anahtarlar = nacl.box.keyPair();
@@ -18,7 +18,12 @@ export const kutula = (açıkAnahtar, veri) => {
     base64ten(açıkAnahtar),
     anahtarlar.secretKey,
   );
-  return [base64(nonce), base64(anahtarlar.publicKey), base64(encrypted)];
+  return {
+    version: "x25519-xsalsa20-poly1305",
+    nonce: base64(nonce),
+    ephemePublicKey: base64(anahtarlar.publicKey),
+    ciphertext: base64(encrypted)
+  };
 }
 
 /**

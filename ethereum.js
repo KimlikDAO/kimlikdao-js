@@ -88,7 +88,8 @@ WatchAssetParams.prototype.options.decimals;
 
 
 /**
- * Parameter to a `eth_decrypt` rpc.
+ * An encrypted data blob. Can we unencrypted with an `eth_decrypt` provider
+ * call.
  *
  * @interface
  * @struct

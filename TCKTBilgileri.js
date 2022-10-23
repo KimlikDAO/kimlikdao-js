@@ -10,6 +10,9 @@
  */
 function InfoSection() { }
 
+/** @type {number} */
+InfoSection.prototype.signatureTs;
+
 /** @type {string} */
 InfoSection.prototype.ed25519;
 
@@ -42,6 +45,28 @@ PersonInfo.prototype.cityOfBirth;
 
 /** @type {string} */
 PersonInfo.prototype.gender;
+
+/**
+ * An info section containing verified contact info for a person / entity.
+ *
+ * @interface
+ * @externs {InfoSection}
+ */
+function ContactInfo() { }
+
+/** @type {string} */
+ContactInfo.prototype.email;
+
+/** @type {string} */
+ContactInfo.prototype.phone;
+
+/**
+ * "HumanID('revoke')" for the person, which is used when this ID need to be
+ * revoked.
+ *
+ * @type {string}
+ */
+PersonInfo.prototype.humanID.revoke;
 
 /**
  * Kişinin kütük bilgilerini içerir bilgi kartı.
@@ -92,3 +117,9 @@ function HumanID() { }
 
 /** @type {string} */
 HumanID.prototype.generic;
+
+/**
+ * @interface
+ * @type {Object<string, InfoSection>}
+ */
+function AçıkTCKT() { }
