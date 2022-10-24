@@ -7,7 +7,13 @@ import evm from './evm';
  * @const {string}
  * @noinline
  */
-export const TCKT_ADDR = "0xcCc0F938A2C94b0fFBa49F257902Be7F56E62cCc";
+const TCKT_ADDR = "0xcCc0F938A2C94b0fFBa49F257902Be7F56E62cCc";
+
+/**
+ * @const {string}
+ * @noinline
+ */
+const REVOKER_ASSIGNMENT = "0x4e686c76ade52af6305355f15cc098a1ca686d24a8c183f14896632bc8b27c5f";
 
 /** @const {number} */
 const MILLION = 1000_000;
@@ -363,6 +369,25 @@ const isTokenAvailable = (chainId, token) =>
 const isTokenERC20Permit = (chainId, token) =>
   TokenData[chainId][token].length > 3 && TokenData[chainId][token][3]
 
+/**
+ * Test method returns only addresses assigned to dev kasası
+ * @return {Promise<*>}
+ */
+const getRevokeAddresses = () =>
+  ethereum.request(/** @type {RequestParams} */({
+    method: "eth_getLogs",
+    params: [{
+      address: TCKT_ADDR,
+      fromBlock: "0x12A3AE7",
+      toBlock: "0x12A3AE7",
+      topics: [
+        REVOKER_ASSIGNMENT,
+        [],
+        "0x000000000000000000000000c152e02e54cbeacb51785c174994c2084bd9ef51",
+      ]
+    }]
+  }))
+
 export default {
   addRevoker,
   addToWallet,
@@ -380,4 +405,6 @@ export default {
   reduceRevokeThreshold,
   revoke,
   revokesRemaining,
+  getRevokeAddresses,
+  TCKT_ADDR,
 };
