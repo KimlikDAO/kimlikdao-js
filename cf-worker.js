@@ -8,7 +8,7 @@
  * @constructor
  * @extends {Request}
  */
-function CFWorkersRequest() {}
+function CFWorkersRequest() { }
 
 /** @type {Object} */
 CFWorkersRequest.prototype.cf;
@@ -22,6 +22,7 @@ CFWorkersRequest.prototype.cf.clientAcceptEncoding
 function KeyValue() { }
 
 /**
+ * @nosideeffects
  * @param {string} key
  * @param {string} type
  * @return {Promise<ArrayBuffer>}
@@ -43,6 +44,7 @@ const caches = {};
 caches.default = {};
 
 /**
+ * @nosideeffects
  * @param {string} key
  * @return {Promise<Response>}
  */

@@ -46,19 +46,8 @@ PersonInfo.prototype.cityOfBirth;
 /** @type {string} */
 PersonInfo.prototype.gender;
 
-/**
- * An info section containing verified contact info for a person / entity.
- *
- * @interface
- * @externs {InfoSection}
- */
-function ContactInfo() { }
-
-/** @type {string} */
-ContactInfo.prototype.email;
-
-/** @type {string} */
-ContactInfo.prototype.phone;
+/** @type {Object} */
+PersonInfo.prototype.humanID;
 
 /**
  * "HumanID('revoke')" for the person, which is used when this ID need to be
@@ -67,6 +56,20 @@ ContactInfo.prototype.phone;
  * @type {string}
  */
 PersonInfo.prototype.humanID.revoke;
+
+/**
+ * An info section containing verified contact info for a person / entity.
+ *
+ * @interface
+ * @extends {InfoSection}
+ */
+function ContactInfo() { }
+
+/** @type {string} */
+ContactInfo.prototype.email;
+
+/** @type {string} */
+ContactInfo.prototype.phone;
 
 /**
  * Kişinin kütük bilgilerini içerir bilgi kartı.
@@ -119,7 +122,6 @@ function HumanID() { }
 HumanID.prototype.generic;
 
 /**
- * @interface
- * @type {Object<string, InfoSection>}
+ * @typedef {Object<string, InfoSection>}
  */
-function AçıkTCKT() { }
+var AçıkTCKT;

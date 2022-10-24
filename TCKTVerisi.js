@@ -18,7 +18,7 @@ const KIMLIKDAO_URL = "https://kimlikdao.org";
  * Şimdilik sadece 2 bölüm destekliyoruz.
  *
  * @param {string} açıkAnahtar
- * @param {Object<string, InfoSection>} açıkTckt
+ * @param {AçıkTCKT} açıkTckt
  * @param {Array<!Array<string>>} bölümler
  * @return {ERC721Unlockable}
  */
