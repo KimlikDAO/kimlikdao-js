@@ -174,9 +174,20 @@ const reduceRevokeThreshold = (address, deltaWeight) =>
 const addRevoker = (address, deltaWeight, revokerAddress) =>
   sendTransaction(address, "0", "0xf02b3297" +
     evm.uint96(deltaWeight) + revokerAddress.slice(2).toLowerCase());
-
+/**
+ * @param {string} address
+ * @return {Promise<void>}
+ */
 const revoke = (address) =>
   sendTransaction(address, "0", "0xb6549f75");
+
+/**
+ * @param {string} address
+ * @param {string} friend
+ * @return {Promise<void>}
+ */
+const revokeFriend = (address, friend) =>
+  sendTransaction(address, "0", "0x3a2c82c7" + evm.address(friend));
 
 /**
  * @param {string} chainId
@@ -396,6 +407,7 @@ export default {
   estimateNetworkFee,
   getApprovalFor,
   getPermitFor,
+  getRevokeAddresses,
   getNonce,
   handleOf,
   isTokenAvailable,
@@ -403,6 +415,6 @@ export default {
   priceIn,
   reduceRevokeThreshold,
   revoke,
+  revokeFriend,
   revokesRemaining,
-  getRevokeAddresses,
 };
