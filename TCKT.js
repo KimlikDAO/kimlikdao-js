@@ -7,11 +7,10 @@ import evm from './evm';
  * @const {string}
  * @noinline
  */
-const TCKT_ADDR = "0xcCc0F938A2C94b0fFBa49F257902Be7F56E62cCc";
+export const TCKT_ADDR = "0xcCc0F938A2C94b0fFBa49F257902Be7F56E62cCc";
 
 /**
  * @const {string}
- * @noinline
  */
 const REVOKER_ASSIGNMENT = "0x4e686c76ade52af6305355f15cc098a1ca686d24a8c183f14896632bc8b27c5f";
 
@@ -406,5 +405,4 @@ export default {
   revoke,
   revokesRemaining,
   getRevokeAddresses,
-  TCKT_ADDR,
 };
