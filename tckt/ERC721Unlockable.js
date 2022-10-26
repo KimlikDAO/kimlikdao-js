@@ -2,6 +2,7 @@
  * @fileoverview An extension to ERC721Metadata, which allows for encrypted
  * data stored inside the NFT.
  *
+ * @author KimlikDAO
  * @externs
  */
 

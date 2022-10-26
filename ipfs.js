@@ -1,4 +1,4 @@
-import { base58 } from './çevir';
+import { base58 } from './util/çevir';
 
 /**
  * @const {string}

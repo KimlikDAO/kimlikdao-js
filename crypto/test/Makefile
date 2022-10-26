@@ -1,5 +1,5 @@
-build/test/sha3.compiled-test.js: test/sha3.compiled-test.js test/*.js \
-                                  sha3.js çevir.js
+build/crypto/test/sha3.compiled-test.js: crypto/test/sha3.compiled-test.js crypto/test/*.js \
+                                         crypto/sha3.js util/çevir.js
 	mkdir -p $(dir $@)
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
                              --emit_use_strict \
@@ -12,6 +12,6 @@ build/test/sha3.compiled-test.js: test/sha3.compiled-test.js test/*.js \
 	yarn uglifyjs $@ -m -o $@
 	node $@
 
-test.test: build/test/sha3.compiled-test.js
+crypto.test: build/crypto/test/sha3.compiled-test.js
 
 .PHONY: test.test

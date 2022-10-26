@@ -1,5 +1,6 @@
 /**
  * @fileoverview Externs for web workers.
+ *
  * @author KimlikDAO
  * @externs
  */

@@ -1,9 +1,10 @@
 /**
  * @fileoverview TCKT'nin blokzincir dışı saklanan verisini yönetme birimi.
+ *
  * @author KimlikDAO
  */
-import { kutula } from './ed25519';
-import { TCKT_ADDR } from './TCKT';
+import { kutula } from '../crypto/ed25519';
+import { TCKT_ADDR } from '../ethereum/TCKT';
 
 /**
  * @const {string}

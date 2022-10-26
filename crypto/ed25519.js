@@ -1,4 +1,4 @@
-import { base64, base64ten } from './çevir';
+import { base64, base64ten } from '../util/çevir';
 
 let nacl = {};
 

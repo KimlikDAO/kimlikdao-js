@@ -1,5 +1,6 @@
 /**
  * @fileoverview TCKT'nin içerdiği bilgilerin şekil tanımları.
+ *
  * @author KimlikDAO
  * @externs
  */

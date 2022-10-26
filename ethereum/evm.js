@@ -1,8 +1,9 @@
 /**
  * @fileoverview EVM ile ilgili yardımcı fonksiyonlar.
+ *
  * @author KimlikDAO
  */
-import { keccak256 } from './sha3';
+import { keccak256 } from '../crypto/sha3';
 
 /**
  * Verilen bir adresin checksum'ı yoksa ekler, varsa sağlamasını yapar.

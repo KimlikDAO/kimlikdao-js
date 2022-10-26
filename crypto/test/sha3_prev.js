@@ -1,77 +1,80 @@
-/**
- * @fileoverview A fast and tiny keccak256 implementation using `TypedArray`s.
- * @author KimlikDAO
- */
-import { hex } from './çevir';
+import { hex } from '../../util/çevir';
 
-/**
- * A keccak256 implementation specialized to byte arrays of a length multiple
- * of 4. The data at hand needs to be passed as a `Uint32Array` which enforces
- * the length requirement.
- *
- * @param {Uint32Array} words A typed array of `u32`s to be hashed.
- * @return {string} hex encoded hash.
- */
-export const keccak256Uint32 = (words) => {
-  const s = new Uint32Array(50);
-  const end = words.length - 34;
-  let i = 0;
-  for (; i <= end; i += 34) {
-    for (let j = 0; j < 34; ++j)
-      s[j] ^= words[i + j];
-    f(s);
-  }
-  let j = 0;
-  for (; i < words.length; ++i, ++j) {
-    s[j] ^= words[i];
-  }
-  s[j] ^= 1;
-  s[33] ^= 1 << 31;
-  f(s);
-  return hex(new Uint8Array(s.buffer).subarray(0, 32));
-}
-
-/**
- * @param {string} str A string to be hashed.
- * @return {string} hex encoded hash.
- */
-export const keccak256 = (str) => keccak256Uint8(new TextEncoder().encode(str));
-
-/**
- * @param {Uint8Array} bytes A byte array to be hashed. Could be of any length.
- * @return {string} hex encoded hash.
- */
-export const keccak256Uint8 = (bytes) => {
-  const words = new Uint32Array(bytes.buffer, 0, bytes.length >> 2);
-  const s = new Uint32Array(50);
-  const end = words.length - 34;
-  let i = 0;
-  for (; i <= end; i += 34) {
-    for (let j = 0; j < 34; ++j)
-      s[j] ^= words[i + j];
-    f(s);
-  }
-  let j = 0;
-  for (; i < words.length; ++i, ++j) {
-    s[j] ^= words[i];
-  }
-  const mod = bytes.length & 3;
-  const loc = bytes.length & ~3;
-  if (mod == 0) s[j] ^= 1;
-  else if (mod == 1) s[j] ^= bytes[loc] | 256;
-  else if (mod == 2) s[j] ^= bytes[loc] | bytes[loc + 1] << 8 | (1 << 16);
-  else s[j] ^= bytes[loc] | bytes[loc + 1] << 8 | bytes[loc + 2] << 16 | (1 << 24);
-  s[33] ^= 1 << 31;
-  f(s);
-  return hex(new Uint8Array(s.buffer).subarray(0, 32));
-}
-
-/** @const {Uint32Array} */
-const RC = Uint32Array.from([1, 0, 32898, 0, 32906, 2147483648, 2147516416, 2147483648, 32907, 0, 2147483649,
+/** @const {Array<number>} */
+const KECCAK_PADDING = [1, 256, 65536, 16777216];
+/** @const {Array<number>} */
+const SHIFT = [0, 8, 16, 24];
+/** @const {Array<number>} */
+const RC = [1, 0, 32898, 0, 32906, 2147483648, 2147516416, 2147483648, 32907, 0, 2147483649,
   0, 2147516545, 2147483648, 32777, 2147483648, 138, 0, 136, 0, 2147516425, 0,
   2147483658, 0, 2147516555, 0, 139, 2147483648, 32905, 2147483648, 32771,
   2147483648, 32770, 2147483648, 128, 2147483648, 32778, 0, 2147483658, 2147483648,
-  2147516545, 2147483648, 32896, 2147483648, 2147483649, 0, 2147516424, 2147483648]);
+  2147516545, 2147483648, 32896, 2147483648, 2147483649, 0, 2147516424, 2147483648];
+/** @const {number} */
+const BLOCK_COUNT = 34;
+/** @const {number} */
+const BYTE_COUNT = BLOCK_COUNT << 2;
+
+/**
+ * @param {string} veri keccak256'sı alınacak veri.
+ * @return {string} hex harfdizisi olarak keccak256.
+ */
+export const keccak256 = (veri) => {
+  /** @const {number} */
+  const length = veri.length;
+  /** @const {Uint32Array<number>} */
+  const blocks = new Uint32Array(35);
+  /** @const {Uint32Array<number>} */
+  const s = new Uint32Array(50);
+  /** @type {number} */
+  let block = 0;
+  /** @type {number} */
+  let lastByteIndex = 0;
+
+  for (let index = 0, i = 0; index < length;) {
+    for (; index < length && i < BYTE_COUNT; ++index) {
+      let code = veri.charCodeAt(index);
+      if (code < 0x80) {
+        blocks[i >> 2] |= code << SHIFT[i++ & 3];
+      } else if (code < 0x800) {
+        blocks[i >> 2] |= (0xc0 | (code >> 6)) << SHIFT[i++ & 3];
+        blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
+      } else if (code < 0xd800 || code >= 0xe000) {
+        blocks[i >> 2] |= (0xe0 | (code >> 12)) << SHIFT[i++ & 3];
+        blocks[i >> 2] |= (0x80 | ((code >> 6) & 0x3f)) << SHIFT[i++ & 3];
+        blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
+      } else {
+        code = 0x10000 + (((code & 0x3ff) << 10) | (veri.charCodeAt(++index) & 0x3ff));
+        blocks[i >> 2] |= (0xf0 | (code >> 18)) << SHIFT[i++ & 3];
+        blocks[i >> 2] |= (0x80 | ((code >> 12) & 0x3f)) << SHIFT[i++ & 3];
+        blocks[i >> 2] |= (0x80 | ((code >> 6) & 0x3f)) << SHIFT[i++ & 3];
+        blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT[i++ & 3];
+      }
+    }
+    lastByteIndex = i;
+    if (i >= BYTE_COUNT) {
+      i -= BYTE_COUNT;
+      block = blocks[BLOCK_COUNT];
+      for (let t = 0; t < BLOCK_COUNT; ++t) {
+        s[t] ^= blocks[t];
+      }
+      f(s);
+      blocks[0] = block;
+      blocks.fill(0, 1);
+    }
+  }
+  blocks[lastByteIndex >> 2] |= KECCAK_PADDING[lastByteIndex & 3];
+  if (lastByteIndex === BYTE_COUNT) {
+    blocks[0] = blocks[BLOCK_COUNT];
+  }
+  blocks[BLOCK_COUNT - 1] |= 0x80000000;
+  for (let i = 0; i < BLOCK_COUNT; ++i) {
+    s[i] ^= blocks[i];
+  }
+  f(s);
+
+  return hex(new Uint8Array(s.buffer).subarray(0, 32));
+}
 
 const f = (s) => {
   var h, l, c0, c1, c2, c3, c4, c5, c6, c7, c8, c9,

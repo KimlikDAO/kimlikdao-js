@@ -1,9 +1,11 @@
 /**
  * @fileoverview Externs for an ethereum provider.
+ *
  * @author KimlikDAO
  * @externs
  */
 
+/** @const */
 const ethereum = {};
 
 /**

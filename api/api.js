@@ -1,5 +1,6 @@
 /**
  * @fileoverview API veri şekli tanımları.
+ *
  * @author KimlikDAO
  * @externs
  */
