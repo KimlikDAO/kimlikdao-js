@@ -14,7 +14,7 @@ var nvi = {};
  * @typedef {{
  *   ad: string,
  *   soyad: string,
- *   dt: number,
+ *   dt: string,
  *   TCKN: number,
  *   dyeri: string,
  *   cinsiyet: string
