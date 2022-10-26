@@ -22,7 +22,6 @@ ethereum.isConnected = function () { };
  */
 ethereum.on = function (eventName, handler) { };
 
-
 /**
  * The container object that is passed to the provider.
  *
@@ -36,7 +35,6 @@ RequestParams.prototype.method;
 
 /** @type {Array<*>} */
 RequestParams.prototype.params;
-
 
 /**
  * Represents an ethereum transaction, to be sent to a provider.
@@ -60,7 +58,6 @@ Transaction.prototype.data;
 
 /** @type {string} */
 Transaction.prototype.chainId;
-
 
 /**
  * The struct that is passed to the wallet to add an asset.
@@ -86,12 +83,29 @@ WatchAssetParams.prototype.options.symbol;
 /** @type {string} */
 WatchAssetParams.prototype.options.decimals;
 
+/**
+ * @interface
+ * @struct
+ */
+function GetLogsParams() {}
+
+/** @type {string} */
+GetLogsParams.prototype.fromBlock;
+
+/** @type {string} */
+GetLogsParams.prototype.toBlock;
+
+/** @type {string} */
+GetLogsParams.prototype.address;
+
+/** @type {Array<string>} */
+GetLogsParams.prototype.topics;
 
 /**
  * An encrypted data blob. Can we unencrypted with an `eth_decrypt` provider
  * call.
  *
- * @interface
+ * @record
  * @struct
  */
 function EthEncryptedData() { }

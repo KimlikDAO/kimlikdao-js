@@ -21,7 +21,7 @@ export const kutula = (açıkAnahtar, veri) => {
   return {
     version: "x25519-xsalsa20-poly1305",
     nonce: base64(nonce),
-    ephemePublicKey: base64(anahtarlar.publicKey),
+    ephemPublicKey: base64(anahtarlar.publicKey),
     ciphertext: base64(encrypted)
   };
 }

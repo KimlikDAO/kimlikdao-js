@@ -3,7 +3,7 @@
  * @author KimlikDAO
  */
 import { kutula } from './ed25519';
-import { TCKT_ADDR } from '/lib/TCKT';
+import { TCKT_ADDR } from './TCKT';
 
 /**
  * @const {string}
@@ -20,7 +20,7 @@ const KIMLIKDAO_URL = "https://kimlikdao.org";
  * @param {string} açıkAnahtar
  * @param {AçıkTCKT} açıkTckt
  * @param {Array<!Array<string>>} bölümler
- * @return {ERC721Unlockable}
+ * @return {!ERC721Unlockable}
  */
 const hazırla = (açıkAnahtar, açıkTckt, bölümler) => {
   const encoder = new TextEncoder();
@@ -38,12 +38,12 @@ const hazırla = (açıkAnahtar, açıkTckt, bölümler) => {
   const unlockableHazırla = (buffer, bölümAdı) => {
     const sakla = new Set(bölümAdı);
     const bölümler = Object.fromEntries(
-      Object.entries(açıkTckt).filter((girdi) => sakla.has(girdi[0])));
+      Object.entries(açıkTckt).filter((girdi) => sakla.has(/** @type {string} */(girdi[0]))));
     encoder.encodeInto(JSON.stringify(bölümler, null, 2), buffer.subarray(43));
     return kutula(açıkAnahtar, buffer);
   }
 
-  return {
+  return /** @type {!ERC721Unlockable} */({
     name: "TCKT",
     description: "KimlikDAO Kimlik Tokeni",
     image: KIMLIKDAO_URL + "/TCKT.svg",
@@ -51,21 +51,36 @@ const hazırla = (açıkAnahtar, açıkTckt, bölümler) => {
     animation_url: KIMLIKDAO_URL + "/TCKT.mp4",
     unlockables: {
       [bölümler[0].join(",")]: {
-        user_prompt: {
+        userPrompt: {
           "en-US": ["{1} wants to view your TCKT.", "Provide", "Reject"],
           "tr-TR": ["{1} TCKT’nize erişmek istiyor. İzin veriyor musunuz?", "Evet", "Hayır"]
         },
         ...unlockableHazırla(kimlik, bölümler[0])
       },
       [bölümler[1].join(",")]: {
-        user_prompt: {
+        userPrompt: {
           "en-US": ["{1} wants to view your KimlikDAO HumanID.", "Provide", "Reject"],
           "tr-TR": ["{1} KimlikDAO HumanID’nize erişmek istiyor. İzin veriyor musunuz?", "Evet", "Hayır"]
         },
         ...unlockableHazırla(humanId, bölümler[1])
       }
     }
-  }
+  })
 }
 
-export { hazırla };
+/**
+ * Verilen bir TCKTVerisi içinden istenen bölümleri içeren bir unlockable
+ * döndürür.
+ *
+ * FIXME(KimlikDAO-bot) Şimdilik bölümler aramak yerine ilkini döndürüyor.
+ *
+ * @param {!ERC721Unlockable} tcktVerisi
+ * @param {Array<string>} bölümler
+ * @return {Unlockable}
+ */
+const unlockableSeç = (tcktVerisi, bölümler) => {
+  return tcktVerisi.unlockable ||
+    /** @type {Unlockable} */(Object.entries(tcktVerisi.unlockables)[0][1]);
+}
+
+export { hazırla, unlockableSeç };

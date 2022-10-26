@@ -174,9 +174,10 @@ const reduceRevokeThreshold = (address, deltaWeight) =>
 const addRevoker = (address, deltaWeight, revokerAddress) =>
   sendTransaction(address, "0", "0xf02b3297" +
     evm.uint96(deltaWeight) + revokerAddress.slice(2).toLowerCase());
+
 /**
  * @param {string} address
- * @return {Promise<void>}
+ * @return {Promise<*>}
  */
 const revoke = (address) =>
   sendTransaction(address, "0", "0xb6549f75");
@@ -184,10 +185,31 @@ const revoke = (address) =>
 /**
  * @param {string} address
  * @param {string} friend
- * @return {Promise<void>}
+ * @return {Promise<*>}
  */
 const revokeFriend = (address, friend) =>
   sendTransaction(address, "0", "0x3a2c82c7" + evm.address(friend));
+
+/**
+ * Returns the list of addresses that can be revoked by `revoker`.
+ *
+ * @param {string} revoker
+ * @return {Promise<*>}
+ */
+const getRevokeeAddresses = (revoker) =>
+  ethereum.request(/** @type {RequestParams} */({
+    method: "eth_getLogs",
+    params: [/** @type {GetLogsParams} */({
+      address: TCKT_ADDR,
+      fromBlock: "0x12A3AE7",
+      toBlock: "0x12A3AE7",
+      topics: [
+        REVOKER_ASSIGNMENT,
+        [],
+        "0x000000000000000000000000c152e02e54cbeacb51785c174994c2084bd9ef51", // FIXME: revoker
+      ]
+    })]
+  }))
 
 /**
  * @param {string} chainId
@@ -379,25 +401,6 @@ const isTokenAvailable = (chainId, token) =>
 const isTokenERC20Permit = (chainId, token) =>
   TokenData[chainId][token].length > 3 && TokenData[chainId][token][3]
 
-/**
- * Test method returns only addresses assigned to dev kasası
- * @return {Promise<*>}
- */
-const getRevokeAddresses = () =>
-  ethereum.request(/** @type {RequestParams} */({
-    method: "eth_getLogs",
-    params: [{
-      address: TCKT_ADDR,
-      fromBlock: "0x12A3AE7",
-      toBlock: "0x12A3AE7",
-      topics: [
-        REVOKER_ASSIGNMENT,
-        [],
-        "0x000000000000000000000000c152e02e54cbeacb51785c174994c2084bd9ef51",
-      ]
-    }]
-  }))
-
 export default {
   addRevoker,
   addToWallet,
@@ -406,9 +409,9 @@ export default {
   createWithRevokersWithTokenPermit,
   estimateNetworkFee,
   getApprovalFor,
-  getPermitFor,
-  getRevokeAddresses,
   getNonce,
+  getPermitFor,
+  getRevokeeAddresses,
   handleOf,
   isTokenAvailable,
   isTokenERC20Permit,

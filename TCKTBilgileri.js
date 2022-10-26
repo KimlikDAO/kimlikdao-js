@@ -122,6 +122,6 @@ function HumanID() { }
 HumanID.prototype.generic;
 
 /**
- * @typedef {Object<string, InfoSection>}
+ * @typedef {!Object<string, InfoSection>}
  */
 var AçıkTCKT;
