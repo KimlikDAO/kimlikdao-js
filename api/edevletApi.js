@@ -40,7 +40,7 @@ nvi.KutukBilgileri;
 /**
  * @typedef {{
  *   telefon: string,
- *   email: string,
+ *   eposta: string,
  *   KEP: string,
  *   UETS: string,
  * }}
