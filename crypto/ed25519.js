@@ -1,5 +1,6 @@
 import { base64, base64ten } from '../util/çevir';
 
+/** @const */
 let nacl = {};
 
 /**
@@ -34,7 +35,10 @@ export const kutula = (açıkAnahtar, veri) => {
  */
 const u64 = function (h, l) { this.hi = h | 0 >>> 0; this.lo = l | 0 >>> 0; };
 
-/** @type {function(Array<number>=):Float64Array} */
+/**
+ * @param {Array<number>=} init
+ * @return {Float64Array}
+ */
 const gf = (init) => {
   let r = new Float64Array(16);
   if (init)
@@ -791,7 +795,11 @@ function reduce(r) {
   modL(r, x);
 }
 
-// Note: difference from C - smlen returned, not passed as argument.
+/**
+ * Note: difference from C - smlen returned, not passed as argument.
+ *
+ * crypto_sign(signedMsg, msg, msg.length, secretKey);
+ */
 function crypto_sign(sm, m, n, sk) {
   var d = new Uint8Array(64), h = new Uint8Array(64), r = new Uint8Array(64);
   var i, j, x = new Float64Array(64);
@@ -1044,7 +1052,7 @@ nacl.scalarMult.base = function (n) {
 nacl.scalarMult.scalarLength = crypto_scalarmult_SCALARBYTES;
 nacl.scalarMult.groupElementLength = crypto_scalarmult_BYTES;
 
-nacl.box = function (msg, nonce, publicKey, secretKey) {
+nacl.box = (msg, nonce, publicKey, secretKey) => {
   var k = nacl.box.before(publicKey, secretKey);
   return nacl.secretbox(msg, nonce, k);
 };
@@ -1092,7 +1100,7 @@ nacl.sign = function (msg, secretKey) {
   checkArrayTypes(msg, secretKey);
   if (secretKey.length !== crypto_sign_SECRETKEYBYTES)
     throw new Error('bad secret key size');
-  var signedMsg = new Uint8Array(crypto_sign_BYTES + msg.length);
+  var signedMsg = new Uint8Array(64 + msg.length);
   crypto_sign(signedMsg, msg, msg.length, secretKey);
   return signedMsg;
 };
