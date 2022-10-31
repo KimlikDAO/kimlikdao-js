@@ -81,7 +81,8 @@ const hazırla = (açıkAnahtar, açıkTckt, bölümler) => {
  */
 const unlockableSeç = (tcktVerisi, bölümler) => {
   return tcktVerisi.unlockable ||
-    /** @type {Unlockable} */(Object.entries(tcktVerisi.unlockables)[0][1]);
+    /** @type {Unlockable} */(Object.entries(
+      /** @type {!Object<string, !Unlockable>} */(tcktVerisi.unlockables))[0][1]);
 }
 
 export { hazırla, unlockableSeç };

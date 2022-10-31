@@ -79,6 +79,11 @@ ContactInfo.prototype.phone;
 function AddressInfo() { }
 
 /**
+ * @type {string}
+ */
+AddressInfo.prototype.country;
+
+/**
  * @interface
  * @extends {AddressInfo}
  * @extends {nvi.AdresBilgileri}

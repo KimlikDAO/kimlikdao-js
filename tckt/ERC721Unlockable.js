@@ -53,5 +53,5 @@ function ERC721Unlockable() { }
 /** @type {Unlockable} */
 ERC721Unlockable.prototype.unlockable;
 
-/** @type {Object<string, Unlockable>} */
+/** @type {Object<string, !Unlockable>} */
 ERC721Unlockable.prototype.unlockables;
