@@ -654,6 +654,11 @@ var iv = new Uint8Array([
   0x5b, 0xe0, 0xcd, 0x19, 0x13, 0x7e, 0x21, 0x79
 ]);
 
+/**
+ * @param {Uint8Array} out
+ * @param {Uint8Array} m message to be hashed
+ * @param {number} n length of the message to be hashed
+ */
 function crypto_hash(out, m, n) {
   var h = new Uint8Array(64), x = new Uint8Array(256);
   var i, b = n;

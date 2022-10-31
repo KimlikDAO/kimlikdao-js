@@ -1,5 +1,5 @@
 build/crypto/test/ed25519.compiled-test.js: crypto/test/ed25519.compiled-test.js \
-                                            crypto/ed25519.js util/çevir.js
+                                            crypto/ed25519.js util/çevir.js ethereum/provider.js
 	mkdir -p $(dir $@)
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
                              --emit_use_strict \
@@ -26,6 +26,5 @@ build/crypto/test/sha3.compiled-test.js: crypto/test/sha3.compiled-test.js crypt
 	yarn uglifyjs $@ -m -o $@
 	node $@
 
+.PHONY: crypto.test
 crypto.test: $(addprefix build/, $(wildcard crypto/test/*.compiled-test.js))
-
-.PHONY: test.test
