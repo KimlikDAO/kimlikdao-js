@@ -94,39 +94,6 @@ function TürkiyeAdresi() { }
  */
 function KütükBilgileri() { }
 
-/** @type {string} */
-KütükBilgileri.prototype.annead;
-
-/** @type {string} */
-KütükBilgileri.prototype.babaad;
-
-/** @type {string} */
-KütükBilgileri.prototype.mhali;
-
-/** @type {string} */
-KütükBilgileri.prototype.il;
-
-/** @type {string} */
-KütükBilgileri.prototype.ilçe;
-
-/** @type {string} */
-KütükBilgileri.prototype.mahalle;
-
-/** @type {number} */
-KütükBilgileri.prototype.cilt;
-
-/** @type {number} */
-KütükBilgileri.prototype.hane;
-
-/** @type {number} */
-KütükBilgileri.prototype.BSN;
-
-/** @type {string} */
-KütükBilgileri.prototype.tescil;
-
-/** @type {string} */
-KütükBilgileri.prototype.din;
-
 /**
  * @interface
  * @extends {InfoSection}
