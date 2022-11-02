@@ -77,6 +77,15 @@ const paradanMetne = (para) => TR
   ? ("" + (para / 1_000_000)).replace(".", ",")
   : ("" + (para / 1_000_000))
 
+/**
+ * @param {string} telefon
+ * @return {string} formatlanmış telefon numarası
+ */
+const telefondanMetne = (telefon) =>
+  telefon.slice(0, 3) + " (" + telefon.slice(3, 6) + ") " + telefon.slice(6, 9) + " " +
+  telefon.slice(9, 11) + " " + telefon.slice(11);
+
+
 
 export default {
   adla,
@@ -87,5 +96,6 @@ export default {
   göster,
   menüYarat,
   paradanMetne,
-  TR
+  TR,
+  telefondanMetne,
 };
