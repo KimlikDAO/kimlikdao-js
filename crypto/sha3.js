@@ -13,14 +13,18 @@ import { hex } from '../util/çevir';
  * @return {string} hex encoded hash.
  */
 export const keccak256Uint32 = (words) => {
+  /** @const {Uint32Array} */
   const s = new Uint32Array(50);
+  /** @const {number} */
   const end = words.length - 34;
+  /** @type {number} */
   let i = 0;
   for (; i <= end; i += 34) {
     for (let j = 0; j < 34; ++j)
       s[j] ^= words[i + j];
     f(s);
   }
+  /** @type {number} */
   let j = 0;
   for (; i < words.length; ++i, ++j) {
     s[j] ^= words[i];
@@ -42,20 +46,27 @@ export const keccak256 = (str) => keccak256Uint8(new TextEncoder().encode(str));
  * @return {string} hex encoded hash.
  */
 export const keccak256Uint8 = (bytes) => {
+  /** @const {Uint32Array} */
   const words = new Uint32Array(bytes.buffer, 0, bytes.length >> 2);
+  /** @const {Uint32Array} */
   const s = new Uint32Array(50);
+  /** @const {number} */
   const end = words.length - 34;
+  /** @type {number} */
   let i = 0;
   for (; i <= end; i += 34) {
     for (let j = 0; j < 34; ++j)
       s[j] ^= words[i + j];
     f(s);
   }
+  /** @type {number} */
   let j = 0;
   for (; i < words.length; ++i, ++j) {
     s[j] ^= words[i];
   }
+  /** @const {number} */
   const mod = bytes.length & 3;
+  /** @const {number} */
   const loc = bytes.length & ~3;
   if (mod == 0) s[j] ^= 1;
   else if (mod == 1) s[j] ^= bytes[loc] | 256;
@@ -73,6 +84,9 @@ const RC = Uint32Array.from([1, 0, 32898, 0, 32906, 2147483648, 2147516416, 2147
   2147483648, 32770, 2147483648, 128, 2147483648, 32778, 0, 2147483658, 2147483648,
   2147516545, 2147483648, 32896, 2147483648, 2147483649, 0, 2147516424, 2147483648]);
 
+/**
+ * @param {Uint32Array} s
+ */
 const f = (s) => {
   var h, l, c0, c1, c2, c3, c4, c5, c6, c7, c8, c9,
     b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17,
@@ -256,4 +270,4 @@ const f = (s) => {
     s[0] ^= RC[n];
     s[1] ^= RC[n + 1];
   }
-};
+}
