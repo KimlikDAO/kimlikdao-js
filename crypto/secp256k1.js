@@ -101,7 +101,7 @@ Jacobian.prototype.add = function (other) {
   const v = (u1 * h2) % P;
   const X = modP(r * r - h3 - 2n * v);
   const Y = modP(r * (v - X) - s1 * h3);
-  const Z = (z1 * z2 * h) % P;
+  const Z = modP(z1 * z2 * h);
   return new Jacobian(X, Y, Z);
 }
 
@@ -111,9 +111,10 @@ Jacobian.prototype.add = function (other) {
  */
 Jacobian.prototype.multiply = function (n) {
   let acc = new Jacobian(0n, 0n, 0n);
-  while (n != 0) {
-    if (n & 1n) acc.add(this);
-    acc.double();
+  let d = this;
+  while (n > 0n) {
+    if (n & 1n) acc = acc.add(d);
+    d = d.double();
     n >>= 1n;
   }
   return acc;

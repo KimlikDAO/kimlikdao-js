@@ -14,6 +14,15 @@ describe('Jacobian <> JacobianPoint equivalence', () => {
       G.toAffine(),
       pointToAffine(Point.BASE)
     );
+  })
+});
+
+describe('Double tests', () => {
+  it('should be pointwise equal', () => {
+    assert.deepEqual(
+      G.toAffine(),
+      pointToAffine(Point.BASE)
+    );
     assert.deepEqual(
       G.double().toAffine(),
       pointToAffine(Point.BASE.double())
@@ -22,10 +31,38 @@ describe('Jacobian <> JacobianPoint equivalence', () => {
       G.double().double().toAffine(),
       pointToAffine(Point.BASE.double().double())
     );
+  })
+});
 
-    for (let i = 1n; i < 10000n; ++i) {
-      G.multiply(i).toAffine(),
-      pointToAffine(Point.BASE.multiply(i))
+describe('Add tests', () => {
+  it('should be pointwise equal', () => {
+    assert.deepEqual(
+      G.add(G).toAffine(),
+      pointToAffine(Point.BASE.add(Point.BASE))
+    );
+
+    assert.deepEqual(
+      G.add(G).add(G).toAffine(),
+      pointToAffine(Point.BASE.add(Point.BASE).add(Point.BASE))
+    );
+
+    let acc1 = new Affine(0n, 0n).toJacobian();
+    let acc2 = Point.ZERO;
+    for (let i = 0; i < 10000; ++i) {
+      acc1 = acc1.add(G);
+      acc2 = acc2.add(Point.BASE);
+    }
+    assert.deepEqual(acc1.toAffine(), pointToAffine(acc2));
+  })
+});
+
+describe('Multiply tests', () => {
+  it('should be pointwise equal', () => {
+    for (let i = 100000000n; i < 100000100n; ++i) {
+      assert.deepEqual(
+        G.multiply(i).toAffine(),
+        pointToAffine(Point.BASE.multiply(i))
+      )
     }
   })
 });
