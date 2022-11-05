@@ -4,10 +4,14 @@
  * @author KimlikDAO
  */
 
+/**
+ * @const {!bigint}
+ * @noinline
+ */
+const P = BigInt("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F");
+
 /** @const {!bigint} */
-const P = BigInt("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F")
-/** @const {!bigint} */
-const N = BigInt("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141")
+const N = BigInt("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141");
 
 /**
  * @constructor
@@ -61,6 +65,7 @@ Affine.prototype.toJacobian = function () {
  * over F_P in Jacobian coordinates.
  *
  * @const {!Jacobian}
+ * @noinline
  */
 const G = new Affine(
   BigInt("0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798"),
@@ -68,12 +73,12 @@ const G = new Affine(
 ).toJacobian();
 
 /**
- * Modular inversion over F_p via the Euclidian algorithm.
+ * Modular inversion over F_P via the Euclidian algorithm.
  *
  * Requires that b < P and P is a prime.
  *
  * @param {!bigint} b
- * @return {!bigint}
+ * @return {!bigint} x such that Ax + Py = 1 and 0 < x < P.
  */
 const inverse = (b) => {
   /** @type {!bigint} */
@@ -94,3 +99,8 @@ const inverse = (b) => {
   if (c < 0) c += P;
   return c;
 }
+
+export {
+  inverse,
+  P
+};

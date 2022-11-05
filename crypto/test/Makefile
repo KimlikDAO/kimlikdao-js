@@ -1,5 +1,5 @@
 build/crypto/test/secp256k1.compiled-test.js: crypto/test/secp256k1.compiled-test.js \
-                                              crypto/secp256k1.js util/çevir.js
+                                              crypto/secp256k1.js util/çevir.js testing/assert.js
 	mkdir -p $(dir $@)
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
                              --emit_use_strict \
@@ -14,7 +14,7 @@ build/crypto/test/secp256k1.compiled-test.js: crypto/test/secp256k1.compiled-tes
 	node $@
 
 build/crypto/test/sha3.compiled-test.js: crypto/test/sha3.compiled-test.js crypto/test/sha3_*.js \
-                                         crypto/sha3.js util/çevir.js
+                                         crypto/sha3.js util/çevir.js testing/assert.js
 	mkdir -p $(dir $@)
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
                              --emit_use_strict \

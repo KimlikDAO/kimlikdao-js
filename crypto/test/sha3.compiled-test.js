@@ -1,18 +1,7 @@
+import { assert, assertStats } from '../../testing/assert';
 import { keccak256 } from '../sha3';
 import { keccak256 as keccak256_orig } from './sha3_orig';
 import { keccak256 as keccak256_prev } from './sha3_prev';
-
-let TrueAsserts = 0;
-let FalseAsserts = 0;
-
-const assert = (value) => {
-  if (!value) {
-    console.error("Hata");
-    FalseAsserts += 1;
-  } else
-    TrueAsserts += 1;
-  return value;
-}
 
 assert(
   keccak256("a") ==
@@ -67,8 +56,7 @@ for (let i = 0; i < 1000; ++i) {
   assert(ours == orig)
 }
 
-const color = FalseAsserts == 0 ? "\x1b[42m" : "\x1b[41m";
-console.log(`${color}${TrueAsserts} / ${TrueAsserts + FalseAsserts} assers true\x1b[0m`);
+assertStats();
 
 {
   console.time("1k keccak256_orig");
