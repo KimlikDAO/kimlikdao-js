@@ -106,6 +106,20 @@ Jacobian.prototype.add = function (other) {
 }
 
 /**
+ * @param {!bigint} n
+ * @return {!Jacobian}
+ */
+Jacobian.prototype.multiply = function (n) {
+  let acc = new Jacobian(0n, 0n, 0n);
+  while (n != 0) {
+    if (n & 1n) acc.add(this);
+    acc.double();
+    n >>= 1n;
+  }
+  return acc;
+}
+
+/**
  * @constructor
  * @struct
  * @param {!bigint} x

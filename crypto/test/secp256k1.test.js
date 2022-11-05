@@ -9,7 +9,7 @@ import { Affine, G } from '../secp256k1';
 const pointToAffine = (p) => new Affine(p.x, p.y);
 
 describe('Jacobian <> JacobianPoint equivalence', () => {
-  it('should be pointwise same', () => {
+  it('should be pointwise equal', () => {
     assert.deepEqual(
       G.toAffine(),
       pointToAffine(Point.BASE)
@@ -22,5 +22,10 @@ describe('Jacobian <> JacobianPoint equivalence', () => {
       G.double().double().toAffine(),
       pointToAffine(Point.BASE.double().double())
     );
+
+    for (let i = 1n; i < 10000n; ++i) {
+      G.multiply(i).toAffine(),
+      pointToAffine(Point.BASE.multiply(i))
+    }
   })
 });
