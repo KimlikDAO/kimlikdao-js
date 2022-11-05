@@ -44,6 +44,11 @@ assert(
   "a5b68ade127ab4046c0555468bb3b1553f47ce6df2831b5d17e7ed27501cda51"
 );
 
+assert(
+  keccak256("kelime") ==
+  "ddc6ddf8e4d91bc0e904f0f4774ab750cd5ddd15167cc39146b61cc1de650aa9"
+);
+
 for (let i = 0; i < 1000; ++i) {
   let test = "abracadabra".repeat(i);
   const ours = keccak256(test);
