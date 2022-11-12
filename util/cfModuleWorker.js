@@ -1,5 +1,5 @@
 /**
- * @fileoverview Externs for Cloudflare Workers environment.
+ * @fileoverview Externs for Cloudflare Module Workers environment.
  *
  * @author KimlikDAO
  * @externs
