@@ -109,6 +109,44 @@ function HumanID() { }
 HumanID.prototype.generic;
 
 /**
+ * @interface
+ * @extends {InfoSection}
+ */
+function SoyZinciri() { }
+
+/**
+ * Sağ ebeveynler için `symmetricKey` tutuyoruz.
+ *
+ * @type {string}
+ */
+SoyZinciri.prototype.anneSymmetricKey;
+
+/**
+ * Sağ ebeveynler için `symmetricKey` tutuyoruz.
+ *
+ * @type {string}
+ */
+SoyZinciri.prototype.annePrivateKey;
+
+/**
+ * Sağ ebeveynler için `symmetricKey` tutuyoruz.
+ *
+ * @type {string}
+ */
+SoyZinciri.prototype.babaSymmetricKey;
+
+/**
+ * Sağ ebeveynler için `symmetricKey` tutuyoruz.
+ *
+ * @type {string}
+ */
+SoyZinciri.prototype.babaPrivateKey;
+
+/**
+ * @interface
+ */
+
+/**
  * @typedef {!Object<string, InfoSection>}
  */
 var AçıkTCKT;

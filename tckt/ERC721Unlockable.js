@@ -55,3 +55,16 @@ ERC721Unlockable.prototype.unlockable;
 
 /** @type {Object<string, !Unlockable>} */
 ERC721Unlockable.prototype.unlockables;
+
+/**
+ * @interface
+ * @struct
+ * @extends {Unlockable}
+ */
+function SharedUnlockable() { }
+
+/** @type {boolean} */
+SharedUnlockable.prototype.isShared;
+
+/** @type {string} */
+SharedUnlockable.prototype.sharedCiphertext;
