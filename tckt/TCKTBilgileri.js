@@ -47,6 +47,9 @@ PersonInfo.prototype.cityOfBirth;
 /** @type {string} */
 PersonInfo.prototype.gender;
 
+/** @type {string} */
+PersonInfo.prototype.maritalStatus;
+
 /** @type {Object} */
 PersonInfo.prototype.humanID;
 
