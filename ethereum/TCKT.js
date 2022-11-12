@@ -7,7 +7,7 @@ import evm from './evm';
  * @const {string}
  * @noinline
  */
-export const TCKT_ADDR = "0xcCc0F938A2C94b0fFBa49F257902Be7F56E62cCc";
+export const TCKT_ADDR = "0xcCc0E26339e393e51a3f46fB45d0e6f95ca32cCc";
 
 /**
  * @const {string}
