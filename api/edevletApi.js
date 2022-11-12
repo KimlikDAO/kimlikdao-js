@@ -33,6 +33,7 @@ nvi.TemelBilgileri;
  *   tescil: string,
  *   annead: string,
  *   babaad: string,
+ *   mhali: string
  * }}
  */
 nvi.KutukBilgileri;
