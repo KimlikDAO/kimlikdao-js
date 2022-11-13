@@ -11,10 +11,10 @@ const IPFS_URL = "https://ipfs.kimlikdao.org/";
  * @return {Promise<ArrayBuffer>}
  */
 const hash = (data) => {
-  let encoded = new Uint8Array(8 + 2680 + 3);
+  let encoded = new Uint8Array(8 + data.byteLength + 3);
   encoded.set([10, 128, 21, 8, 2, 18, 248, 20], 0)
   encoded.set(data, 8);
-  encoded.set([24, 248, 20], 8 + 2680);
+  encoded.set([24, 248, 20], 8 + data.byteLength);
   return crypto.subtle.digest('SHA-256', encoded);
 }
 
