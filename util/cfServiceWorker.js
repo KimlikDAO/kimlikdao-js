@@ -6,6 +6,31 @@
  */
 
 /**
+ * @constructor
+ * @extends {Request}
+ */
+function CFWorkersRequest() { }
+
+/** @type {Object} */
+CFWorkersRequest.prototype.cf;
+
+/** @type {?string} */
+CFWorkersRequest.prototype.cf.clientAcceptEncoding
+
+/**
+ * @interface
+ */
+function KeyValue() { }
+
+/**
+ * @nosideeffects
+ * @param {string} key
+ * @param {string} type
+ * @return {Promise<ArrayBuffer>}
+ */
+KeyValue.prototype.get = function (key, type) { };
+
+/**
  * @param {string} eventName
  * @param {function(Object)} listener
  */
