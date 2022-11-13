@@ -11,10 +11,10 @@ const IPFS_URL = "https://ipfs.kimlikdao.org/";
  * @return {Promise<ArrayBuffer>}
  */
 const hash = (data) => {
-  let encoded = new Uint8Array(8 + 1864 + 3);
-  encoded.set([10, 208, 14, 8, 2, 18, 200, 14], 0)
+  let encoded = new Uint8Array(8 + 2680 + 3);
+  encoded.set([10, 128, 21, 8, 2, 18, 248, 20], 0)
   encoded.set(data, 8);
-  encoded.set([24, 200, 14], 8 + 1864);
+  encoded.set([24, 248, 20], 8 + 2680);
   return crypto.subtle.digest('SHA-256', encoded);
 }
 
@@ -49,9 +49,10 @@ const cidBytetanOku = (cidByte) => {
  * @return {Promise<!Uint8Array>} onaylanmış IPFS cidByte.
  */
 const yaz = (veri) => {
+  console.log(veri);
   /** @type {!Uint8Array} */
   const encoded = new TextEncoder().encode(veri);
-  console.log(veri.length);
+  console.log(encoded.length);
   const formData = new FormData()
   formData.set("blob", new Blob([encoded]));
   const gelenSöz = fetch(IPFS_URL + "api/v0/add", {
@@ -70,4 +71,9 @@ const yaz = (veri) => {
     })
 }
 
-export default { CID, yaz, cidBytetanOku };
+export default {
+  CID,
+  cidBytetanOku,
+  hash,
+  yaz,
+};
