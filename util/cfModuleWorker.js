@@ -31,6 +31,14 @@ function KeyValue() { }
 KeyValue.prototype.get = function (key, type) { };
 
 /**
+ * @nosideeffects
+ * @param {string} key
+ * @param {string|ArrayBuffer} value
+ * @return {Promise<*>}
+ */
+KeyValue.prototype.put = function (key, value) { };
+
+/**
  * @interface
  */
 function RequestContext() { }
