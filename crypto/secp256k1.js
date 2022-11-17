@@ -20,6 +20,8 @@ const N = BigInt("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD036
  *
  *   0 <= y < P  and  x = y (mod P).
  *
+ * If positivity is not required, prefer the % operator.
+ *
  * @param {!bigint} x
  * @returns {!bigint} y such that x = y (mod P) and 0 <= y < P.
  */
