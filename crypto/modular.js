@@ -11,20 +11,20 @@ const inverse = (b, P) => {
   /** @type {!bigint} */
   let a = P;
   /** @type {!bigint} */
-  let c = 0n;
+  let x = 0n;
   /** @type {!bigint} */
-  let d = 1n;
+  let y = 1n;
   /** @type {!bigint} */
   let t;
   /** @type {!bigint} */
   let q;
   while (b !== 0n) {
     q = a / b;
-    t = d; d = c - q * d; c = t;
+    t = y; y = x - q * y; x = t;
     t = b; b = a - q * b; a = t;
   }
-  if (c < 0n) c += P;
-  return c;
+  if (x < 0n) x += P;
+  return x;
 }
 
 export { inverse };

@@ -31,10 +31,10 @@ const testInverse = () => {
 
   for (let i = 0; i < 10000; ++i) {
     const x = BigInt(i) + 123123123123n;
-    const x2 = (x * x * x) % P;
+    const x3 = (x * x * x) % P;
     const ix = inverse(x, P);
-    const ix2 = (ix * ix * ix) % P;
-    assert(ix2 == inverse(x2, P));
+    const ix3 = (ix * ix * ix) % P;
+    assert(ix3 == inverse(x3, P));
   }
 }
 
