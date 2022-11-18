@@ -40,12 +40,12 @@ const testInverse = () => {
   for (let x of [3n, 5n, 7n, 11n, P]) {
     assert(inverse(1n, x) == 1n)
     assert(inverse(0n, x) == 0n)
-    assert(inverse(4n, inverse(x-1n, x)) ==  inverse(4n, x-1n))
+    assert(inverse(4n, inverse(x - 1n, x)) == inverse(4n, x - 1n))
   }
 
   assert(inverse(0n, P) == 0n);
   assert(inverse(1n, P) == 1n);
-  assert(inverse(4n, inverse(P-1n, P)) ==  inverse(4n, P-1n))
+  assert(inverse(4n, inverse(P - 1n, P)) == inverse(4n, P - 1n))
 
 }
 
