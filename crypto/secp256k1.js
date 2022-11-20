@@ -1,5 +1,10 @@
 /**
  * @fileoverview KimlikDAO secp256k1 implementation.
+ * The secp256k1 is the curve
+ *
+ *   y^2 = x^3 + 7
+ *
+ * over F_P, where P = 2^256 - 2^32 - 2^9 - 2^8 - 2^7 - 2^6 - 2^4 - 1.
  *
  * @author KimlikDAO
  */
@@ -37,30 +42,34 @@ const modP = (x) => {
  * @param {!bigint} y
  * @param {!bigint} z
  */
-function Jacobian(x, y, z) {
+function Point(x, y, z) {
   this.x = x;
   this.y = y;
   this.z = z;
 }
 
 /**
- * @return {!Affine}
+ * Normalize the Jacobian representation so that z = 1, that is, (x, y) is now
+ * in the affine coordinates.
  */
-Jacobian.prototype.toAffine = function () {
+Point.prototype.normalize = function () {
   /** @const {!bigint} */
   const iz = inverse(this.z, P)
   /** @const {!bigint} */
   const iz2 = (iz * iz) % P;
   /** @const {!bigint} */
   const iz3 = (iz2 * iz) % P;
-  return new Affine((this.x * iz2) % P, (this.y * iz3) % P);
+  this.x = (this.x * iz2) % P;
+  this.y = (this.y * iz3) % P;
+  this.z = 1n;
 }
 
 /**
+ * Multiplies the point by 2, in-place.
+ *
  * @see https://hyperelliptic.org/EFD/g1p/auto-shortw-jacobian-0.html#doubling-dbl-2009-l
- * @return {!Jacobian}
  */
-Jacobian.prototype.double = function () {
+Point.prototype.double = function () {
   const { x, y, z } = this;
   const a = (x * x) % P;
   const b = (y * y) % P;
@@ -70,22 +79,19 @@ Jacobian.prototype.double = function () {
   const e = 3n * a;
   const f = (e * e) % P;
   const X = modP(f - 2n * d);
-  const Y = modP(e * (d - X) - 8n * c);
-  const Z = (2n * y * z) % P;
-  return new Jacobian(X, Y, Z);
+  this.y = modP(e * (d - X) - 8n * c);
+  this.z = (2n * y * z) % P;
+  this.x = X;
 }
 
 /**
- * Adds two points given in the Jacobian coordinates.
+ * Increments the point by `other` Jacobian.
  *
- * @param {!Jacobian} other
- * @return {!Jacobian}
+ * @param {!Point} other
  */
-Jacobian.prototype.add = function (other) {
+Point.prototype.increment = function (other) {
   const { x: x1, y: y1, z: z1 } = this;
   const { x: x2, y: y2, z: z2 } = other;
-  if (x2 === 0n || y2 === 0n) return this;
-  if (x1 === 0n || y1 === 0n) return other;
 
   const z1z1 = (z1 * z1) % P;
   const z2z2 = (z2 * z2) % P;
@@ -97,49 +103,40 @@ Jacobian.prototype.add = function (other) {
   const r = (s2 - s1) % P;
 
   if (h === 0n) {
-    return r === 0n ? this.double() : new Jacobian(0n, 1n, 0n);
+    this.double();
+    return;
   }
-
   const h2 = (h * h) % P;
   const h3 = (h * h2) % P;
   const v = (u1 * h2) % P;
   const X = modP(r * r - h3 - 2n * v);
-  const Y = modP(r * (v - X) - s1 * h3);
-  const Z = modP(z1 * z2 * h);
-  return new Jacobian(X, Y, Z);
+  this.y = modP(r * (v - X) - s1 * h3);
+  this.z = modP(z1 * z2 * h);
+  this.x = X;
 }
 
 /**
- * @param {!bigint} n
- * @return {!Jacobian}
+ * Creates a copy of the `Point`
+ *
+ * @return {!Point}
  */
-Jacobian.prototype.multiply = function (n) {
-  let acc = new Jacobian(0n, 0n, 0n);
-  let d = this;
+Point.prototype.copy = function () {
+  return new Point(this.x, this.y, this.z);
+}
+
+/**
+ * Multiplies the point by the scalar `n` in-place.
+ *
+ * @param {!bigint} n
+ */
+Point.prototype.multiply = function (n) {
+  let d = this.copy();
+  this.x = this.y = this.z = 0;
   while (n > 0n) {
-    if (n & 1n) acc = acc.add(d);
-    d = d.double();
+    if (n & 1n) this.increment(d);
+    this.double();
     n >>= 1n;
   }
-  return acc;
-}
-
-/**
- * @constructor
- * @struct
- * @param {!bigint} x
- * @param {!bigint} y
- */
-function Affine(x, y) {
-  this.x = x;
-  this.y = y;
-}
-
-/**
- * @return {!Jacobian}
- */
-Affine.prototype.toJacobian = function () {
-  return new Jacobian(this.x, this.y, 1n);
 }
 
 /**
@@ -147,20 +144,19 @@ Affine.prototype.toJacobian = function () {
  *
  *   y^2 = x^3 + 7
  *
- * over F_P in Jacobian coordinates.
+ * over F_P.
  *
- * @const {!Jacobian}
+ * @const {!Point}
  * @noinline
  */
-const G = new Jacobian(
+const G = new Point(
   BigInt("0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798"),
   BigInt("0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8"),
   1n
 );
 
 export {
-  Affine,
   G,
-  Jacobian,
   P,
+  Point,
 };

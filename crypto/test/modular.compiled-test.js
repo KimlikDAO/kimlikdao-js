@@ -37,16 +37,17 @@ const testInverse = () => {
     assert(ix3 == inverse(x3, P));
   }
 
-  for (let x of [3n, 5n, 7n, 11n, P]) {
-    assert(inverse(1n, x) == 1n)
-    assert(inverse(0n, x) == 0n)
-    assert(inverse(4n, inverse(x - 1n, x)) == inverse(4n, x - 1n))
+  for (let /** !bigint */ p of [3n, 5n, 7n, 11n, P]) {
+    assert(inverse(1n, p) == 1n)
+    assert(inverse(0n, p) == 0n)
+    assert(inverse(p - 1n, p) == (p - 1n));
+    assert(inverse(4n, inverse(p - 1n, p)) == inverse(4n, p - 1n))
   }
 
   assert(inverse(0n, P) == 0n);
   assert(inverse(1n, P) == 1n);
+  assert(inverse(P - 1n, P) == P - 1n);
   assert(inverse(4n, inverse(P - 1n, P)) == inverse(4n, P - 1n))
-
 }
 
 testInverse();
