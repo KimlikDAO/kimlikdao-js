@@ -131,7 +131,7 @@ Point.prototype.copy = function () {
  */
 Point.prototype.multiply = function (n) {
   let d = this.copy();
-  this.x = this.y = this.z = 0;
+  this.x = this.y = this.z = 0n;
   while (n > 0n) {
     if (n & 1n) this.increment(d);
     this.double();
