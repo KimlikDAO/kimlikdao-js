@@ -17,22 +17,22 @@ Bu repoda iki tür test çeşidi vardır. Bunlar aşağıdaki gibidir:
 
 ### compiled-test'ler nasıl çalıştırılır?
 
-Örnek olarak ```crypto/test/modular.compiled-test.js```'i çalıştırmak için ```make build/crypto/test/modular.compiled-test.js``` komutunu çalıştırmak gerekir. Sorunsuz çalıştırılması durumunda aşağıdaki gibi bir çıktı oluşur:<br>
+Örnek olarak ```crypto/test/modular.compiled-test.js```'i çalıştırmak için ```make build/crypto/test/modular.compiled-test.js``` komutunu çalıştırmak gerekir. Sorunsuz çalıştırılması durumunda aşağıdaki gibi bir çıktı oluşur:\
  ![](img/modular.compiled-test.js_ornek_cikti.png "Örnek modular.compiled-test.js çıktısı")
 
 ### vitest'ler nasıl çalıştırılır?
 
-Vitest'leri çalıştırmak için ```yarn vitest``` komutunu çalıştırmak yeterli olacaktır. Sorunsuz çalıştırılması durumunda aşağıdaki gibi bir çıktı oluşur:<br>
+Vitest'leri çalıştırmak için ```yarn vitest``` komutunu çalıştırmak yeterli olacaktır. Sorunsuz çalıştırılması durumunda aşağıdaki gibi bir çıktı oluşur:\
  ![](img/vitest_ornek_cikti.png "Örnek vitest çıktısı")
  
 # Dizin yapısı
 
-```api```: e-Devlet API tanımları<br>
-```crypto```: Kriptografik fonksiyonlar ve kütüphaneler<br>
-```ethereum```: Ethereum node'ları ile etkileşim araçları<br>
-```tckt```: KimlikDAO'nun TCKT veri tanımları<br>
-```testing```: Test yazma kütüphaneleri<br>
-```util```: Çevirme araçları ve extern tanımları<br>
+```api```: e-Devlet API tanımları\
+```crypto```: Kriptografik fonksiyonlar ve kütüphaneler\
+```ethereum```: Ethereum node'ları ile etkileşim araçları\
+```tckt```: KimlikDAO'nun TCKT veri tanımları\
+```testing```: Test yazma kütüphaneleri\
+```util```: Çevirme araçları ve extern tanımları\
 ```ipfs.js```: Basit IPFS istemcisi
 
 # Yeni modüller
