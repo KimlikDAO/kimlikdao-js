@@ -1,5 +1,6 @@
 /**
  * @fileoverview KimlikDAO secp256k1 implementation.
+ *
  * The secp256k1 is the curve
  *
  *   y^2 = x^3 + 7
@@ -36,6 +37,13 @@ const modP = (x) => {
 }
 
 /**
+ * We work with a lifting of the secp256k1 curve defined as
+ *
+ *   y^2 = x^3 + 7z^6
+ *
+ * over (F_P)^3. The projection onto the z = 1 plane gives the regular
+ * sepck256k1.
+ *
  * @constructor
  * @struct
  * @param {!bigint} x
@@ -43,16 +51,41 @@ const modP = (x) => {
  * @param {!bigint} z
  */
 function Point(x, y, z) {
+  /** @type {!bigint} */
   this.x = x;
+  /** @type {!bigint} */
   this.y = y;
+  /** @type {!bigint} */
   this.z = z;
 }
 
 /**
- * Normalize the Jacobian representation so that z = 1, that is, (x, y) is now
- * in the affine coordinates.
+ * @const {!Point}
+ * @noinline
+ */
+const G = new Point(
+  BigInt("0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798"),
+  BigInt("0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8"),
+  1n
+);
+
+/**
+ * The point at infinity. This point is on
+ *
+ *   y^2 = x^3 + 7z^6
+ *
+ * but has not projection onto the z = 1 plane, as expected.
+ *
+ * @const {!Point}
+ */
+const O = new Point(0n, 0n, 0n);
+
+/**
+ * Project onto the z = 1 plane. This operation is not defined for `O`,
+ * the point at infinity.
  */
 Point.prototype.normalize = function () {
+  if (this.z == 0n) return;
   /** @const {!bigint} */
   const iz = inverse(this.z, P)
   /** @const {!bigint} */
@@ -85,7 +118,7 @@ Point.prototype.double = function () {
 }
 
 /**
- * Increments the point by `other` Jacobian.
+ * Increments the point by `other`.
  *
  * @param {!Point} other
  */
@@ -103,7 +136,12 @@ Point.prototype.increment = function (other) {
   const r = (s2 - s1) % P;
 
   if (h === 0n) {
-    this.double();
+    if (r === 0n) {
+      if (z2 == 0n) { }
+      else if (z1 == 0n) { this.x = x2; this.y = y2; this.z = z2; }
+      else this.double();
+    } else
+      this.x = this.y = this.z = 0n;
     return;
   }
   const h2 = (h * h) % P;
@@ -116,7 +154,7 @@ Point.prototype.increment = function (other) {
 }
 
 /**
- * Creates a copy of the `Point`
+ * Creates a copy of the `Point`.
  *
  * @return {!Point}
  */
@@ -134,29 +172,15 @@ Point.prototype.multiply = function (n) {
   this.x = this.y = this.z = 0n;
   while (n > 0n) {
     if (n & 1n) this.increment(d);
-    this.double();
+    d.double();
     n >>= 1n;
   }
 }
 
-/**
- * Base point for the Koblitz curve
- *
- *   y^2 = x^3 + 7
- *
- * over F_P.
- *
- * @const {!Point}
- * @noinline
- */
-const G = new Point(
-  BigInt("0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798"),
-  BigInt("0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8"),
-  1n
-);
-
 export {
   G,
+  N,
+  O,
   P,
   Point,
 };

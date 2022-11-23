@@ -14,8 +14,7 @@ build/crypto/test/secp256k1.compiled-test.js: crypto/test/secp256k1.compiled-tes
 	node $@
 
 build/crypto/test/modular.compiled-test.js: crypto/test/modular.compiled-test.js \
-                                            crypto/modular.js util/çevir.js testing/assert.js \
-                                            crypto/secp256k1.js
+                                            crypto/modular.js util/çevir.js testing/assert.js
 	mkdir -p $(dir $@)
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
                              --emit_use_strict \
