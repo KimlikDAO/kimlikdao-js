@@ -10,6 +10,15 @@ const assert = (value) => {
   return value;
 }
 
+const assertEq = (value, expected) => {
+  if (value != expected) {
+    console.error(`Hata: beklenen ${expected}`);
+    console.error(`       verilen ${value}`);
+    FalseAsserts += 1;
+  } else
+    TrueAsserts += 1;
+}
+
 const assertStats = () => {
   const color = FalseAsserts == 0 ? "\x1b[42m" : "\x1b[41m";
   console.log(`${color}${TrueAsserts} / ${TrueAsserts + FalseAsserts} assers true\x1b[0m`);
@@ -17,5 +26,6 @@ const assertStats = () => {
 
 export {
   assert,
+  assertEq,
   assertStats,
 };
