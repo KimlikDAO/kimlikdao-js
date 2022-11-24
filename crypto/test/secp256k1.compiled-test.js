@@ -1,11 +1,5 @@
 import { assert, assertStats } from "../../testing/assert";
-import { G, N, O } from "../secp256k1";
-
-const equal = (p, q) => {
-  q.normalize();
-  p.normalize();
-  return p.x == q.x && p.y == q.y;
-}
+import { equal, G, N, O } from "../secp256k1";
 
 const testCopy = () => {
   const P = G.copy();

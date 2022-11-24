@@ -10,7 +10,7 @@
  * @author KimlikDAO
  */
 
-import { inverse } from "./modular"
+import { inverse } from "./modular";
 
 /**
  * @const {!bigint}
@@ -186,7 +186,14 @@ Point.prototype.multiply = function (n) {
   return this;
 }
 
+const equal = (p, q) => {
+  q.normalize();
+  p.normalize();
+  return p.x == q.x && p.y == q.y;
+}
+
 export {
+  equal,
   G,
   N,
   O,

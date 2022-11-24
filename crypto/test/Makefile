@@ -3,7 +3,20 @@ build/crypto/test/secp256k1.compiled-test.js: crypto/test/secp256k1.compiled-tes
 	mkdir -p $(dir $@)
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
                              --emit_use_strict \
-                             --language_in UNSTABLE \
+                             --module_resolution NODE \
+                             --assume_function_wrapper \
+                             --dependency_mode PRUNE \
+                             --entry_point $< \
+                             --js $^ \
+                             --js_output_file $@
+	yarn uglifyjs $@ -m -o $@
+	node $@
+
+build/crypto/test/secp256k1.bench.js: crypto/test/secp256k1.bench.js \
+                                      crypto/secp256k1.js testing/assert.js crypto/modular.js
+	mkdir -p $(dir $@)
+	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
+                             --emit_use_strict \
                              --module_resolution NODE \
                              --assume_function_wrapper \
                              --dependency_mode PRUNE \
@@ -18,7 +31,6 @@ build/crypto/test/modular.compiled-test.js: crypto/test/modular.compiled-test.js
 	mkdir -p $(dir $@)
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
                              --emit_use_strict \
-                             --language_in UNSTABLE \
                              --module_resolution NODE \
                              --assume_function_wrapper \
                              --dependency_mode PRUNE \
@@ -41,6 +53,10 @@ build/crypto/test/sha3.compiled-test.js: crypto/test/sha3.compiled-test.js crypt
                              --js_output_file $@
 	yarn uglifyjs $@ -m -o $@
 	node $@
+
+.PHONY: crypto/secp256k1
+crypto/secp256k1: build/crypto/test/secp256k1.bench.js \
+                  build/crypto/test/secp256k1.compiled-test.js
 
 .PHONY: crypto.test
 crypto.test: $(addprefix build/, $(wildcard crypto/test/*.compiled-test.js))
