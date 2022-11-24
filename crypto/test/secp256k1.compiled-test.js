@@ -102,6 +102,17 @@ const testDouble = () => {
   assert(equal(P, Q));
 }
 
+const testMultiply = () => {
+  for (let i = 0; i < 5000; ++i) {
+    const k = BigInt(i) + 8098234098230498234n;
+    const P = G.copy().multiply(k);
+    const Q = G.copy().multiply(N - k);
+    P.increment(Q);
+
+    assert(equal(P, O));
+  }
+}
+
 testCopy();
 testIdentityElement();
 testIdentityElementFuzz();
@@ -109,4 +120,5 @@ testNormalize();
 testGroupOrder();
 test2GEquivalence();
 testDouble();
+testMultiply();
 assertStats();

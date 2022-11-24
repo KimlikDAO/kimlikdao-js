@@ -81,8 +81,7 @@ const G = new Point(
 const O = new Point(0n, 0n, 0n);
 
 /**
- * Project onto the z = 1 plane. This operation is not defined for `O`,
- * the point at infinity.
+ * Project onto the z = 1 plane. Leaves `O`, the point at infinity intact.
  */
 Point.prototype.normalize = function () {
   if (this.z == 0n) return;
@@ -175,6 +174,7 @@ Point.prototype.multiply = function (n) {
     d.double();
     n >>= 1n;
   }
+  return this;
 }
 
 export {
