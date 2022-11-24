@@ -82,24 +82,29 @@ const O = new Point(0n, 0n, 0n);
 
 /**
  * Project onto the z = 1 plane. Leaves `O`, the point at infinity intact.
+ *
+ * @return {!Point}
  */
 Point.prototype.normalize = function () {
-  if (this.z == 0n) return;
-  /** @const {!bigint} */
-  const iz = inverse(this.z, P)
-  /** @const {!bigint} */
-  const iz2 = (iz * iz) % P;
-  /** @const {!bigint} */
-  const iz3 = (iz2 * iz) % P;
-  this.x = (this.x * iz2) % P;
-  this.y = (this.y * iz3) % P;
-  this.z = 1n;
+  if (this.z != 0n) {
+    /** @const {!bigint} */
+    const iz = inverse(this.z, P)
+    /** @const {!bigint} */
+    const iz2 = (iz * iz) % P;
+    /** @const {!bigint} */
+    const iz3 = (iz2 * iz) % P;
+    this.x = (this.x * iz2) % P;
+    this.y = (this.y * iz3) % P;
+    this.z = 1n;
+  }
+  return this;
 }
 
 /**
  * Multiplies the point by 2, in-place.
  *
  * @see https://hyperelliptic.org/EFD/g1p/auto-shortw-jacobian-0.html#doubling-dbl-2009-l
+ * @return {!Point}
  */
 Point.prototype.double = function () {
   const { x, y, z } = this;
@@ -114,12 +119,14 @@ Point.prototype.double = function () {
   this.y = modP(e * (d - X) - 8n * c);
   this.z = (2n * y * z) % P;
   this.x = X;
+  return this;
 }
 
 /**
  * Increments the point by `other`.
  *
  * @param {!Point} other
+ * @return {!Point}
  */
 Point.prototype.increment = function (other) {
   const { x: x1, y: y1, z: z1 } = this;
@@ -141,7 +148,7 @@ Point.prototype.increment = function (other) {
       else this.double();
     } else
       this.x = this.y = this.z = 0n;
-    return;
+    return this;
   }
   const h2 = (h * h) % P;
   const h3 = (h * h2) % P;
@@ -150,6 +157,7 @@ Point.prototype.increment = function (other) {
   this.y = modP(r * (v - X) - s1 * h3);
   this.z = modP(z1 * z2 * h);
   this.x = X;
+  return this;
 }
 
 /**
@@ -165,6 +173,7 @@ Point.prototype.copy = function () {
  * Multiplies the point by the scalar `n` in-place.
  *
  * @param {!bigint} n
+ * @return {!Point}
  */
 Point.prototype.multiply = function (n) {
   let d = this.copy();

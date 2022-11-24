@@ -1,40 +1,40 @@
-import { assert, assertStats } from '../../testing/assert';
+import { assertEq, assertStats } from '../../testing/assert';
 import { keccak256 } from '../sha3';
 import { keccak256 as keccak256_orig } from './sha3_orig';
 import { keccak256 as keccak256_prev } from './sha3_prev';
 
-assert(
-  keccak256("a") ==
+assertEq(
+  keccak256("a"),
   "3ac225168df54212a25c1c01fd35bebfea408fdac2e31ddd6f80a4bbf9a5f1cb"
 );
 
-assert(
-  keccak256("KimlikDAO") ==
+assertEq(
+  keccak256("KimlikDAO"),
   "27f13dbab0f15a910e07f535a5e00d7fa9aeecc05edf81fc9191b482f5b8f07b"
 );
 
-assert(
-  keccak256("Deneme") ==
+assertEq(
+  keccak256("Deneme"),
   "62592aae22a4f32153836d2a5dccaf6995695fc0a15301b8b306d46aeb316f32"
 );
 
-assert(
-  keccak256("") ==
+assertEq(
+  keccak256(""),
   "c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470"
 );
 
-assert(
-  keccak256("3ac225168df54212a25c1c01fd35bebfea408fdac2e31ddd6f80a4bbf9a5f1cb".repeat(10)) ==
+assertEq(
+  keccak256("3ac225168df54212a25c1c01fd35bebfea408fdac2e31ddd6f80a4bbf9a5f1cb".repeat(10)),
   "1d22484fbe32dff99e456dbca27b22db2c4c7d006cbc1addc58e08903aee785b"
 );
 
-assert(
-  keccak256("KimlikDAO".repeat(64)) ==
+assertEq(
+  keccak256("KimlikDAO".repeat(64)),
   "a5b68ade127ab4046c0555468bb3b1553f47ce6df2831b5d17e7ed27501cda51"
 );
 
-assert(
-  keccak256("kelime") ==
+assertEq(
+  keccak256("kelime"),
   "ddc6ddf8e4d91bc0e904f0f4774ab750cd5ddd15167cc39146b61cc1de650aa9"
 );
 
@@ -43,8 +43,8 @@ for (let i = 0; i < 1000; ++i) {
   const ours = keccak256(test);
   const prev = keccak256_prev(test);
   const orig = keccak256_orig(test);
-  assert(ours == prev);
-  assert(ours == orig)
+  assertEq(ours, prev);
+  assertEq(ours, orig)
 }
 
 for (let i = 0; i < 1000; ++i) {
@@ -52,8 +52,8 @@ for (let i = 0; i < 1000; ++i) {
   const ours = keccak256(test);
   const prev = keccak256_prev(test);
   const orig = keccak256_orig(test);
-  assert(ours == prev);
-  assert(ours == orig)
+  assertEq(ours, prev);
+  assertEq(ours, orig)
 }
 
 assertStats();

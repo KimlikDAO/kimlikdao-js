@@ -15,70 +15,53 @@ const testCopy = () => {
 }
 
 const testIdentityElement = () => {
-  const P = G.copy();
-  P.increment(O);
+  const P = G.copy().increment(O);
   assert(equal(P, G));
 
-  const Q = O.copy();
-  Q.increment(G);
+  const Q = O.copy().increment(G);
   assert(equal(Q, G));
 
-  const R = O.copy();
-  R.increment(O);
+  const R = O.copy().increment(O);
   assert(equal(R, O));
 
-  const S = O.copy();
-  S.double();
+  const S = O.copy().double();
   assert(equal(S, O));
 
-  const T = O.copy();
-  T.multiply(5n);
+  const T = O.copy().multiply(5n);
   assert(equal(T, O));
 
-  const U = O.copy();
-  U.multiply(0n);
+  const U = O.copy().multiply(0n);
   assert(equal(U, O));
 
-  const V = G.copy();
-  V.multiply(0n);
+  const V = G.copy().multiply(0n);
   assert(equal(V, O));
 }
 
 const testIdentityElementFuzz = () => {
   for (let i = 0; i < 1000; ++i) {
-    const iG = G.copy();
-    iG.multiply(BigInt(i) + 1231283129313123123n);
-    const iGG = iG.copy();
-    iG.increment(O);
+    const iG = G.copy().multiply(BigInt(i) + 1231283129313123123n);
+    const iGG = iG.copy().increment(O);
     assert(equal(iG, iGG));
   }
 }
 
 const testNormalize = () => {
-  const OO = O.copy();
-  OO.normalize();
+  const OO = O.copy().normalize();
   assert(equal(OO, O));
 
-  const GG = G.copy();
-  GG.normalize();
+  const GG = G.copy().normalize();
   assert(equal(GG, G));
 }
 
 const testGroupOrder = () => {
-  let nG = G.copy();
-  nG.multiply(N);
+  let nG = G.copy().multiply(N);
   assert(equal(nG, O));
 }
 
 const test2GEquivalence = () => {
-  let G1 = G.copy();
-  G1.double();
-
-  let G2 = G.copy();
-  G2.multiply(2n);
-
-  let G3 = G.copy();
-  G3.increment(G3);
+  let G1 = G.copy().double();
+  let G2 = G.copy().multiply(2n);
+  let G3 = G.copy().increment(G);
 
   assert(equal(G1, G2));
   assert(equal(G2, G3));
@@ -86,13 +69,8 @@ const test2GEquivalence = () => {
 }
 
 const testDouble = () => {
-  let P = G.copy();
-  P.double();
-  P.double();
-  P.double();
-
-  let Q = G.copy();
-  Q.multiply(8n);
+  let P = G.copy().double().double().double();
+  let Q = G.copy().multiply(8n);
 
   assert(equal(P, Q));
 
