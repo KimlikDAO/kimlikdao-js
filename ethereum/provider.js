@@ -63,7 +63,7 @@ Transaction.prototype.chainId;
 
 /**
  * The struct that is passed to the wallet to add an asset.
- * Currently most wallet support only ERC20 assets.
+ * Currently most wallets support only ERC20 assets.
  *
  * @interface
  * @struct
@@ -104,7 +104,7 @@ GetLogsParams.prototype.address;
 GetLogsParams.prototype.topics;
 
 /**
- * An encrypted data blob. Can we unencrypted with an `eth_decrypt` provider
+ * An encrypted data blob. Can be unencrypted with an `eth_decrypt` provider
  * call.
  *
  * @record

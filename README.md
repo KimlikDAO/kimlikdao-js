@@ -12,8 +12,8 @@ komutları ile repoyu yerel geliştirme ortamına klonladıktan sonra reponun ç
 # Testleri
 
 Bu repoda iki tür test çeşidi vardır. Bunlar aşağıdaki gibidir:
-* ```compiled-test```: Makefile üzerinden GCC (Google Closure Compiler) kullanarak çalıştırılan testlerdir. 
-* ```vitest```: Vite tarafından geliştirilen Vitest framework'ü kullanılarak yazılan testlerdir.
+* ```compiled-test```: Makefile üzerinden GCC (Google Closure Compiler) ile derlenip node veya tarayıcı ortamında çalıştırılan testler.
+* ```vitest```: Vitest framework'ü kullanılarak node ortamında çalıştırılan tester.
 
 ### compiled-test'ler nasıl çalıştırılır?
 
@@ -45,4 +45,4 @@ Vitest'leri çalıştırmak için ```yarn vitest``` komutunu çalıştırmak yet
 
 # Yeni modüller
 
-Yeni bir modül eklenmesi durumunda eğer modül [#Dizin yapısı](#Dizin-yapısı) kısmında bahsedilen dizin içeriklerden birisine uygun ise o dizinin içine koyulabilir; değil ise, yeni bir dizin oluşturulmalı ve modül yeni dizine eklenmelidir. Yeni oluşturulan dizinde, yazılacak testler için ```test``` klasörü oluşturulmalıdır.
+Yeni bir modül eklenmesi durumunda eğer modül [dizin yapısı](#Dizin-yapısı) kısmında bahsedilen dizin içeriklerden birisine uygun ise o dizinin içine koyulabilir; değil ise, yeni bir dizin oluşturulmalı ve modül yeni dizine eklenmelidir. Yeni oluşturulan dizinde, yazılacak testler için ```test``` klasörü oluşturulmalıdır.

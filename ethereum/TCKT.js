@@ -111,7 +111,7 @@ const sendTransaction = (address, value, calldata) =>
  * @param {string} calldata Calldata transmitted to the contract verbatim.
  */
 const callMethod = (contract, calldata) => ethereum.request(
-   /** @type {RequestParams} */({
+  /** @type {RequestParams} */({
     method: "eth_call",
     params: [/** @type {Transaction} */({
       to: contract,
@@ -398,6 +398,10 @@ const getPermitFor = (chainId, owner, token, withRevokers) =>
 const isTokenAvailable = (chainId, token) =>
   TokenData[chainId][token][0] !== "";
 
+/**
+ * @param {string} chainId
+ * @param {number} token internal token id; see `TokenData`.
+ */
 const isTokenERC20Permit = (chainId, token) =>
   TokenData[chainId][token].length > 3 && TokenData[chainId][token][3]
 
