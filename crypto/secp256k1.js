@@ -10,6 +10,7 @@
  * @author KimlikDAO
  */
 
+import { hex } from "../util/çevir";
 import { inverse } from "./modular";
 
 /**
@@ -85,7 +86,7 @@ const O = new Point(0n, 0n, 0n);
  *
  * @return {!Point}
  */
-Point.prototype.normalize = function () {
+Point.prototype.project = function () {
   if (this.z != 0n) {
     /** @const {!bigint} */
     const iz = inverse(this.z, P)
@@ -187,9 +188,40 @@ Point.prototype.multiply = function (n) {
 }
 
 const equal = (p, q) => {
-  q.normalize();
-  p.normalize();
+  q.project();
+  p.project();
   return p.x == q.x && p.y == q.y;
+}
+
+/**
+ * @param {!bigint} digest as bigint
+ * @param {!bigint} privKey as bigint
+ * @return {string} string of length 128 in the EIP-2098 compact format.
+ * @see https://eips.ethereum.org/EIPS/eip-2098
+ */
+const sign = (digest, privKey) => {
+  for (; ;) {
+    /** @const {!bigint} */
+    const k = BigInt("0x" + hex(crypto.getRandomValues(new Uint8Array(32))));
+    if (k <= 0 || N <= k) continue; // probability ~2^{-128}, i.e., a near impossibility.
+    /** @const {!Point} */
+    const K = G.copy().multiply(k);
+    /** @const {!bigint} */
+    const r = K.x;
+    if (r >= N) continue; // probability ~2^{-128}, i.e., a near impossibility.
+    /** @const {!bigint} */
+    const ik = inverse(k, N);
+    let s = (ik * ((digest + r * privKey) % N)) % N;
+    if (s == 0n) continue; // probability ~2^{-256}
+    /** @type {boolean} */
+    let yParity = (K.y & 1n) == 1n;
+    if (2n * s >= N) {
+      s = N - s;
+      yParity = !yParity;
+    }
+    if (yParity) s += 1n << 255n;
+    return r.toString(16).padStart(64, "0") + s.toString(16).padStart(64, "0");
+  }
 }
 
 export {
@@ -199,4 +231,5 @@ export {
   O,
   P,
   Point,
+  sign,
 };

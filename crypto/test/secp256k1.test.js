@@ -21,24 +21,20 @@ describe('Jacobian <> JacobianPoint equivalence', () => {
 
 describe('Double tests', () => {
   it('should be pointwise equal', () => {
-    const nG = G.copy();
-    nG.double();
-    nG.normalize();
+    const nG = G.copy().double().project();
 
     assert.deepEqual(
       nG,
       derogate(NoblePoint.BASE.double())
     );
 
-    nG.double();
-    nG.normalize();
+    nG.double().project();
     assert.deepEqual(
       nG,
       derogate(NoblePoint.BASE.double().double())
     );
 
-    nG.double();
-    nG.normalize();
+    nG.double().project();
     assert.deepEqual(
       nG,
       derogate(NoblePoint.BASE.double().double().double())
@@ -48,16 +44,13 @@ describe('Double tests', () => {
 
 describe('Add tests', () => {
   it('should be pointwise equal', () => {
-    const nG = G.copy();
-    nG.increment(G);
-    nG.normalize();
+    const nG = G.copy().increment(G).project();
     assert.deepEqual(
       nG,
       derogate(NoblePoint.BASE.add(NoblePoint.BASE))
     );
 
-    nG.increment(G);
-    nG.normalize();
+    nG.increment(G).project();
     assert.deepEqual(
       nG,
       derogate(NoblePoint.BASE.add(NoblePoint.BASE).add(NoblePoint.BASE))

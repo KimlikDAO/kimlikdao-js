@@ -40,10 +40,10 @@ const testIdentityElementFuzz = () => {
 }
 
 const testNormalize = () => {
-  const OO = O.copy().normalize();
+  const OO = O.copy().project();
   assert(equal(OO, O));
 
-  const GG = G.copy().normalize();
+  const GG = G.copy().project();
   assert(equal(GG, G));
 }
 
