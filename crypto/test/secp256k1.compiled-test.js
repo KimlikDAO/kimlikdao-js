@@ -75,7 +75,7 @@ const testDouble = () => {
 }
 
 const testMultiply = () => {
-  for (let i = 0; i < 5000; ++i) {
+  for (let i = 0; i < 500; ++i) {
     const k = BigInt(i) + 8098234098230498234n;
     const P = G.copy().multiply(k);
     const Q = G.copy().multiply(N - k);

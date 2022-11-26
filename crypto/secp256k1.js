@@ -202,20 +202,19 @@ const equal = (p, q) => {
 const sign = (digest, privKey) => {
   for (; ;) {
     /** @const {!bigint} */
-    const k = BigInt("0x" + hex(crypto.getRandomValues(new Uint8Array(32))));
+    const k = BigInt("0x" + hex(/** @type {!Uint8Array} */(crypto.getRandomValues(new Uint8Array(32)))));
     if (k <= 0 || N <= k) continue; // probability ~2^{-128}, i.e., a near impossibility.
     /** @const {!Point} */
-    const K = G.copy().multiply(k);
+    const K = G.copy().multiply(k).project();
     /** @const {!bigint} */
     const r = K.x;
     if (r >= N) continue; // probability ~2^{-128}, i.e., a near impossibility.
-    /** @const {!bigint} */
-    const ik = inverse(k, N);
-    let s = (ik * ((digest + r * privKey) % N)) % N;
+    /** @type {!bigint} */
+    let s = (inverse(k, N) * ((digest + r * privKey) % N)) % N;
     if (s == 0n) continue; // probability ~2^{-256}
     /** @type {boolean} */
-    let yParity = (K.y & 1n) == 1n;
-    if (2n * s >= N) {
+    let yParity = !!(K.y & 1n);
+    if (s > (N >> 1n)) {
       s = N - s;
       yParity = !yParity;
     }

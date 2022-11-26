@@ -99,7 +99,10 @@ const compactSignature = (signature) => {
  */
 const address = (addr) => "0".repeat(24) + addr.slice(2).toLowerCase();
 
-/** @type {function(number):string} */
+/**
+ * @param {number|!bigint} sayı
+ * @return {string}
+ */
 const uint256 = (sayı) => sayı.toString(16).padStart(64, "0");
 
 /** @type {function(number):string} */
