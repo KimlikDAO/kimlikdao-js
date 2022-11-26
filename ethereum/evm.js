@@ -78,6 +78,22 @@ const adresGeçerli = (adres) => {
 }
 
 /**
+ * @param {string} signature
+ * @return {string} compactSignature
+ */
+const compactSignature = (signature) => {
+  /** @const {boolean} */
+  const highBit = signature.slice(-2) == "1c";
+  signature = signature.slice(2, -2);
+  if (highBit) {
+    /** @const {string} */
+    const t = (parseInt(signature[64], 16) + 8).toString(16);
+    signature = signature.slice(0, 64) + t + signature.slice(65, 128);
+  }
+  return signature;
+}
+
+/**
  * @param {string} addr EVM adresi; 0x ile başlayabilir.
  * @return {string} calldata için hazırlanmış adres.
  */
@@ -102,6 +118,7 @@ export default {
   address,
   adresDüzelt,
   adresGeçerli,
+  compactSignature,
   uint160,
   uint256,
   Uint256Max,

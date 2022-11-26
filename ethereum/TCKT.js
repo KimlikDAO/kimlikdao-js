@@ -377,17 +377,9 @@ const getPermitFor = (chainId, owner, token, withRevokers) =>
       return ethereum.request(/** @type {RequestParams} */({
         method: "eth_signTypedData_v4",
         params: [owner, typedSignData]
-      })).then((signature) => {
-        /** @const {boolean} */
-        const highBit = signature.slice(-2) == "1c";
-        signature = signature.slice(2, -2);
-        if (highBit) {
-          /** @const {string} */
-          const t = (parseInt(signature[64], 16) + 8).toString(16);
-          signature = signature.slice(0, 64) + t + signature.slice(65, 128);
-        }
-        return deadline + tokenData[0].toLowerCase() + signature;
-      });
+      })).then((signature) =>
+        deadline + tokenData[0].toLowerCase() + evm.compactSignature(signature)
+      );
     });
 
 /**
