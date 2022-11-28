@@ -11,8 +11,8 @@
   },
   "devDependencies": {
     "@noble/secp256k1": "^1.7.0",
-    "google-closure-compiler": "^20220803.0.0",
-    "uglify-js": "^3.17.0",
-    "vitest": "^0.18.1"
+    "google-closure-compiler": "^20221102.0.1",
+    "uglify-js": "^3.17.4",
+    "vitest": "^0.25.3"
   }
 }

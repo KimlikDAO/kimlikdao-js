@@ -187,6 +187,11 @@ Point.prototype.multiply = function (n) {
   return this;
 }
 
+/**
+ * @param {!Point} p
+ * @param {!Point} q
+ * @return {boolean}
+ */
 const equal = (p, q) => {
   q.project();
   p.project();
@@ -194,10 +199,13 @@ const equal = (p, q) => {
 }
 
 /**
- * @param {!bigint} digest as bigint
- * @param {!bigint} privKey as bigint
- * @return {string} string of length 128 in the EIP-2098 compact format.
- * @see https://eips.ethereum.org/EIPS/eip-2098
+ * @param {!bigint} digest
+ * @param {!bigint} privKey
+ * @return {{
+ *   r: !bigint,
+ *   s: !bigint,
+ *   yParity: boolean
+ * }}
  */
 const sign = (digest, privKey) => {
   for (; ;) {
@@ -218,8 +226,7 @@ const sign = (digest, privKey) => {
       s = N - s;
       yParity = !yParity;
     }
-    if (yParity) s += 1n << 255n;
-    return r.toString(16).padStart(64, "0") + s.toString(16).padStart(64, "0");
+    return { r, s, yParity }
   }
 }
 

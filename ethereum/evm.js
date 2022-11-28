@@ -78,14 +78,16 @@ const adresGeçerli = (adres) => {
 }
 
 /**
+ * @see https://eips.ethereum.org/EIPS/eip-2098
+ *
  * @param {string} signature
- * @return {string} compactSignature
+ * @return {string} compactSignature as a string of length 128 (64 bytes).
  */
 const compactSignature = (signature) => {
   /** @const {boolean} */
-  const highBit = signature.slice(-2) == "1c";
+  const yParity = signature.slice(-2) == "1c";
   signature = signature.slice(2, -2);
-  if (highBit) {
+  if (yParity) {
     /** @const {string} */
     const t = (parseInt(signature[64], 16) + 8).toString(16);
     signature = signature.slice(0, 64) + t + signature.slice(65, 128);

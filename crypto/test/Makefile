@@ -26,7 +26,7 @@ build/crypto/test/secp256k1.bench.js: crypto/test/secp256k1.bench.js crypto/secp
                              --entry_point $< \
                              --js $^ \
                              --js_output_file $@
-	yarn uglifyjs $@ testing/nodeHeader.js -m -o $@
+	yarn uglifyjs testing/nodeHeader.js $@ -m -o $@
 	node $@
 
 build/crypto/test/integration.compiled-test.js: crypto/test/integration.compiled-test.js \
@@ -43,7 +43,7 @@ build/crypto/test/integration.compiled-test.js: crypto/test/integration.compiled
                              --entry_point $< \
                              --js $^ \
                              --js_output_file $@
-	yarn uglifyjs $@ testing/nodeHeader.js -m -o $@
+	yarn uglifyjs testing/nodeHeader.js $@ -m -o $@
 	node $@
 
 build/crypto/test/modular.compiled-test.js: crypto/test/modular.compiled-test.js \
