@@ -1,6 +1,6 @@
 build/crypto/test/secp256k1.compiled-test.js: crypto/test/secp256k1.compiled-test.js crypto/secp256k1.js \
                                               crypto/modular.js \
-                                              testing/assert.js \
+                                              testing/assert.js testing/nodeHeader.js \
                                               util/çevir.js
 	mkdir -p $(dir $@)
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
@@ -11,7 +11,7 @@ build/crypto/test/secp256k1.compiled-test.js: crypto/test/secp256k1.compiled-tes
                              --entry_point $< \
                              --js $^ \
                              --js_output_file $@
-	yarn uglifyjs $@ -m -o $@
+	yarn uglifyjs testing/nodeHeader.js $@ -m -o $@
 	node $@
 
 build/crypto/test/secp256k1.bench.js: crypto/test/secp256k1.bench.js crypto/secp256k1.js \

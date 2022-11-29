@@ -11,9 +11,7 @@ const vm = {};
  */
 vm.addr = (privKey) => {
   const Q = G.copy().multiply(privKey).project();
-  const buff = new Uint8Array(64);
-  buff.set(hexten(evm.uint256(Q.x)), 0);
-  buff.set(hexten(evm.uint256(Q.y)), 32);
+  const buff = hexten(evm.uint256(Q.x) + evm.uint256(Q.y));
   return "0x" + keccak256Uint32(new Uint32Array(buff.buffer)).slice(24);
 }
 

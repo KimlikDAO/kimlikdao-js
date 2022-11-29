@@ -89,7 +89,7 @@ const O = new Point(0n, 0n, 0n);
 Point.prototype.project = function () {
   if (this.z != 0n) {
     /** @const {!bigint} */
-    const iz = inverse(this.z, P)
+    const iz = inverse(this.z, P);
     /** @const {!bigint} */
     const iz2 = (iz * iz) % P;
     /** @const {!bigint} */
@@ -149,15 +149,15 @@ Point.prototype.increment = function (other) {
       else this.double();
     } else
       this.x = this.y = this.z = 0n;
-    return this;
+  } else {
+    const h2 = (h * h) % P;
+    const h3 = (h * h2) % P;
+    const v = (u1 * h2) % P;
+    const X = modP(r * r - h3 - 2n * v);
+    this.y = modP(r * (v - X) - s1 * h3);
+    this.z = modP(z1 * z2 * h);
+    this.x = X;
   }
-  const h2 = (h * h) % P;
-  const h3 = (h * h2) % P;
-  const v = (u1 * h2) % P;
-  const X = modP(r * r - h3 - 2n * v);
-  this.y = modP(r * (v - X) - s1 * h3);
-  this.z = modP(z1 * z2 * h);
-  this.x = X;
   return this;
 }
 
@@ -230,6 +230,30 @@ const sign = (digest, privKey) => {
   }
 }
 
+/**
+ * @param {!bigint} digest
+ * @param {!bigint} r
+ * @param {!bigint} s
+ * @param {!Point} pubKey
+ * @return {boolean}
+ */
+const verify = (digest, r, s, pubKey) => {
+  if (r <= 0n || N <= r) return false;
+  if (s <= 0n || N <= s) return false;
+  /** @const {!bigint} */
+  const is = inverse(s, N);
+  /** @type {!Point} */
+  const U1 = G.copy().multiply((digest * is) % N);
+  /** @const {!Point} */
+  const U2 = pubKey.copy().multiply((r * is) % N);
+  U1.increment(U2);
+  const z2 = (U1.z * U1.z) % P;
+  if (!z2) return false;
+  if ((r * z2) % P === U1.x) return true;
+  r += N;
+  return (r < P) && (r * z2) % P === U1.x;
+}
+
 export {
   equal,
   G,
@@ -238,4 +262,5 @@ export {
   P,
   Point,
   sign,
+  verify,
 };

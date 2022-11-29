@@ -1,5 +1,5 @@
 import { assert, assertStats } from "../../testing/assert";
-import { equal, G, N, O } from "../secp256k1";
+import { equal, G, N, O, sign, verify } from "../secp256k1";
 
 const testCopy = () => {
   const P = G.copy();
@@ -85,6 +85,30 @@ const testMultiply = () => {
   }
 }
 
+const testSignVerify = () => {
+  for (let z = 1n; z < 100n; ++z) {
+    const { r, s } = sign(z, 10n);
+    assert(verify(z, r, s, G.copy().multiply(10n)));
+  }
+  for (let z = 1n; z < 100n; ++z) {
+    const { r, s } = sign(z, 11n);
+    assert(!verify(z, r, s, G.copy().multiply(10n)));
+  }
+  for (let pk = 1n; pk < 100n; ++pk) {
+    const { r, s } = sign(101n, pk);
+    assert(verify(101n, r, s, G.copy().multiply(pk)));
+  }
+  for (let pk = 1n; pk < 100n; ++pk) {
+    const { r, s } = sign(101n, pk);
+    assert(!verify(101n, r, s, G.copy().multiply(pk + 1n)));
+  }
+  for (let i = 1n; i < 100n; ++i) {
+    const pk = i + 12938719237810238978787234n;
+    const { r, s } = sign(808n, pk);
+    assert(verify(808n, r, s, G.copy().multiply(pk)));
+  }
+}
+
 testCopy();
 testIdentityElement();
 testIdentityElementFuzz();
@@ -93,4 +117,5 @@ testGroupOrder();
 test2GEquivalence();
 testDouble();
 testMultiply();
+testSignVerify();
 assertStats();
