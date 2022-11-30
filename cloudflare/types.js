@@ -1,26 +1,31 @@
 /**
- * @fileoverview Externs for Cloudflare Servie Workers environment.
+ * @fileoverview CloudFlare workers environment types and definitions.
  *
  * @author KimlikDAO
  * @externs
  */
 
 /**
+ * @const
+ */
+const cloudflare = {};
+
+/**
  * @constructor
  * @extends {Request}
  */
-function CFWorkersRequest() { }
+cloudflare.Request = function () { }
 
 /** @type {Object} */
-CFWorkersRequest.prototype.cf;
+cloudflare.Request.prototype.cf;
 
 /** @type {?string} */
-CFWorkersRequest.prototype.cf.clientAcceptEncoding
+cloudflare.Request.prototype.cf.clientAcceptEncoding
 
 /**
  * @interface
  */
-function KeyValue() { }
+cloudflare.KeyValue = function () { }
 
 /**
  * @nosideeffects
@@ -28,7 +33,7 @@ function KeyValue() { }
  * @param {string} type
  * @return {Promise<ArrayBuffer>}
  */
-KeyValue.prototype.get = function (key, type) { };
+cloudflare.KeyValue.prototype.get = function (key, type) { };
 
 /**
  * @nosideeffects
@@ -36,14 +41,11 @@ KeyValue.prototype.get = function (key, type) { };
  * @param {string|ArrayBuffer} value
  * @return {Promise<*>}
  */
-KeyValue.prototype.put = function (key, value) { };
+cloudflare.KeyValue.prototype.put = function (key, value) { };
 
 /**
- * @param {string} eventName
- * @param {function(Object)} listener
+ * @const
  */
-function addEventListener(eventName, listener) { };
-
 const caches = {};
 
 caches.default = {};
