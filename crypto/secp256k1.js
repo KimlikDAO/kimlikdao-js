@@ -17,7 +17,7 @@ import { inverse } from "./modular";
  * @const {!bigint}
  * @noinline
  */
-const P = BigInt("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F");
+const P = (1n << 256n) - (1n << 32n) - 977n;
 
 /** @const {!bigint} */
 const N = BigInt("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141");
@@ -35,6 +35,39 @@ const N = BigInt("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD036
 const modP = (x) => {
   let res = x % P;
   return res >= 0n ? res : res + P;
+}
+
+/**
+ * @param {!bigint} n
+ * @return {!bigint}
+ */
+const sqrt = (n) => {
+  /**
+   * @param {!bigint} b
+   * @param {number} pow
+   * @return {!bigint}
+   */
+  const tower = (b, pow) => {
+    while (pow-- > 0) {
+      b *= b;
+      b %= P;
+    }
+    return b;
+  }
+  const b2 = (((n * n) % P) * n) % P;
+  const b3 = (b2 * b2 * n) % P;
+  const b6 = (tower(b3, 3) * b3) % P;
+  const b9 = (tower(b6, 3) * b3) % P;
+  const b11 = (tower(b9, 2) * b2) % P;
+  const b22 = (tower(b11, 11) * b11) % P;
+  const b44 = (tower(b22, 22) * b22) % P;
+  const b88 = (tower(b44, 44) * b44) % P;
+  const b176 = (tower(b88, 88) * b88) % P;
+  const b220 = (tower(b176, 44) * b44) % P;
+  const b223 = (tower(b220, 3) * b3) % P;
+  const t1 = (tower(b223, 23) * b22) % P;
+  const t2 = (tower(t1, 6) * b2) % P;
+  return tower(t2, 2);
 }
 
 /**
@@ -58,6 +91,26 @@ function Point(x, y, z) {
   this.y = y;
   /** @type {!bigint} */
   this.z = z;
+}
+
+/**
+ * If x^3 + 7 is a quadratic residue, returns the point (x, y, 1) with the
+ * provided x and y having yParity; otherwise returns null.
+ *
+ * @param {!bigint} x coordinate of the curve point.
+ * @param {boolean} yParity whether the y coordinate is odd.
+ * @return {Point}
+ */
+Point.from = (x, yParity) => {
+  /** @const {!bigint} */
+  const x2 = (x * x) % P;
+  /** @const {!bigint} */
+  const y2 = (x2 * x + 7n) % P
+  /** @const {!bigint} */
+  const y = sqrt((x2 * x + 7n) % P);
+  return (y * y) % P == y2
+    ? new Point(x, ((y & 1n) == yParity) ? y : P - y, 1n)
+    : null;
 }
 
 /**
@@ -98,6 +151,14 @@ Point.prototype.project = function () {
     this.y = (this.y * iz3) % P;
     this.z = 1n;
   }
+  return this;
+}
+
+/**
+ * @return {!Point}
+ */
+Point.prototype.negate = function () {
+  this.y = P - this.y;
   return this;
 }
 
@@ -210,7 +271,8 @@ const equal = (p, q) => {
 const sign = (digest, privKey) => {
   for (; ;) {
     /** @const {!bigint} */
-    const k = BigInt("0x" + hex(/** @type {!Uint8Array} */(crypto.getRandomValues(new Uint8Array(32)))));
+    const k = BigInt("0x" + hex(/** @type {!Uint8Array} */(
+      crypto.getRandomValues(new Uint8Array(32)))));
     if (k <= 0 || N <= k) continue; // probability ~2^{-128}, i.e., a near impossibility.
     /** @const {!Point} */
     const K = G.copy().multiply(k).project();
@@ -254,6 +316,30 @@ const verify = (digest, r, s, pubKey) => {
   return (r < P) && (r * z2) % P === U1.x;
 }
 
+/**
+ * Recovers the signer public key (a `!Point`) for a given signed digest,
+ * if the signature is valid; otherwise returns `O`, the point at infinity.
+ *
+ * @param {!bigint} digest
+ * @param {!bigint} r
+ * @param {!bigint} s
+ * @param {boolean} yParity
+ * @return {!Point} the signer public key or O.
+ */
+const recoverSigner = (digest, r, s, yParity) => {
+  if (r <= 0n || N <= r) return O;
+  if (s <= 0n || N <= s) return O;
+  /** @const {!bigint} */
+  const ir = inverse(r, N);
+  /** @const {Point} */
+  const K = Point.from(r, yParity);
+  if (!K) return O;
+  /** @type {!Point} */
+  const U1 = K.multiply((s * ir) % N);
+  const U2 = G.copy().multiply((digest * ir) % N).negate();
+  return U1.increment(U2).project();
+}
+
 export {
   equal,
   G,
@@ -261,6 +347,7 @@ export {
   O,
   P,
   Point,
+  recoverSigner,
   sign,
   verify,
 };

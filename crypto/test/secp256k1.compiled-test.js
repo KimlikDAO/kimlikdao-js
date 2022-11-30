@@ -1,5 +1,5 @@
 import { assert, assertStats } from "../../testing/assert";
-import { equal, G, N, O, sign, verify } from "../secp256k1";
+import { equal, G, N, O, recoverSigner, sign, verify } from "../secp256k1";
 
 const testCopy = () => {
   const P = G.copy();
@@ -86,26 +86,55 @@ const testMultiply = () => {
 }
 
 const testSignVerify = () => {
-  for (let z = 1n; z < 100n; ++z) {
+  for (let z = 1n; z <= 100n; ++z) {
     const { r, s } = sign(z, 10n);
     assert(verify(z, r, s, G.copy().multiply(10n)));
   }
-  for (let z = 1n; z < 100n; ++z) {
+  for (let z = 1n; z <= 100n; ++z) {
     const { r, s } = sign(z, 11n);
     assert(!verify(z, r, s, G.copy().multiply(10n)));
   }
-  for (let pk = 1n; pk < 100n; ++pk) {
+  for (let pk = 1n; pk <= 100n; ++pk) {
     const { r, s } = sign(101n, pk);
     assert(verify(101n, r, s, G.copy().multiply(pk)));
   }
-  for (let pk = 1n; pk < 100n; ++pk) {
+  for (let pk = 1n; pk <= 100n; ++pk) {
     const { r, s } = sign(101n, pk);
     assert(!verify(101n, r, s, G.copy().multiply(pk + 1n)));
   }
-  for (let i = 1n; i < 100n; ++i) {
+  for (let i = 1n; i <= 100n; ++i) {
     const pk = i + 12938719237810238978787234n;
     const { r, s } = sign(808n, pk);
     assert(verify(808n, r, s, G.copy().multiply(pk)));
+  }
+}
+
+const testSignRecover = () => {
+  for (let z = 1n; z <= 100n; ++z) {
+    const { r, s, yParity } = sign(z, 10n);
+    const Q = recoverSigner(z, r, s, yParity);
+    assert(equal(G.copy().multiply(10n), Q));
+  }
+  for (let z = 1n; z <= 100n; ++z) {
+    const { r, s, yParity } = sign(z, 11n);
+    const Q = recoverSigner(z, r, s, yParity);
+    assert(!equal(G.copy().multiply(10n), Q));
+  }
+  for (let pk = 1n; pk <= 100n; ++pk) {
+    const { r, s, yParity } = sign(101n, pk);
+    const Q = recoverSigner(101n, r, s, yParity);
+    assert(equal(G.copy().multiply(pk), Q));
+  }
+  for (let pk = 1n; pk <= 100n; ++pk) {
+    const { r, s, yParity } = sign(101n, pk);
+    const Q = recoverSigner(101n, r, s, yParity);
+    assert(!equal(G.copy().multiply(pk + 1n), Q));
+  }
+  for (let i = 1n; i <= 100n; ++i) {
+    const pk = i + 12938719237810238978787234n;
+    const { r, s, yParity } = sign(808n, pk);
+    const Q = recoverSigner(808n, r, s, yParity);
+    assert(equal(G.copy().multiply(pk), Q));
   }
 }
 
@@ -118,4 +147,5 @@ test2GEquivalence();
 testDouble();
 testMultiply();
 testSignVerify();
+testSignRecover();
 assertStats();
