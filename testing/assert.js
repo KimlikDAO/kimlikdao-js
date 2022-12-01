@@ -1,34 +1,55 @@
 let TrueAsserts = 0;
 let FalseAsserts = 0;
 
+const updateCounters = (value) => value ? TrueAsserts += 1 : FalseAsserts += 1;
+
+/**
+ * @param {boolean} value
+ * @return {boolean}
+ */
 const assert = (value) => {
+  updateCounters(value);
   if (!value) {
     console.error("Hata");
-    FalseAsserts += 1;
-  } else
-    TrueAsserts += 1;
+  }
   return value;
 }
 
-const assertEq = (value, expected) => {
-  if (value != expected) {
+/**
+ * @template T
+ * @param {T} given
+ * @param {T} expected
+ * @return {boolean}
+ */
+const assertEq = (given, expected) => {
+  /** @const {boolean} */
+  const value = given == expected;
+  updateCounters(value);
+  if (!value) {
     console.error(`Hata: beklenen ${expected}`);
-    console.error(`       verilen ${value}`);
-    FalseAsserts += 1;
-  } else
-    TrueAsserts += 1;
+    console.error(`       verilen ${given}`);
+  }
+  return value;
 }
 
-const assertSetEq = (value, expected) => {
+/**
+ * @template T
+ * @param {Array<T>} given
+ * @param {Array<T>} expected
+ * @return {boolean}
+ */
+const assertElemEq = (given, expected) => {
+  /** @const {Set<T>} */
   const expectSet = new Set(expected);
-  if (value.length == expectSet.size && value.every((x) => expectSet.has(x))) {
-    TrueAsserts += 1;
-  } else {
-    value.forEach((e) => {
+  /** @const {boolean} */
+  const value = given.length == expectSet.size && given.every((x) => expectSet.has(x));
+  updateCounters(value);
+  if (!value) {
+    given.forEach((e) => {
       if (!expectSet.has(e)) console.log(`Hata: fazladan eleman ${e}`);
     });
-    FalseAsserts += 1;
   }
+  return value;
 }
 
 const assertStats = () => {
@@ -39,6 +60,6 @@ const assertStats = () => {
 export {
   assert,
   assertEq,
-  assertSetEq,
+  assertElemEq,
   assertStats,
 };
