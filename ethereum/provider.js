@@ -40,7 +40,7 @@ RequestParams.prototype.params;
 
 /**
  * Represents an ethereum transaction, to be sent to a provider.
- * 
+ *
  * @interface
  * @struct
  */
