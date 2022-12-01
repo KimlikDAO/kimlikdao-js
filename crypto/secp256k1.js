@@ -19,8 +19,11 @@ import { inverse } from "./modular";
  */
 const P = (1n << 256n) - (1n << 32n) - 977n;
 
-/** @const {!bigint} */
-const N = BigInt("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141");
+/**
+ * @const {!bigint}
+ * @noinline
+ */
+const N = (1n << 256n) - BigInt("0x14551231950b75fc4402da1732fc9bebf");
 
 /**
  * Unlike the % operation, modP always returns a positive number y such that
@@ -317,7 +320,7 @@ const verify = (digest, r, s, pubKey) => {
 }
 
 /**
- * Recovers the signer public key (a `!Point`) for a given signed digest,
+ * Recovers the signer public key (a `!Point`) for a given signed digest
  * if the signature is valid; otherwise returns `O`, the point at infinity.
  *
  * @param {!bigint} digest
