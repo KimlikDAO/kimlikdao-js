@@ -5,7 +5,7 @@ let nacl = {};
 /**
  * @param {string} açıkAnahtar base64 olarak publicKey
  * @param {Uint8Array} veri
- * @return {EthEncryptedData}
+ * @return {!ethereum.EncryptedData}
  */
 export const kutula = (açıkAnahtar, veri) => {
   const anahtarlar = nacl.box.keyPair();

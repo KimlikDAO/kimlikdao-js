@@ -7,7 +7,7 @@ import evm from './evm';
  * @const {string}
  * @noinline
  */
-export const TCKT_ADDR = "0xcCc0E26339e393e51a3f46fB45d0e6f95ca32cCc";
+export const TCKT_ADDR = "0xcCc0F938A2C94b0fFBa49F257902Be7F56E62cCc";
 
 /**
  * @const {string}
@@ -50,6 +50,20 @@ const TokenData = {
     [""],
     [""]
   ],
+  "0x38": [
+    [""],
+    [""],
+    [""],
+    [""],
+    ["e9e7CEA3DedcA5984780Bafc599bD69ADd087D56", "BUSD Token", 18, 0],
+  ],
+  "0x406": [
+    [""],
+    [""],
+    [""],
+    [""],
+    [""]
+  ],
   "0xfa": [
     [""],
     [""],
@@ -57,19 +71,18 @@ const TokenData = {
     [""],
     [""]
   ],
-  "0x38": [
-    [""],
-    [""],
-    [""],
-    [""],
-    ["e9e7CEA3DedcA5984780Bafc599bD69ADd087D56", "BUSD Token", 18, 0],
-  ]
 };
 
+/**
+ * Asks the connected wallet to track the TCKT contract (as an NFT).
+ *
+ * Sends a `wallet_watchAsset` request to the connected wallet. Currently, no
+ * wallet supports adding an NFT this way, so we disable this.
+ */
 const addToWallet = () =>
-  ethereum.request(/** @type {RequestParams} */({
+  ethereum.request(/** @type {ethereum.Request} */({
     method: 'wallet_watchAsset',
-    params: /** @type {WatchAssetParams} */({
+    params: /** @type {ethereum.WatchAsset} */({
       type: 'ERC721',
       options: {
         address: TCKT_ADDR,
@@ -87,9 +100,9 @@ const addToWallet = () =>
  * @return {Promise<*>}
  */
 const sendTransactionTo = (from, to, value, calldata) =>
-  ethereum.request(/** @type {RequestParams} */({
+  ethereum.request(/** @type {ethereum.Request} */({
     method: "eth_sendTransaction",
-    params: [/** @type {Transaction} */({
+    params: [/** @type {ethereum.Transaction} */({
       from,
       to,
       value: "0x" + value,
@@ -110,15 +123,14 @@ const sendTransaction = (address, value, calldata) =>
  * @param {string} contract Contract adddress given with the 0x prefix
  * @param {string} calldata Calldata transmitted to the contract verbatim.
  */
-const callMethod = (contract, calldata) => ethereum.request(
-  /** @type {RequestParams} */({
+const callMethod = (contract, calldata) =>
+  ethereum.request(/** @type {ethereum.Request} */({
     method: "eth_call",
-    params: [/** @type {Transaction} */({
+    params: [/** @type {ethereum.Transaction} */({
       to: contract,
       data: calldata
     }), "latest"]
-  })
-)
+  }))
 
 /** @const {Object<string, string>} */
 const NonceCache = {};
@@ -197,9 +209,9 @@ const revokeFriend = (address, friend) =>
  * @return {Promise<*>}
  */
 const getRevokeeAddresses = (revoker) =>
-  ethereum.request(/** @type {RequestParams} */({
+  ethereum.request(/** @type {ethereum.Request} */({
     method: "eth_getLogs",
-    params: [/** @type {GetLogsParams} */({
+    params: [/** @type {ethereum.GetLogs} */({
       address: TCKT_ADDR,
       fromBlock: "0x12A3AE7",
       toBlock: "0x12A3AE7",
@@ -374,7 +386,7 @@ const getPermitFor = (chainId, owner, token, withRevokers) =>
           "deadline": "0x" + deadline
         }
       });
-      return ethereum.request(/** @type {RequestParams} */({
+      return ethereum.request(/** @type {ethereum.Request} */({
         method: "eth_signTypedData_v4",
         params: [owner, typedSignData]
       })).then((signature) =>

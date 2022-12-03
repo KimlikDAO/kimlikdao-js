@@ -36,7 +36,7 @@ ERC721Metadata.prototype.youtube_url;
 /**
  * @interface
  * @struct
- * @extends {EthEncryptedData}
+ * @extends {ethereum.EncryptedData}
  */
 function Unlockable() { }
 
