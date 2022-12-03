@@ -19,7 +19,7 @@ const KIMLIKDAO_URL = "https://kimlikdao.org";
  * Şimdilik sadece 2 bölüm destekliyoruz.
  *
  * @param {string} açıkAnahtar
- * @param {!AçıkTCKT} açıkTckt
+ * @param {!did.DecryptedDID} açıkTckt
  * @param {!Array<!Array<string>>} bölümler
  * @return {!ERC721Unlockable}
  */
@@ -69,20 +69,4 @@ const hazırla = (açıkAnahtar, açıkTckt, bölümler) => {
   })
 }
 
-/**
- * Verilen bir TCKTVerisi içinden istenen bölümleri içeren bir unlockable
- * döndürür.
- *
- * FIXME(KimlikDAO-bot) Şimdilik bölümler aramak yerine ilkini döndürüyor.
- *
- * @param {!ERC721Unlockable} tcktVerisi
- * @param {!Array<string>} bölümler
- * @return {!Unlockable}
- */
-const unlockableSeç = (tcktVerisi, bölümler) => {
-  return tcktVerisi.unlockable ||
-    /** @type {!Unlockable} */(Object.entries(
-      /** @type {!Object<string, !Unlockable>} */(tcktVerisi.unlockables))[0][1]);
-}
-
-export { hazırla, unlockableSeç };
+export { hazırla };

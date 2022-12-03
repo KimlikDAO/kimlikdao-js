@@ -301,8 +301,9 @@ const priceIn = (chainId, token) => {
     "0xa86a": [0, 1 * MILLION, 1 * MILLION, 19 * MILLION, 0],
     "0x89": [0, 1 * MILLION, 1 * MILLION, 19 * MILLION, 0],
     "0xa4b1": [0, 1 * MILLION, 1 * MILLION, 19 * MILLION, 0],
-    "0xfa": [0, 1 * MILLION, 1 * MILLION, 19 * MILLION, 0],
     "0x38": [0, 1 * MILLION, 1 * MILLION, 19 * MILLION, 0],
+    "0x406": [0, 0, 0, 0, 0],
+    "0xfa": [0, 1 * MILLION, 1 * MILLION, 19 * MILLION, 0],
   }
   return Promise.resolve([
     fiyat[chain][token] * 1.5, fiyat[chain][token]
@@ -318,8 +319,9 @@ const estimateNetworkFee = (chainId) => {
     "0xa86a": 800,
     "0x89": 400,
     "0xa4b1": 200,
+    "0x38": 400,
+    "0x406": 100,
     "0xfa": 200,
-    "0x38": 400
   }
   return Promise.resolve(hack[chainId]);
 }
