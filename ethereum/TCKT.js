@@ -80,9 +80,9 @@ const TokenData = {
  * wallet supports adding an NFT this way, so we disable this.
  */
 const addToWallet = () =>
-  ethereum.request(/** @type {ethereum.Request} */({
+  ethereum.request(/** @type {eth.Request} */({
     method: 'wallet_watchAsset',
-    params: /** @type {ethereum.WatchAsset} */({
+    params: /** @type {eth.WatchAsset} */({
       type: 'ERC721',
       options: {
         address: TCKT_ADDR,
@@ -100,9 +100,9 @@ const addToWallet = () =>
  * @return {Promise<*>}
  */
 const sendTransactionTo = (from, to, value, calldata) =>
-  ethereum.request(/** @type {ethereum.Request} */({
+  ethereum.request(/** @type {eth.Request} */({
     method: "eth_sendTransaction",
-    params: [/** @type {ethereum.Transaction} */({
+    params: [/** @type {eth.Transaction} */({
       from,
       to,
       value: "0x" + value,
@@ -124,9 +124,9 @@ const sendTransaction = (address, value, calldata) =>
  * @param {string} calldata Calldata transmitted to the contract verbatim.
  */
 const callMethod = (contract, calldata) =>
-  ethereum.request(/** @type {ethereum.Request} */({
+  ethereum.request(/** @type {eth.Request} */({
     method: "eth_call",
-    params: [/** @type {ethereum.Transaction} */({
+    params: [/** @type {eth.Transaction} */({
       to: contract,
       data: calldata
     }), "latest"]
@@ -209,9 +209,9 @@ const revokeFriend = (address, friend) =>
  * @return {Promise<*>}
  */
 const getRevokeeAddresses = (revoker) =>
-  ethereum.request(/** @type {ethereum.Request} */({
+  ethereum.request(/** @type {eth.Request} */({
     method: "eth_getLogs",
-    params: [/** @type {ethereum.GetLogs} */({
+    params: [/** @type {eth.GetLogs} */({
       address: TCKT_ADDR,
       fromBlock: "0x12A3AE7",
       toBlock: "0x12A3AE7",
@@ -388,7 +388,7 @@ const getPermitFor = (chainId, owner, token, withRevokers) =>
           "deadline": "0x" + deadline
         }
       });
-      return ethereum.request(/** @type {ethereum.Request} */({
+      return ethereum.request(/** @type {eth.Request} */({
         method: "eth_signTypedData_v4",
         params: [owner, typedSignData]
       })).then((signature) =>

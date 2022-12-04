@@ -8,7 +8,7 @@ import { hex } from "../util/çevir";
 
 /**
  * @param {!Unlockable} unlockable
- * @param {!ethereum.Provider} provider
+ * @param {!eth.Provider} provider
  * @param {string} address
  * @return {Promise<string>}
  */
@@ -20,7 +20,7 @@ const decryptUnlockable = (unlockable, provider, address) => {
     /** @const {string} */
     const hexEncoded = "0x" +
       hex(asciiEncoder.encode(JSON.stringify(unlockable)));
-    return provider.request(/** @type {ethereum.Request} */({
+    return provider.request(/** @type {eth.Request} */({
       method: "eth_decrypt",
       params: [hexEncoded, address]
     }))

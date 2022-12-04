@@ -6,7 +6,7 @@
  */
 
 /** @const */
-var ethereum = {};
+var eth = {};
 
 /**
  * Represents an ethereum transaction, to be sent to a provider.
@@ -14,22 +14,22 @@ var ethereum = {};
  * @interface
  * @struct
  */
-ethereum.Transaction = function () { }
+eth.Transaction = function () { }
 
 /** @type {string} */
-ethereum.Transaction.prototype.to;
+eth.Transaction.prototype.to;
 
 /** @type {string} */
-ethereum.Transaction.prototype.from;
+eth.Transaction.prototype.from;
 
 /** @type {string} */
-ethereum.Transaction.prototype.value;
+eth.Transaction.prototype.value;
 
 /** @type {string} */
-ethereum.Transaction.prototype.data;
+eth.Transaction.prototype.data;
 
 /** @type {string} */
-ethereum.Transaction.prototype.chainId;
+eth.Transaction.prototype.chainId;
 
 /**
  * Represents a `eth_getLogs` request parameters.
@@ -37,16 +37,16 @@ ethereum.Transaction.prototype.chainId;
  * @interface
  * @struct
  */
-ethereum.GetLogs = function () { }
+eth.GetLogs = function () { }
 
 /** @type {string} */
-ethereum.GetLogs.prototype.fromBlock;
+eth.GetLogs.prototype.fromBlock;
 
 /** @type {string} */
-ethereum.GetLogs.prototype.toBlock;
+eth.GetLogs.prototype.toBlock;
 
 /** @type {string} */
-ethereum.GetLogs.prototype.address;
+eth.GetLogs.prototype.address;
 
 /** @type {Array<string>} */
-ethereum.GetLogs.prototype.topics;
+eth.GetLogs.prototype.topics;

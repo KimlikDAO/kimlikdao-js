@@ -120,7 +120,7 @@ const selectUnlockables = (nft, infoSections) => {
 /**
  * @param {!ERC721Unlockable} unlockableNft
  * @param {!Array<string>} infoSections
- * @param {!ethereum.Provider} provider
+ * @param {!eth.Provider} provider
  * @param {string} address
  * @return {did.DecryptedDID}
  */

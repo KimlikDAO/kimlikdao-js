@@ -34,7 +34,7 @@ const hazırla = (açıkAnahtar, açıkTckt, bölümler) => {
   /**
    * @param {Uint8Array} buffer
    * @param {!Array<string>} bölümAdı
-   * @return {!ethereum.EncryptedData}
+   * @return {!eth.EncryptedData}
    */
   const unlockableHazırla = (buffer, bölümAdı) => {
     const sakla = new Set(bölümAdı);

@@ -5,25 +5,19 @@
  * @externs
  */
 
-/** @const */
-var ethereum = {};
-
 /**
  * @interface
  */
-ethereum.Provider = function () { }
+eth.Provider = function () { }
 
 /**
- * @param {ethereum.Request} params
+ * @param {eth.Request} params
  * @return {Promise<string>|Promise<!Array<string>>}
  **/
-ethereum.Provider.prototype.request = function (params) { };
+eth.Provider.prototype.request = function (params) { };
 
-/**
- * @param {ethereum.Request} params
- * @return {Promise<string>|Promise<!Array<string>>}
- **/
-ethereum.request = function (params) { };
+/** @const {eth.Provider} */
+var ethereum;
 
 /**
  * @return {boolean}
@@ -41,13 +35,13 @@ ethereum.on = function (eventName, handler) { };
  * @interface
  * @struct
  */
-ethereum.Request = function () { }
+eth.Request = function () { }
 
 /** @type {string} */
-ethereum.Request.prototype.method;
+eth.Request.prototype.method;
 
 /** @type {Array<*>} */
-ethereum.Request.prototype.params;
+eth.Request.prototype.params;
 
 /**
  * The struct that is passed to the wallet to add an asset.
@@ -56,22 +50,22 @@ ethereum.Request.prototype.params;
  * @interface
  * @struct
  */
-ethereum.WatchAsset = function () { }
+eth.WatchAsset = function () { }
 
 /** @type {string} */
-ethereum.WatchAsset.prototype.type;
+eth.WatchAsset.prototype.type;
 
 /** @type {Object<string, string>} */
-ethereum.WatchAsset.prototype.options;
+eth.WatchAsset.prototype.options;
 
 /** @type {string} */
-ethereum.WatchAsset.prototype.options.address;
+eth.WatchAsset.prototype.options.address;
 
 /** @type {string} */
-ethereum.WatchAsset.prototype.options.symbol;
+eth.WatchAsset.prototype.options.symbol;
 
 /** @type {string} */
-ethereum.WatchAsset.prototype.options.decimals;
+eth.WatchAsset.prototype.options.decimals;
 
 /**
  * An encrypted data blob. Can be unencrypted with an `eth_decrypt` provider
@@ -80,16 +74,16 @@ ethereum.WatchAsset.prototype.options.decimals;
  * @record
  * @struct
  */
-ethereum.EncryptedData = function () { }
+eth.EncryptedData = function () { }
 
 /** @type {string} */
-ethereum.EncryptedData.prototype.version;
+eth.EncryptedData.prototype.version;
 
 /** @type {string} */
-ethereum.EncryptedData.prototype.nonce;
+eth.EncryptedData.prototype.nonce;
 
 /** @type {string} */
-ethereum.EncryptedData.prototype.ephemPublicKey;
+eth.EncryptedData.prototype.ephemPublicKey;
 
 /** @type {string} */
-ethereum.EncryptedData.prototype.ciphertext;
+eth.EncryptedData.prototype.ciphertext;
