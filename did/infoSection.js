@@ -4,6 +4,8 @@
  * @author KimlikDAO
  */
 
+import { decryptUnlockable } from "../ethereum/unlockables";
+
 /**
  * Given an array of `InfoSection`s, determines a minimal set of unlockables
  * which, when unlocked, would cover all the desired `InfoSection`'s.
@@ -115,4 +117,34 @@ const selectUnlockables = (nft, infoSections) => {
   return res;
 }
 
-export { selectUnlockables };
+/**
+ * @param {!ERC721Unlockable} unlockableNft
+ * @param {!Array<string>} infoSections
+ * @param {!ethereum.Provider} provider
+ * @param {string} address
+ * @return {did.DecryptedDID}
+ */
+const decryptInfoSections = async (unlockableNft, infoSections, provider, address) => {
+  /** @const {!Array<!Unlockable>} */
+  const unlockables = selectUnlockables(unlockableNft, infoSections);
+
+  /** @type {!did.DecryptedDID} */
+  let decryptedDid = {};
+
+  for (let i = 0; i < unlockables.length; ++i) {
+    if (i > 0)
+      await new Promise((resolve) => setTimeout(() => resolve(), 100));
+    /** @const {?string} */
+    const decryptedText = await decryptUnlockable(unlockables[i], provider, address);
+    if (decryptedText)
+      Object.assign(decryptedDid,
+        /** @type {!did.DecryptedDID} */(JSON.parse(decryptedText)));
+  }
+  /** @const {Set<string>} */
+  const infoSectionSet = new Set(infoSections);
+  for (const infoSection in decryptedDid)
+    if (!infoSectionSet.has(infoSection)) delete decryptedDid[infoSection];
+  return decryptedDid;
+}
+
+export { decryptInfoSections, selectUnlockables };

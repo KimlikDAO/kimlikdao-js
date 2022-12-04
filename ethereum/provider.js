@@ -9,6 +9,17 @@
 var ethereum = {};
 
 /**
+ * @interface
+ */
+ethereum.Provider = function () { }
+
+/**
+ * @param {ethereum.Request} params
+ * @return {Promise<string>|Promise<!Array<string>>}
+ **/
+ethereum.Provider.prototype.request = function (params) { };
+
+/**
  * @param {ethereum.Request} params
  * @return {Promise<string>|Promise<!Array<string>>}
  **/

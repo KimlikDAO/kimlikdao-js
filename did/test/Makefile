@@ -1,9 +1,11 @@
 build/did/test/infoSection.compiled-test.js: did/test/infoSection.compiled-test.js \
     did/infoSection.js \
     api/edevletApi.js \
-    ethereum/jsonrpc.js ethereum/provider.js \
+	did/types.js \
+    ethereum/jsonrpc.js ethereum/provider.js ethereum/unlockables.js \
     ethereum/ERC721Unlockable.js \
-    testing/assert.js
+    testing/assert.js \
+    util/çevir.js
 	mkdir -p $(dir $@)
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
                              --module_resolution NODE \
