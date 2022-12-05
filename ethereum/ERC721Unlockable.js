@@ -40,7 +40,7 @@ eth.ERC721Metadata.prototype.youtube_url;
  */
 eth.Unlockable = function () { }
 
-/** @type {Object<string, Array<string>>} */
+/** @type {string|!Object<string, Array<string>>} */
 eth.Unlockable.prototype.userPrompt;
 
 /**

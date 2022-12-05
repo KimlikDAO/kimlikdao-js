@@ -4,7 +4,7 @@
  * @author KimlikDAO
  */
 
-import { hex } from "../util/çevir";
+import { base64ten, hex, hexten, uint8ArrayeBase64ten } from "../util/çevir";
 
 /**
  * @param {!eth.Unlockable} unlockable
@@ -28,7 +28,22 @@ const decryptUnlockable = (unlockable, provider, address) => {
         .then((decrypted) => decrypted.slice(43, decrypted.indexOf("\0")));
     }
     case "promptsign-sha256-aes-ctr": {
-
+      return provider.request(/** @type {eth.Request} */({
+        method: "personal_sign",
+        params: [unlockable.userPrompt, address]
+      }))
+        .then((signature) => crypto.subtle.digest("SHA-256", hexten(signature.slice(2, -2))))
+        .then((hash) => crypto.subtle.importKey("raw", hash, "AES-CTR", false, ["decrypt"]))
+        .then((key) => {
+          const counter = new Uint8Array(16);
+          uint8ArrayeBase64ten(counter, unlockable.nonce);
+          return crypto.subtle.decrypt({
+            name: "AES-CTR",
+            counter,
+            length: 64
+          }, key, base64ten(unlockable.ciphertext));
+        })
+        .then((decrypted) => new TextDecoder().decode(decrypted));
     }
   }
   return Promise.reject();
