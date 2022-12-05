@@ -122,14 +122,14 @@ const selectUnlockables = (nft, infoSections) => {
  * @param {!Array<string>} infoSections
  * @param {!eth.Provider} provider
  * @param {string} address
- * @return {did.DecryptedDID}
+ * @return {did.DecryptedInfos}
  */
 const decryptInfoSections = async (unlockableNft, infoSections, provider, address) => {
   /** @const {!Array<!eth.Unlockable>} */
   const unlockables = selectUnlockables(unlockableNft, infoSections);
 
-  /** @type {!did.DecryptedDID} */
-  let decryptedDid = {};
+  /** @type {!did.DecryptedInfos} */
+  let decryptedInfos = {};
 
   for (let i = 0; i < unlockables.length; ++i) {
     if (i > 0)
@@ -137,14 +137,14 @@ const decryptInfoSections = async (unlockableNft, infoSections, provider, addres
     /** @const {?string} */
     const decryptedText = await decryptUnlockable(unlockables[i], provider, address);
     if (decryptedText)
-      Object.assign(decryptedDid,
-        /** @type {!did.DecryptedDID} */(JSON.parse(decryptedText)));
+      Object.assign(decryptedInfos,
+        /** @type {!did.DecryptedInfos} */(JSON.parse(decryptedText)));
   }
   /** @const {Set<string>} */
   const infoSectionSet = new Set(infoSections);
-  for (const infoSection in decryptedDid)
-    if (!infoSectionSet.has(infoSection)) delete decryptedDid[infoSection];
-  return decryptedDid;
+  for (const infoSection in decryptedInfos)
+    if (!infoSectionSet.has(infoSection)) delete decryptedInfos[infoSection];
+  return decryptedInfos;
 }
 
 export { decryptInfoSections, selectUnlockables };

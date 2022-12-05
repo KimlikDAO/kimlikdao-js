@@ -49,7 +49,6 @@ const cidBytetanOku = (cidByte) => {
  * @return {Promise<!Uint8Array>} onaylanmış IPFS cidByte.
  */
 const yaz = (veri) => {
-  console.log(veri);
   /** @type {!Uint8Array} */
   const encoded = new TextEncoder().encode(veri);
   console.log(encoded.length);

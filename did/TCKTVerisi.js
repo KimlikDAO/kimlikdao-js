@@ -26,7 +26,7 @@ var InfoGroup;
  * içinde şifreler ve bir `eth.ERC721Unlockable` oluşturur.
  *
  * @param {string} açıkAnahtar
- * @param {!did.DecryptedDID} açıkTckt
+ * @param {!did.DecryptedInfos} açıkTckt
  * @param {!Array<!InfoGroup>} kümeler
  * @return {!eth.ERC721Unlockable}
  */
@@ -38,7 +38,7 @@ const hazırla = (açıkAnahtar, açıkTckt, kümeler) => {
    * @return {!eth.EncryptedData}
    */
   const unlockableHazırla = (bölümAdları) => {
-    /** @const {!did.DecryptedDID} */
+    /** @const {!did.DecryptedInfos} */
     const bölümler = {};
     for (const bölüm of bölümAdları)
       if (bölüm in açıkTckt) bölümler[bölüm] = açıkTckt[bölüm];

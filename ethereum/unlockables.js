@@ -14,13 +14,13 @@ import { base64ten, hex, hexten, uint8ArrayeBase64ten } from "../util/çevir";
  */
 const decryptUnlockable = (unlockable, provider, address) => {
   /** @const {TextEncoder} */
-  const asciiEncoder = new TextEncoder();
+  const encoder = new TextEncoder();
   switch (unlockable.version) {
     case "x25519-xsalsa20-poly1305": {
       delete unlockable.userPrompt;
       /** @const {string} */
       const hexEncoded = "0x" +
-        hex(asciiEncoder.encode(JSON.stringify(unlockable)));
+        hex(encoder.encode(JSON.stringify(unlockable)));
       return provider.request(/** @type {eth.Request} */({
         method: "eth_decrypt",
         params: [hexEncoded, address]

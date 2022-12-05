@@ -96,6 +96,22 @@ did.HumanID = function () { }
 did.HumanID.prototype.generic;
 
 /**
+ * A collection of `InfoSections` keyed by a string name.
+ *
  * @typedef {!Object<string, !did.InfoSection>}
  */
-did.DecryptedDID;
+did.DecryptedInfos;
+
+/**
+ * A collection of `InfoSection`s indexed by string keys which have been
+ * encrypted as an `Unlockable`. In addition to the `Unlockable` fields,
+ * contains the merkle root of the `InfoSection`s therein.
+ *
+ * @struct
+ * @interface
+ * @extends {eth.Unlockable}
+ */
+did.EncryptedInfos = function () { }
+
+/** @type {string} */
+did.EncryptedInfos.prototype.merkleRoot;
