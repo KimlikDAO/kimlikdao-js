@@ -122,7 +122,7 @@ const selectUnlockables = (nft, infoSections) => {
  * @param {!Array<string>} infoSections
  * @param {!eth.Provider} provider
  * @param {string} address
- * @return {did.DecryptedInfos}
+ * @return {Promise<did.DecryptedInfos>}
  */
 const decryptInfoSections = async (unlockableNft, infoSections, provider, address) => {
   /** @const {!Array<!eth.Unlockable>} */
@@ -134,8 +134,11 @@ const decryptInfoSections = async (unlockableNft, infoSections, provider, addres
   for (let i = 0; i < unlockables.length; ++i) {
     if (i > 0)
       await new Promise((resolve) => setTimeout(() => resolve(), 100));
+    /** @type {!did.EncryptedInfos} */
+    const encryptedInfos = /** @type {!did.EncryptedInfos} */(unlockables[i]);
+    delete encryptedInfos.merkleRoot;
     /** @const {?string} */
-    const decryptedText = await decryptUnlockable(unlockables[i], provider, address);
+    const decryptedText = await decryptUnlockable(encryptedInfos, provider, address);
     if (decryptedText)
       Object.assign(decryptedInfos,
         /** @type {!did.DecryptedInfos} */(JSON.parse(decryptedText)));
@@ -147,4 +150,22 @@ const decryptInfoSections = async (unlockableNft, infoSections, provider, addres
   return decryptedInfos;
 }
 
-export { decryptInfoSections, selectUnlockables };
+/**
+ * @param {!eth.ERC721Unlockable} unlockableNft
+ * @param {!Array<string>} infoSections
+ * @param {!eth.Provider} provider
+ * @param {string} address
+ * @return {Promise<{
+ *   decryptedInfos: did.DecryptedInfos,
+ *   merkleProof: !Object<string, string>
+ * }>}
+ */
+const decryptInfoSectionWithProof = async (unlockableNft, infoSections, provider, address) => {
+  return Promise.reject();
+}
+
+export {
+  decryptInfoSections,
+  decryptInfoSectionWithProof,
+  selectUnlockables
+};
