@@ -13,60 +13,61 @@ import { TCKT_ADDR } from '../ethereum/TCKT';
 const KIMLIKDAO_URL = "https://kimlikdao.org";
 
 /**
+ * @typedef {{
+ *   sections: !Array<string>,
+ *   userPrompt: !Object<string, !Array<string>>,
+ *   signPrompt: string
+ * }}
+ */
+var InfoGroup;
+
+/**
  * Verilen AçıkTCKT'yi `bölümler`'e ayırıp her bölümü ayrı bir unlockable
- * içinde şifreler ve bir `ERC721Unlockable` oluşturur.
- *
- * Şimdilik sadece 2 bölüm destekliyoruz.
+ * içinde şifreler ve bir `eth.ERC721Unlockable` oluşturur.
  *
  * @param {string} açıkAnahtar
  * @param {!did.DecryptedDID} açıkTckt
- * @param {!Array<!Array<string>>} bölümler
- * @return {!ERC721Unlockable}
+ * @param {!Array<!InfoGroup>} kümeler
+ * @return {!eth.ERC721Unlockable}
  */
-const hazırla = (açıkAnahtar, açıkTckt, bölümler) => {
+const hazırla = (açıkAnahtar, açıkTckt, kümeler) => {
   const encoder = new TextEncoder();
-  const kimlik = new Uint8Array(1024);
-  const humanId = new Uint8Array(256);
-  encoder.encodeInto(TCKT_ADDR, kimlik);
-  kimlik[42] = 10;
-  humanId.set(kimlik.subarray(0, 43))
 
   /**
-   * @param {Uint8Array} buffer
-   * @param {!Array<string>} bölümAdı
+   * @param {!Array<string>} bölümAdları
    * @return {!eth.EncryptedData}
    */
-  const unlockableHazırla = (buffer, bölümAdı) => {
-    const sakla = new Set(bölümAdı);
-    const bölümler = Object.fromEntries(
-      Object.entries(açıkTckt).filter((girdi) => sakla.has(/** @type {string} */(girdi[0]))));
-    encoder.encodeInto(JSON.stringify(bölümler, null, 2), buffer.subarray(43));
-    return kutula(açıkAnahtar, buffer);
+  const unlockableHazırla = (bölümAdları) => {
+    /** @const {!did.DecryptedDID} */
+    const bölümler = {};
+    for (const bölüm of bölümAdları)
+      if (bölüm in açıkTckt) bölümler[bölüm] = açıkTckt[bölüm];
+    /** @const {!Uint8Array} */
+    const encoded = encoder.encode(JSON.stringify(bölümler, null, 2));
+    const boy = encoded.length + 43;
+    const dolgulu = new Uint8Array(boy + 128 - (boy & 127));
+    encoder.encodeInto(TCKT_ADDR, dolgulu)
+    dolgulu[42] = 10;
+    dolgulu.set(encoded, 43);
+    return kutula(açıkAnahtar, dolgulu);
   }
 
-  return /** @type {!ERC721Unlockable} */({
+  /** @const {!Object<string, !eth.Unlockable>} */
+  const unlockables = {};
+  for (const küme of kümeler)
+    unlockables[küme.sections.join(",")] = /** @type {!eth.Unlockable} */({
+      userPrompt: küme.userPrompt,
+      ...unlockableHazırla(küme.sections)
+    })
+
+  return /** @type {!eth.ERC721Unlockable} */({
     name: "TCKT",
     description: "KimlikDAO Kimlik Tokeni",
     image: KIMLIKDAO_URL + "/TCKT.svg",
     external_url: KIMLIKDAO_URL,
     animation_url: KIMLIKDAO_URL + "/TCKT.mp4",
-    unlockables: {
-      [bölümler[0].join(",")]: {
-        userPrompt: {
-          "en-US": ["{1} wants to view your TCKT.", "Provide", "Reject"],
-          "tr-TR": ["{1} TCKT’nize erişmek istiyor. İzin veriyor musunuz?", "Evet", "Hayır"]
-        },
-        ...unlockableHazırla(kimlik, bölümler[0])
-      },
-      [bölümler[1].join(",")]: {
-        userPrompt: {
-          "en-US": ["{1} wants to view your KimlikDAO HumanID.", "Provide", "Reject"],
-          "tr-TR": ["{1} KimlikDAO HumanID’nize erişmek istiyor. İzin veriyor musunuz?", "Evet", "Hayır"]
-        },
-        ...unlockableHazırla(humanId, bölümler[1])
-      }
-    }
-  })
+    unlockables,
+  });
 }
 
 export { hazırla };

@@ -10,61 +10,49 @@
  * @interface
  * @struct
  */
-function ERC721Metadata() { }
+eth.ERC721Metadata = function () { }
 
 /** @type {string} */
-ERC721Metadata.prototype.name;
+eth.ERC721Metadata.prototype.name;
 
 /** @type {string} */
-ERC721Metadata.prototype.description;
+eth.ERC721Metadata.prototype.description;
 
 /** @type {string} */
-ERC721Metadata.prototype.image;
+eth.ERC721Metadata.prototype.image;
 
 /** @type {string} */
-ERC721Metadata.prototype.external_url;
+eth.ERC721Metadata.prototype.external_url;
 
 /** @type {string} */
-ERC721Metadata.prototype.animation_url;
+eth.ERC721Metadata.prototype.animation_url;
 
 /** @type {string} */
-ERC721Metadata.prototype.background_color;
+eth.ERC721Metadata.prototype.background_color;
 
 /** @type {string} */
-ERC721Metadata.prototype.youtube_url;
+eth.ERC721Metadata.prototype.youtube_url;
 
 /**
  * @interface
  * @struct
  * @extends {eth.EncryptedData}
  */
-function Unlockable() { }
+eth.Unlockable = function () { }
 
 /** @type {Object<string, Array<string>>} */
-Unlockable.prototype.userPrompt;
+eth.Unlockable.prototype.userPrompt;
 
 /**
  * @interface
- * @extends {ERC721Metadata}
+ * @extends {eth.ERC721Metadata}
  * @struct
  */
-function ERC721Unlockable() { }
+eth.ERC721Unlockable = function () { }
 
-/** @type {Unlockable} */
-ERC721Unlockable.prototype.unlockable;
+/** @type {eth.Unlockable} */
+eth.ERC721Unlockable.prototype.unlockable;
 
-/** @type {Object<string, !Unlockable>} */
-ERC721Unlockable.prototype.unlockables;
+/** @type {Object<string, !eth.Unlockable>} */
+eth.ERC721Unlockable.prototype.unlockables;
 
-/**
- * @interface
- * @struct
- * @extends {Unlockable}
- */
-function SharedUnlockable() { }
-
-/** @type {boolean} */
-SharedUnlockable.prototype.isShared;
-
-/** @type {string} */
-SharedUnlockable.prototype.sharedCiphertext;

@@ -10,9 +10,9 @@ import { decryptUnlockable } from "../ethereum/unlockables";
  * Given an array of `InfoSection`s, determines a minimal set of unlockables
  * which, when unlocked, would cover all the desired `InfoSection`'s.
  *
- * @param {!ERC721Unlockable} nft
+ * @param {!eth.ERC721Unlockable} nft
  * @param {!Array<string>} infoSections
- * @return {!Array<!Unlockable>}
+ * @return {!Array<!eth.Unlockable>}
  */
 const selectUnlockables = (nft, infoSections) => {
   if (nft.unlockable)
@@ -32,7 +32,7 @@ const selectUnlockables = (nft, infoSections) => {
    * @const {Array<{
    *   inc: !Set<string>,
    *   exc: !Set<string>,
-   *   unlockable: !Unlockable
+   *   unlockable: !eth.Unlockable
    * }>}
    */
   const arr = [];
@@ -103,7 +103,7 @@ const selectUnlockables = (nft, infoSections) => {
   // Since there are no solutions with 1 or 2 unlockables, we'll resort to a
   // greedy algorithm.
   arr.sort((a, b) => (b.inc.size - b.exc.size) - (a.inc.size - a.exc.size));
-  /** @const {!Array<!Unlockable>} */
+  /** @const {!Array<!eth.Unlockable>} */
   const res = [];
   for (const entry of arr) {
     if (!iss.size) break;
@@ -118,14 +118,14 @@ const selectUnlockables = (nft, infoSections) => {
 }
 
 /**
- * @param {!ERC721Unlockable} unlockableNft
+ * @param {!eth.ERC721Unlockable} unlockableNft
  * @param {!Array<string>} infoSections
  * @param {!eth.Provider} provider
  * @param {string} address
  * @return {did.DecryptedDID}
  */
 const decryptInfoSections = async (unlockableNft, infoSections, provider, address) => {
-  /** @const {!Array<!Unlockable>} */
+  /** @const {!Array<!eth.Unlockable>} */
   const unlockables = selectUnlockables(unlockableNft, infoSections);
 
   /** @type {!did.DecryptedDID} */

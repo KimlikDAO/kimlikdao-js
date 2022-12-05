@@ -1,8 +1,8 @@
 import { assertElemEq, assertStats } from "../../testing/assert";
 import { selectUnlockables } from "../infoSection";
 
-/** @const {!ERC721Unlockable} */
-const NFT = /** @type {!ERC721Unlockable} */({
+/** @const {!eth.ERC721Unlockable} */
+const NFT = /** @type {!eth.ERC721Unlockable} */({
   unlockables: {
     "a": { userPrompt: "a" },
     "a,b": { userPrompt: "a,b" },

@@ -16,7 +16,7 @@ eth.Provider = function () { }
  **/
 eth.Provider.prototype.request = function (params) { };
 
-/** @const {eth.Provider} */
+/** @const {!eth.Provider} */
 var ethereum;
 
 /**
