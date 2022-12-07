@@ -3,7 +3,9 @@
  *
  * @author KimlikDAO
  */
-import { keccak256 } from '../crypto/sha3';
+import { recoverSigner } from "../crypto/secp256k1";
+import { keccak256, keccak256Uint32 } from '../crypto/sha3';
+import { hex, hexten } from "../util/çevir";
 
 /**
  * Verilen bir adresin checksum'ı yoksa ekler, varsa sağlamasını yapar.
@@ -80,7 +82,7 @@ const adresGeçerli = (adres) => {
 /**
  * @see https://eips.ethereum.org/EIPS/eip-2098
  *
- * @param {string} signature
+ * @param {string} signature of length 2 + 64 + 64 + 2 = 132
  * @return {string} compactSignature as a string of length 128 (64 bytes).
  */
 const compactSignature = (signature) => {
@@ -93,6 +95,26 @@ const compactSignature = (signature) => {
     signature = signature.slice(0, 64) + t + signature.slice(65, 128);
   }
   return signature;
+}
+
+/**
+ * @param {string} digest as a length 64 hex string
+ * @param {string} signature as a length 128 compact signature
+ * @return {string} 42 bytes EVM address
+ */
+const recoverSignerAddress = (digest, signature) => {
+  /** @const {boolean} */
+  const yParity = parseInt(signature[64], 16) > 7;
+  /** @const {!bigint} */
+  const r = BigInt("0x" + signature.slice(0, 64));
+  /** @const {!bigint} */
+  const yParityAndS = BigInt("0x" + signature.slice(64));
+
+  const Q = recoverSigner(BigInt("0x" + digest), r, yParity
+    ? yParityAndS - (1n << 255n) : yParityAndS, yParity);
+
+  const buff = hexten(uint256(Q.x) + uint256(Q.y));
+  return "0x" + hex(keccak256Uint32(new Uint32Array(buff.buffer)).subarray(12));
 }
 
 /**
@@ -124,6 +146,7 @@ export default {
   adresDüzelt,
   adresGeçerli,
   compactSignature,
+  recoverSignerAddress,
   uint160,
   uint256,
   Uint256Max,

@@ -9,8 +9,8 @@ import { hex } from '../util/çevir';
  * of 4. The data at hand needs to be passed as a `Uint32Array` which enforces
  * the length requirement.
  *
- * @param {Uint32Array} words A typed array of `u32`s to be hashed.
- * @return {string} hex encoded hash.
+ * @param {!Uint32Array} words A typed array of `u32`s to be hashed.
+ * @return {!Uint8Array} hex encoded hash.
  */
 export const keccak256Uint32 = (words) => {
   /** @const {Uint32Array} */
@@ -32,7 +32,7 @@ export const keccak256Uint32 = (words) => {
   s[j] ^= 1;
   s[33] ^= 1 << 31;
   f(s);
-  return hex(new Uint8Array(s.buffer).subarray(0, 32));
+  return new Uint8Array(s.buffer).subarray(0, 32);
 }
 
 /**

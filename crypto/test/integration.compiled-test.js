@@ -1,6 +1,6 @@
 import evm from "../../ethereum/evm";
 import { assertEq, assertStats } from "../../testing/assert";
-import { hexten } from "../../util/çevir";
+import { hex, hexten } from "../../util/çevir";
 import { G, sign } from "../secp256k1";
 import { keccak256Uint32 } from "../sha3";
 
@@ -12,7 +12,7 @@ const vm = {};
 vm.addr = (privKey) => {
   const Q = G.copy().multiply(privKey).project();
   const buff = hexten(evm.uint256(Q.x) + evm.uint256(Q.y));
-  return "0x" + keccak256Uint32(new Uint32Array(buff.buffer)).slice(24);
+  return "0x" + hex(keccak256Uint32(new Uint32Array(buff.buffer)).subarray(12));
 }
 
 /**

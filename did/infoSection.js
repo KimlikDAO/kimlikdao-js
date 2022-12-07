@@ -164,7 +164,14 @@ const decryptInfoSectionWithProof = async (unlockableNft, infoSections, provider
   return Promise.reject();
 }
 
+/**
+ * @param {!did.InfoSection} infoSection
+ * @return {string}
+ */
+const completeHash = (infoSection) => "0";
+
 export {
+  completeHash,
   decryptInfoSections,
   decryptInfoSectionWithProof,
   selectUnlockables
