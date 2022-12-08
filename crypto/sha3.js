@@ -12,8 +12,8 @@ import { hex } from '../util/çevir';
  * @param {!Uint32Array} words A typed array of `u32`s to be hashed.
  * @return {!Uint8Array} hex encoded hash.
  */
-export const keccak256Uint32 = (words) => {
-  /** @const {Uint32Array} */
+const keccak256Uint32 = (words) => {
+  /** @const {!Uint32Array} */
   const s = new Uint32Array(50);
   /** @const {number} */
   const end = words.length - 34;
@@ -39,16 +39,16 @@ export const keccak256Uint32 = (words) => {
  * @param {string} str A string to be hashed.
  * @return {string} hex encoded hash.
  */
-export const keccak256 = (str) => keccak256Uint8(new TextEncoder().encode(str));
+const keccak256 = (str) => hex(keccak256Uint8(new TextEncoder().encode(str)));
 
 /**
- * @param {Uint8Array} bytes A byte array to be hashed. Could be of any length.
- * @return {string} hex encoded hash.
+ * @param {!Uint8Array} bytes A byte array to be hashed. Could be of any length.
+ * @return {!Uint8Array} hex encoded hash.
  */
-export const keccak256Uint8 = (bytes) => {
-  /** @const {Uint32Array} */
+const keccak256Uint8 = (bytes) => {
+  /** @const {!Uint32Array} */
   const words = new Uint32Array(bytes.buffer, 0, bytes.length >> 2);
-  /** @const {Uint32Array} */
+  /** @const {!Uint32Array} */
   const s = new Uint32Array(50);
   /** @const {number} */
   const end = words.length - 34;
@@ -74,18 +74,24 @@ export const keccak256Uint8 = (bytes) => {
   else s[j] ^= bytes[loc] | bytes[loc + 1] << 8 | bytes[loc + 2] << 16 | (1 << 24);
   s[33] ^= 1 << 31;
   f(s);
-  return hex(new Uint8Array(s.buffer).subarray(0, 32));
+  return new Uint8Array(s.buffer).subarray(0, 32);
 }
 
-/** @const {Uint32Array} */
-const RC = Uint32Array.from([1, 0, 32898, 0, 32906, 2147483648, 2147516416, 2147483648, 32907, 0, 2147483649,
+/**
+ * We avoid an `Uint8Array` here, as Google Closure Compiler cannot dead code
+ * eliminate it.
+ * @see https://github.com/google/closure-compiler/issues/4017
+ *
+ * @const {!Array<number>}
+ */
+const RC = [1, 0, 32898, 0, 32906, 2147483648, 2147516416, 2147483648, 32907, 0, 2147483649,
   0, 2147516545, 2147483648, 32777, 2147483648, 138, 0, 136, 0, 2147516425, 0,
   2147483658, 0, 2147516555, 0, 139, 2147483648, 32905, 2147483648, 32771,
   2147483648, 32770, 2147483648, 128, 2147483648, 32778, 0, 2147483658, 2147483648,
-  2147516545, 2147483648, 32896, 2147483648, 2147483649, 0, 2147516424, 2147483648]);
+  2147516545, 2147483648, 32896, 2147483648, 2147483649, 0, 2147516424, 2147483648];
 
 /**
- * @param {Uint32Array} s
+ * @param {!Uint32Array} s
  */
 const f = (s) => {
   var h, l, c0, c1, c2, c3, c4, c5, c6, c7, c8, c9,
@@ -271,3 +277,9 @@ const f = (s) => {
     s[1] ^= RC[n + 1];
   }
 }
+
+export {
+  keccak256,
+  keccak256Uint32,
+  keccak256Uint8
+};

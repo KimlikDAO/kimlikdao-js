@@ -138,8 +138,12 @@ const uint96 = (sayı) => sayı.toString(16).padStart(24, "0");
 /** @type {function(number):string} */
 const uint64 = (sayı) => sayı.toString(16).padStart(16, "0");
 
-/** @const {string} */
-const Uint256Max = "f".repeat(64);
+/**
+ * @see https://github.com/google/closure-compiler/issues/4018
+ *
+ * @const {string}
+ */
+const Uint256Max = "".padEnd(64, "f");
 
 export default {
   address,
