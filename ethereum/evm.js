@@ -98,11 +98,20 @@ const compactSignature = (signature) => {
 }
 
 /**
+ * @param {string} msg
+ * @return {string} hex encoded hash
+ */
+const personalDigest = (msg) => keccak256("\x19Ethereum Signed Message:\n" + msg.length + msg);
+
+/**
+ * Given a digest and a signature, recovers the signer address if the signature
+ * is valid; outputs an arbitrary value otherwise.
+ *
  * @param {string} digest as a length 64 hex string
  * @param {string} signature as a length 128 compact signature
  * @return {string} 42 bytes EVM address
  */
-const recoverSignerAddress = (digest, signature) => {
+const signerAddress = (digest, signature) => {
   /** @const {boolean} */
   const yParity = parseInt(signature[64], 16) > 7;
   /** @const {!bigint} */
@@ -139,6 +148,12 @@ const uint96 = (sayı) => sayı.toString(16).padStart(24, "0");
 const uint64 = (sayı) => sayı.toString(16).padStart(16, "0");
 
 /**
+ * @param {string} value
+ * @return {boolean}
+ */
+const isZero = (value) => value == "0x" || value.replaceAll("0", "") == 'x';
+
+/**
  * @see https://github.com/google/closure-compiler/issues/4018
  *
  * @const {string}
@@ -150,7 +165,9 @@ export default {
   adresDüzelt,
   adresGeçerli,
   compactSignature,
-  recoverSignerAddress,
+  isZero,
+  personalDigest,
+  signerAddress,
   uint160,
   uint256,
   Uint256Max,

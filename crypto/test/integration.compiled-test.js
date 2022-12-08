@@ -33,6 +33,5 @@ const testAddr = () => {
   assertEq(vm.addr(6n), "0xe57bfe9f44b819898f47bf37e5af72a0783e1141");
 }
 
-console.log(vm.sign(1n, 6n));
 testAddr();
 assertStats();
