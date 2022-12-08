@@ -50,16 +50,26 @@ did.PersonInfo.prototype.cityOfBirth;
 /** @type {string} */
 did.PersonInfo.prototype.gender;
 
-/** @type {Object} */
-did.PersonInfo.prototype.humanID;
-
 /**
- * "HumanID('revoke')" for the person, which is used when this ID need to be
- * revoked.
+ * When a DID holder gets their wallet private keys exposed, they can either
+ * revoke the DID themselves, or use social revoking.
+ *
+ * If they are unable to do either (because they lost their private keys and
+ * did not set up social revoke), they need to get a new DID and file an
+ * exposure report at https://kimlikdao.org/report using the new DID.
+ *
+ * The report is filed in a completely decentralized fashion by sending an
+ * appropriate transaction containing the signed `exposureReportID`, which
+ * every KimlikDAO DID comes with. If desired, this can be done by interacting
+ * with the contract directly and the above interface is merely a convenience.
+ *
+ * The `exposureReportID` is obtained from the `localIdNumber` via a verifiable
+ * delay function, therefore for maximum privacy, one may choose to discard an
+ * EVM address used for an `exposureReport`.
  *
  * @type {string}
  */
-did.PersonInfo.prototype.humanID.revoke;
+did.PersonInfo.prototype.exposureReportID;
 
 /**
  * An info section containing verified contact info for a person / entity.
