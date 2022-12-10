@@ -127,7 +127,7 @@ did.EncryptedInfos = function () { }
 did.EncryptedInfos.prototype.merkleRoot;
 
 /**
- * Merkle proof is an object mapping a `DecryptedInfos` key to a base64 encoded
+ * Merkle proof is an object mapping a `EncryptedInfos` key to a base64 encoded
  * level hash.
  *
  * @typedef {!Object<string, string>}

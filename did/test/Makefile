@@ -1,7 +1,7 @@
 build/did/test/infoSection.compiled-test.js: did/test/infoSection.compiled-test.js \
-    did/infoSection.js \
+    did/infoSection.js did/types.js \
     api/edevletApi.js \
-	did/types.js \
+    crypto/sha3.js \
     ethereum/jsonrpc.js ethereum/provider.js ethereum/unlockables.js \
     ethereum/ERC721Unlockable.js \
     testing/assert.js \
