@@ -1,7 +1,5 @@
-import { keccak256, keccak256Uint32, keccak256Uint8 } from "../../crypto/sha3";
-import { assert, assertElemEq, assertStats } from "../../testing/assert";
-import { base64, hexten, hex, base64ten } from "../../util/çevir";
-import { completeHash, selectEncryptedInfos, verifyMerkleProof } from "../infoSection";
+import { assertElemEq, assertStats } from "../../testing/assert";
+import { selectEncryptedInfos } from "../infoSection";
 
 const testSelectEncryptedInfos = () => {
   /** @const {!Array<string>} */
@@ -57,77 +55,5 @@ const testSelectEncryptedInfos = () => {
   testGreedy();
 }
 
-const testVerifyMerkleProof = () => {
-  /**
-   * FakeInfoSection
-   *
-   * @constructor
-   * @implements {did.InfoSection}
-   */
-  const FIS = function (name) {
-    this.name = name;
-    this.signatureTs = 0;
-    this.secp256k1 = "";
-    this.bls12_381 = "";
-  }
-
-  const concat = (...arrays) => {
-    const length = arrays.reduce((a, arr) => a + arr.length, 0);
-    const result = new Uint8Array(length);
-    for (let i = 0, pad = 0; i < arrays.length; i++) {
-      const arr = arrays[i];
-      result.set(arr, pad);
-      pad += arr.length;
-    }
-    return result;
-  }
-  const aHash = completeHash(new FIS("a"));
-  const bHash = completeHash(new FIS("b"));
-  const cHash = completeHash(new FIS("c"));
-  const dHash = completeHash(new FIS("d"));
-
-  /** @const {!Object<string, !did.EncryptedInfos>} */
-  const encryptedInfosMap = {
-    "a,b,c": /** @type {did.EncryptedInfos} */({
-      merkleRoot: base64(keccak256Uint8(concat(
-        hexten(aHash),
-        hexten(bHash),
-        hexten(cHash)
-      )))
-    }),
-    "a,b,d": /** @type {did.EncryptedInfos} */({
-      merkleRoot: base64(keccak256Uint8(concat(
-        hexten(aHash),
-        hexten(bHash),
-        hexten(dHash)
-      )))
-    }),
-  }
-
-  const merkleProof = {
-    "a,b,c": base64(concat(
-      hexten(aHash),
-      hexten(bHash),
-      hexten(cHash))),
-    "a,b,d": base64(concat(
-      hexten(aHash),
-      hexten(bHash),
-      hexten(dHash))),
-  }
-
-  assert(verifyMerkleProof(merkleProof, encryptedInfosMap, {
-    "a": new FIS("a"), "b": new FIS("b"), "c": new FIS("c")
-  }));
-
-  assert(verifyMerkleProof(merkleProof, encryptedInfosMap, {
-    "a": new FIS("a"), "b": new FIS("b"), "d": new FIS("d")
-  }));
-
-  assert(!verifyMerkleProof(merkleProof, encryptedInfosMap, {
-    "a": new FIS("a"), "b": new FIS("b"), "f": new FIS("f")
-  }))
-}
-
 testSelectEncryptedInfos();
-testVerifyMerkleProof();
 assertStats();

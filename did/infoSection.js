@@ -4,9 +4,8 @@
  * @author KimlikDAO
  */
 
-import { keccak256, keccak256Uint32, keccak256Uint8 } from "../crypto/sha3";
+import { keccak256 } from "../crypto/sha3";
 import { decryptUnlockable } from "../ethereum/unlockables";
-import { base64, base64ten, hex } from "../util/çevir";
 
 /**
  * Given an array of `EncryptedInfos` keys, determines a minimal set of
@@ -114,91 +113,40 @@ const selectEncryptedInfos = (encryptedInfosKeys, infoSectionKeys) => {
 }
 
 /**
- * @param {!Object<string, !did.EncryptedInfos>} encryptedInfosMap
+ * @param {!eth.ERC721Unlockable} nft
  * @param {!Array<string>} infoSections
  * @param {!eth.Provider} provider
  * @param {string} address
- * @return {Promise<{
- *   decryptedInfos: !did.DecryptedInfos,
- *   merkleProof: !did.MerkleProof
- * }>}
+ * @return {Promise<!did.DecryptedInfos>}
  */
-const decryptInfosWithMerkleProof = async (encryptedInfosMap, infoSections, provider, address) => {
+const decryptInfoSections = async (nft, infoSections, provider, address) => {
   /** @const {!Array<string>} */
   const encryptedInfosKeys = selectEncryptedInfos(
-    Object.keys(encryptedInfosMap),
+    Object.keys(nft.unlockables),
     infoSections
   );
 
-  /** @const {!TextEncoder} */
-  const encoder = new TextEncoder();
   /** @const {!did.DecryptedInfos} */
   const decryptedInfos = {};
-  /** @const {!did.MerkleProof} */
-  const merkleProof = {};
+
   for (let i = 0; i < encryptedInfosKeys.length; ++i) {
-    const key = encryptedInfosKeys[i];
     if (i > 0)
       await new Promise((resolve) => setTimeout(() => resolve(), 100));
     /** @type {!did.EncryptedInfos} */
-    const encryptedInfos = encryptedInfosMap[key];
+    const encryptedInfos = /** @type {!did.EncryptedInfos} */(
+      nft.unlockables[encryptedInfosKeys[i]]);
     delete encryptedInfos.merkleRoot;
     /** @const {?string} */
     const decryptedText = await decryptUnlockable(encryptedInfos, provider, address);
-    if (!decryptedText) continue;
-    /** @const {!did.DecryptedInfos} */
-    const decrypted = /** @type {!did.DecryptedInfos} */(JSON.parse(decryptedText));
-    Object.assign(decryptedInfos, decrypted);
-
-    /** @const {!Array<string>} */
-    const keys = Object.keys(decrypted).sort();
-    /** @const {!Uint8Array} */
-    const buff = new Uint8Array(keys.length << 5);
-    for (let i = 0; i < keys.length; ++i) {
-      const infoSection = decrypted[keys[i]];
-      buff.set(keccak256Uint8(encoder.encode(
-        JSON.stringify(infoSection, Object.keys(infoSection).sort()))), i << 5);
-    }
-    merkleProof[key] = base64(buff);
+    if (decryptedText)
+      Object.assign(decryptedInfos,
+        /** @type {!did.DecryptedInfos} */(JSON.parse(decryptedText)));
   }
   /** @const {!Set<string>} */
   const infoSectionSet = new Set(infoSections);
   for (const infoSection in decryptedInfos)
     if (!infoSectionSet.has(infoSection)) delete decryptedInfos[infoSection];
-  return { decryptedInfos, merkleProof };
-}
-
-/**
- * @param {!did.MerkleProof} merkleProof
- * @param {!Object<string, !did.EncryptedInfos>} encryptedInfosMap
- * @param {!did.DecryptedInfos} decryptedInfos
- * @return {boolean}
- */
-const verifyMerkleProof = (merkleProof, encryptedInfosMap, decryptedInfos) => {
-  /** @const {!Set<string>} */
-  const hashes = new Set();
-
-  for (const key in merkleProof) {
-    /** @const {!Uint8Array} */
-    const proof = base64ten(merkleProof[key]);
-
-    if (proof.length > 32 * key.split(",").length)
-      return false;
-
-    /** @const {string} */
-    const hash = base64(keccak256Uint32(new Uint32Array(proof.buffer)));
-
-    if (encryptedInfosMap[key].merkleRoot != hash)
-      return false;
-
-    for (let i = 0; i < proof.length; i += 32)
-      hashes.add(hex(proof.subarray(i, i + 32)));
-  }
-
-  for (const key in decryptedInfos)
-    if (!hashes.has(completeHash(decryptedInfos[key])))
-      return false;
-  return true;
+  return decryptedInfos;
 }
 
 /**
@@ -213,7 +161,6 @@ const completeHash = (infoSection) => keccak256(
 
 export {
   completeHash,
-  decryptInfosWithMerkleProof,
+  decryptInfoSections,
   selectEncryptedInfos,
-  verifyMerkleProof,
 };

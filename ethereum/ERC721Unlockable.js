@@ -50,5 +50,5 @@ eth.Unlockable.prototype.userPrompt;
  */
 eth.ERC721Unlockable = function () { }
 
-/** @type {Object<string, !eth.Unlockable>} */
+/** @type {!Object<string, !eth.Unlockable>} */
 eth.ERC721Unlockable.prototype.unlockables;
