@@ -38,6 +38,21 @@ assertEq(
   "ddc6ddf8e4d91bc0e904f0f4774ab750cd5ddd15167cc39146b61cc1de650aa9"
 );
 
+assertEq(
+  keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"),
+  "8b73c3c69bb8fe3d512ecc4cf759cc79239f7b179b0ffacaa9a75d522b39400f"
+);
+
+assertEq(
+  keccak256("TCKT"),
+  "cad65853fd3e826d6deb3c81411fb138906a27c444b8fe3dffc33ec38b1f3375"
+);
+
+assertEq(
+  keccak256("1"),
+  "c89efdaa54c0f20c7adf612882df0950f5a951637e0307cdcb4c672f298b8bc6"
+);
+
 for (let i = 0; i < 1000; ++i) {
   let test = "abracadabra".repeat(i);
   const ours = keccak256(test);

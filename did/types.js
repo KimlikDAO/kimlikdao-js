@@ -17,10 +17,21 @@ did.InfoSection = function () { }
 /** @type {number} */
 did.InfoSection.prototype.signatureTs;
 
-/** @type {string} */
+/**
+ * The aggregated bls12-381 signature from various signer nodes.
+ *
+ * @type {string}
+ */
 did.InfoSection.prototype.bls12_381;
 
-/** @type {string|undefined} */
+/**
+ * The secp256k1 signatures kept as a list of 64 bytes compact signatures,
+ * sorted in lex order.
+ *
+ * Each signature must be from a different (valid) signer node.
+ *
+ * @type {Array<string>}
+ */
 did.InfoSection.prototype.secp256k1;
 
 /**
