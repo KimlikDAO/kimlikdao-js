@@ -9,6 +9,14 @@
 const did = {};
 
 /**
+ * A signed group of user data (e.g., geo address, contact info).
+ * Each signature contains a timestamp and a wallet commitment; therefore
+ * each group of data is signed *for* a walet and *at* certain time.
+ *
+ * One exception to this is the `exposureReportID`, which is not committed
+ * to a wallet (but still contains a signature timestamp), since it is used in
+ * cases where the user has lost their keys.
+ *
  * @interface
  * @struct
  */
@@ -16,6 +24,9 @@ did.InfoSection = function () { }
 
 /** @type {number} */
 did.InfoSection.prototype.signatureTs;
+
+/** @type {string} */
+did.InfoSection.prototype.commitment;
 
 /**
  * The aggregated bls12-381 signature from various signer nodes.
@@ -115,6 +126,15 @@ did.HumanID = function () { }
 
 /** @type {string} */
 did.HumanID.prototype.generic;
+
+/**
+ * @interface
+ * @extends {did.InfoSection}
+ */
+did.ExposureReportID = function () { }
+
+/** @type {string} */
+did.ExposureReportID.prototype.id;
 
 /**
  * A collection of `InfoSections` keyed by a string name.

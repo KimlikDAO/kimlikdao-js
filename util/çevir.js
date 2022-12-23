@@ -19,15 +19,15 @@ const hex = (buff) => {
 }
 
 /**
- * @param {string} hex olarak kodlanmış veri.
+ * @param {string} str olarak kodlanmış veri.
  * @return {!Uint8Array} byte dizisi
  */
-const hexten = (hex) => {
-  if (hex.length & 1) hex += "0";
-  let r = new Uint8Array(hex.length / 2);
-  for (let i = 0; i < r.length; ++i)
-    r[i] = parseInt(hex.slice(2 * i, 2 * i + 2), 16);
-  return r;
+const hexten = (str) => {
+  if (str.length & 1) str += "0";
+  let buff = new Uint8Array(str.length / 2);
+  for (let i = 0; i < buff.length; ++i)
+    buff[i] = parseInt(str.slice(2 * i, 2 * i + 2), 16);
+  return buff;
 }
 
 /**

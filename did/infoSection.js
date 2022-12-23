@@ -4,8 +4,11 @@
  * @author KimlikDAO
  */
 
-import { keccak256 } from "../crypto/sha3";
+import { sign } from "../crypto/secp256k1";
+import { keccak256, keccak256Uint32 } from "../crypto/sha3";
+import evm from "../ethereum/evm";
 import { decryptUnlockable } from "../ethereum/unlockables";
+import { hex, uint8ArrayeBase64ten } from "../util/çevir";
 
 /**
  * Given an array of `EncryptedInfos` keys, determines a minimal set of
@@ -150,17 +153,78 @@ const decryptInfoSections = async (nft, infoSections, provider, address) => {
 }
 
 /**
- * Hashes an `InfoSection` including the signature timestamp and keys.
- *
+ * @param {string} infoSectionName
  * @param {!did.InfoSection} infoSection
- * @return {string} hex encoded hash of the `InfoSection`.
+ * @return {string}
  */
-const completeHash = (infoSection) => keccak256(
-  JSON.stringify(infoSection, Object.keys(infoSection).sort())
-);
+const hash = (infoSectionName, infoSection) => {
+  if (infoSectionName == "exposureReportID") {
+    /** @const {!did.ExposureReportID} */
+    const exposureReportID = /** @type {!did.ExposureReportID} */(infoSection);
+    /** @const {!Uint8Array} */
+    const buff = new Uint8Array(64);
+    new TextEncoder().encodeInto("\x19KimlikDAO hash", buff);
+    uint8ArrayeBase64ten(buff.subarray(32), exposureReportID.id);
+    return hex(keccak256Uint32(new Uint32Array(buff.buffer)));
+  }
+  return keccak256(
+    "\x19KimlikDAO hash" + JSON.stringify(infoSection, Object.keys(infoSection).sort())
+  );
+}
+
+/**
+ * @param {string} infoSectionName
+ * @param {!did.InfoSection} infoSection
+ * @param {number} signatureTs
+ * @param {!bigint} privateKey
+ */
+const signInfoSection = (infoSectionName, infoSection, signatureTs, privateKey) => {
+  infoSection.signatureTs = signatureTs;
+  delete infoSection.bls12_381;
+  delete infoSection.secp256k1;
+  /** @const {!bigint} */
+  const d = BigInt("0x" + hash(infoSectionName, infoSection));
+  let { r, s, yParity } = sign(d, privateKey);
+  if (yParity) s += (1n << 255n);
+  infoSection.secp256k1 = [evm.uint256(r) + evm.uint256(s)];
+}
+
+/**
+ * @param {string} infoSectionName
+ * @param {!did.InfoSection} infoSection
+ * @return {!Array<string>}
+ */
+const recoverInfoSectionSigners = (infoSectionName, infoSection) => {
+  const secp256k1 = infoSection.secp256k1;
+  delete infoSection.bls12_381;
+  delete infoSection.secp256k1;
+  /** @const {string} */
+  const h = hash(infoSectionName, infoSection);
+  /** @const {!Array<string>} */
+  const result = secp256k1.map((signature) => evm.signerAddress(h, signature));
+  infoSection.secp256k1 = secp256k1;
+  return result;
+}
+
+/**
+ * Signs a give `did.DecryptedInfos` in-place.
+ *
+ * @param {!did.DecryptedInfos} decryptedInfos
+ * @param {number} signatureTs
+ * @param {!bigint} privateKey
+ * @return {!did.DecryptedInfos}
+ */
+const signDecryptedInfos = (decryptedInfos, signatureTs, privateKey) => {
+  for (const key in decryptedInfos)
+    signInfoSection(key, decryptedInfos[key], signatureTs, privateKey);
+  return decryptedInfos;
+}
 
 export {
-  completeHash,
   decryptInfoSections,
+  hash,
+  recoverInfoSectionSigners,
   selectEncryptedInfos,
+  signDecryptedInfos,
+  signInfoSection,
 };

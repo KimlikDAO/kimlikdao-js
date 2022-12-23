@@ -1,8 +1,8 @@
-import evm from "../../ethereum/evm";
-import { assertEq, assertStats } from "../../testing/assert";
-import { hex, hexten } from "../../util/çevir";
-import { G, sign } from "../secp256k1";
-import { keccak256Uint32 } from "../sha3";
+import { G, sign } from "/crypto/secp256k1";
+import { keccak256Uint32 } from "/crypto/sha3";
+import evm from "/ethereum/evm";
+import { assertEq, assertStats } from "/testing/assert";
+import { hex, hexten } from "/util/çevir";
 
 const vm = {};
 

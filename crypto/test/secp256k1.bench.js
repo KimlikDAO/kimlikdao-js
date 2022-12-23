@@ -1,5 +1,5 @@
-import { assert, assertStats } from "../../testing/assert";
-import { equal, G, N, O } from "../secp256k1";
+import { equal, G, N, O } from "/crypto/secp256k1";
+import { assert, assertStats } from "/testing/assert";
 
 const benchMultiplyBeginEnd = () => {
   console.time("benchMultiplyBeginEnd (5k multiply's)");

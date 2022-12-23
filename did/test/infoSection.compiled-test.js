@@ -1,5 +1,9 @@
-import { assertElemEq, assertStats } from "../../testing/assert";
-import { selectEncryptedInfos } from "../infoSection";
+import { G } from "/crypto/secp256k1";
+import { keccak256Uint32 } from "/crypto/sha3";
+import { recoverInfoSectionSigners, selectEncryptedInfos, signDecryptedInfos } from "/did/infoSection";
+import evm from "/ethereum/evm.js";
+import { assertElemEq, assertEq, assertStats } from "/testing/assert";
+import { hex, hexten } from "/util/çevir";
 
 const testSelectEncryptedInfos = () => {
   /** @const {!Array<string>} */
@@ -55,5 +59,51 @@ const testSelectEncryptedInfos = () => {
   testGreedy();
 }
 
+const vm = {};
+
+/**
+ * @param {!bigint} privKey
+ */
+vm.addr = (privKey) => {
+  const Q = G.copy().multiply(privKey).project();
+  const buff = hexten(evm.uint256(Q.x) + evm.uint256(Q.y));
+  return "0x" + hex(keccak256Uint32(new Uint32Array(buff.buffer)).subarray(12));
+}
+
+const testSignInfoSection = () => {
+  /** @const {!did.DecryptedInfos} */
+  const decryptedInfos1 = {
+    "humanID": /** @type {!did.HumanID} */({
+      generic: "1234A234"
+    })
+  };
+
+  /** @const {!did.DecryptedInfos} */
+  const decryptedInfos2 = {
+    "humanID": /** @type {!did.HumanID} */({
+      generic: "1234A234",
+      bls12_381: "asdfadsf",
+      secp256k1: ["incorrect_sign"]
+    })
+  };
+
+  const timestamp = ~~(Date.now() / 1000);
+  signDecryptedInfos(decryptedInfos1, timestamp, 1n);
+  signDecryptedInfos(decryptedInfos2, timestamp, 2n);
+
+  assertEq(decryptedInfos1["humanID"].secp256k1.length, 1);
+  assertEq(decryptedInfos2["humanID"].secp256k1.length, 1);
+
+  assertEq(
+    recoverInfoSectionSigners("humanID", decryptedInfos1["humanID"])[0],
+    vm.addr(1n)
+  );
+  assertEq(
+    recoverInfoSectionSigners("humanID", decryptedInfos2["humanID"])[0],
+    vm.addr(2n)
+  );
+}
+
 testSelectEncryptedInfos();
+testSignInfoSection();
 assertStats();

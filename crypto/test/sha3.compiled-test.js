@@ -1,7 +1,7 @@
-import { assertEq, assertStats } from '../../testing/assert';
-import { keccak256 } from '../sha3';
-import { keccak256 as keccak256_orig } from './sha3_orig';
-import { keccak256 as keccak256_prev } from './sha3_prev';
+import { keccak256 as keccak256_orig } from "./sha3_orig";
+import { keccak256 as keccak256_prev } from "./sha3_prev";
+import { keccak256 } from "/crypto/sha3";
+import { assertEq, assertStats } from "/testing/assert";
 
 assertEq(
   keccak256("a"),
