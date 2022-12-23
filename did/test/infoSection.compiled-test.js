@@ -87,13 +87,13 @@ const testSignInfoSection = () => {
     })
   };
 
+  /** @const {number} */
   const timestamp = ~~(Date.now() / 1000);
   signDecryptedInfos(decryptedInfos1, timestamp, 1n);
   signDecryptedInfos(decryptedInfos2, timestamp, 2n);
 
   assertEq(decryptedInfos1["humanID"].secp256k1.length, 1);
   assertEq(decryptedInfos2["humanID"].secp256k1.length, 1);
-
   assertEq(
     recoverInfoSectionSigners("humanID", decryptedInfos1["humanID"])[0],
     vm.addr(1n)

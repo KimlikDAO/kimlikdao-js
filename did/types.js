@@ -11,7 +11,7 @@ const did = {};
 /**
  * A signed group of user data (e.g., geo address, contact info).
  * Each signature contains a timestamp and a wallet commitment; therefore
- * each group of data is signed *for* a walet and *at* certain time.
+ * each group of data is signed *for* a walet and *at* a certain time.
  *
  * One exception to this is the `exposureReportID`, which is not committed
  * to a wallet (but still contains a signature timestamp), since it is used in

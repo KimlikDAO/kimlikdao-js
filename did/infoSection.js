@@ -152,6 +152,9 @@ const decryptInfoSections = async (nft, infoSections, provider, address) => {
   return decryptedInfos;
 }
 
+/** @const {string} */
+const KIMLIKDAO_HASH_PREFIX = "\x19KimlikDAO hash";
+
 /**
  * @param {string} infoSectionName
  * @param {!did.InfoSection} infoSection
@@ -163,12 +166,12 @@ const hash = (infoSectionName, infoSection) => {
     const exposureReportID = /** @type {!did.ExposureReportID} */(infoSection);
     /** @const {!Uint8Array} */
     const buff = new Uint8Array(64);
-    new TextEncoder().encodeInto("\x19KimlikDAO hash", buff);
+    new TextEncoder().encodeInto(KIMLIKDAO_HASH_PREFIX, buff);
     uint8ArrayeBase64ten(buff.subarray(32), exposureReportID.id);
     return hex(keccak256Uint32(new Uint32Array(buff.buffer)));
   }
   return keccak256(
-    "\x19KimlikDAO hash" + JSON.stringify(infoSection, Object.keys(infoSection).sort())
+    KIMLIKDAO_HASH_PREFIX + JSON.stringify(infoSection, Object.keys(infoSection).sort())
   );
 }
 
