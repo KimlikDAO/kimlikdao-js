@@ -170,8 +170,11 @@ const hash = (infoSectionName, infoSection) => {
     uint8ArrayeBase64ten(buff.subarray(32), exposureReportID.id);
     return hex(keccak256Uint32(new Uint32Array(buff.buffer)));
   }
+  /** @const {Set<string>} */
+  const notHashed = new Set(["secp256k1", "bls12_381"]);
   return keccak256(
-    KIMLIKDAO_HASH_PREFIX + JSON.stringify(infoSection, Object.keys(infoSection).sort())
+    KIMLIKDAO_HASH_PREFIX + JSON.stringify(infoSection,
+      Object.keys(infoSection).filter((x) => !notHashed.has(x)).sort())
   );
 }
 
@@ -183,8 +186,6 @@ const hash = (infoSectionName, infoSection) => {
  */
 const signInfoSection = (infoSectionName, infoSection, signatureTs, privateKey) => {
   infoSection.signatureTs = signatureTs;
-  delete infoSection.bls12_381;
-  delete infoSection.secp256k1;
   /** @const {!bigint} */
   const d = BigInt("0x" + hash(infoSectionName, infoSection));
   let { r, s, yParity } = sign(d, privateKey);
@@ -198,15 +199,9 @@ const signInfoSection = (infoSectionName, infoSection, signatureTs, privateKey) 
  * @return {!Array<string>}
  */
 const recoverInfoSectionSigners = (infoSectionName, infoSection) => {
-  const secp256k1 = infoSection.secp256k1;
-  delete infoSection.bls12_381;
-  delete infoSection.secp256k1;
   /** @const {string} */
   const h = hash(infoSectionName, infoSection);
-  /** @const {!Array<string>} */
-  const result = secp256k1.map((signature) => evm.signerAddress(h, signature));
-  infoSection.secp256k1 = secp256k1;
-  return result;
+  return infoSection.secp256k1.map((signature) => evm.signerAddress(h, signature));
 }
 
 /**
