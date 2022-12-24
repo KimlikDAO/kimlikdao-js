@@ -110,7 +110,7 @@ Point.from = (x, yParity) => {
   /** @const {!bigint} */
   const y2 = (x2 * x + 7n) % P
   /** @const {!bigint} */
-  const y = sqrt((x2 * x + 7n) % P);
+  const y = sqrt(y2);
   return (y * y) % P == y2
     ? new Point(x, ((y & 1n) == yParity) ? y : P - y, 1n)
     : null;
