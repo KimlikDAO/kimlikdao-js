@@ -3,13 +3,31 @@ import ipfs from "/node/ipfs";
 import { assertEq, assertStats } from "/testing/assert";
 
 const testCID = async () => {
-  /** @const {!Uint8Array} */
-  const file1 = new TextEncoder().encode("a".repeat(2680));
-  /** @const {!Uint8Array} */
-  const hash = (await ipfs.hash(file1)) || new Uint8Array(0);
+  /** @const {TextEncoder} */
+  const encoder = new TextEncoder();
+
   assertEq(
-    ipfs.CID(hash),
+    ipfs.CID(/** @type {!Uint8Array} */(
+      await ipfs.hash(encoder.encode("a".repeat(2680))))),
     "Qmawd3DRAY5YwtCzQe8gBumMXA1JCrzvbH2WQR6ZTykVoG"
+  );
+
+  assertEq(
+    ipfs.CID(/** @type {!Uint8Array} */(
+      await ipfs.hash(encoder.encode("KimlikDAO\n")))),
+    "QmafCiqeYQtiXokAEUB4ToMcZJREhJcShbzvjrYmC1WCsi"
+  );
+
+  assertEq(
+    ipfs.CID(/** @type {!Uint8Array} */(
+      await ipfs.hash(encoder.encode("foo\n")))),
+    "QmYNmQKp6SuaVrpgWRsPTgCQCnpxUYGq76YEKBXuj2N4H6"
+  );
+
+  assertEq(
+    ipfs.CID(/** @type {!Uint8Array} */(
+      await ipfs.hash(encoder.encode("a".repeat(31337))))),
+    "Qmbq6rxwg5uKYAEhdFvPnBqzbJWAPfhB4LwF4yGamvzWSR"
   );
 
   assertStats();
