@@ -12,6 +12,23 @@ import { TCKT_ADDR } from '../ethereum/TCKT';
  */
 const KIMLIKDAO_URL = "https://kimlikdao.org";
 
+
+const İmzaİsteğiTR = `TCKT Erişim İsteği:
+-------------------------------------------------
+Bu mesajı imzaladığınızda, bağlı uygulama TCKT’nizin
+
+{}
+
+bölümlerine erişebilecek. Bu mesajı sadece bu bilgileri paylaşmak istiyorsanız imzalayın.
+`
+const İmzaİsteğiEN = `TCKT Access Request:
+-------------------------------------------------
+When you sign this message, the connected app will have access to
+
+{}
+
+sections of your TCKT. Only sign this message if you would like to share this information.`
+
 /**
  * @typedef {{
  *   sections: !Array<string>,
@@ -20,6 +37,32 @@ const KIMLIKDAO_URL = "https://kimlikdao.org";
  * }}
  */
 var InfoGroup;
+
+[{
+  sections: ["personInfo", "contactInfo", "addressInfo", "kütükBilgileri"],
+  userPrompt: {
+    "en-US": ["{1} wants to view your TCKT.", "Provide", "Reject"],
+    "tr-TR": ["{1} TCKT’nize erişmek istiyor. İzin veriyor musunuz?", "Evet", "Hayır"]
+  },
+  signPrompt: "",
+}, {
+  sections: ["contactInfo", "humanID"],
+  userPrompt: {
+    "en-US": ["{1} wants to view your KimlikDAO HumanID, email and phone number.", "Provide", "Reject"],
+    "tr-TR": ["{1} KimlikDAO HumanID, email ve telefon numaranıza erişmek istiyor. İzin veriyor musunuz?", "Evet", "Hayır"]
+  },
+  signPrompt: "",
+}, {
+  sections: ["humanID"],
+  userPrompt: {
+    "en-US": ["{1} wants to view your KimlikDAO HumanID.", "Provide", "Reject"],
+    "tr-TR": ["{1} KimlikDAO HumanID’nize erişmek istiyor. İzin veriyor musunuz?", "Evet", "Hayır"]
+  },
+  signPrompt: ""
+}, {
+  sections: ["exposureReportID"],
+}
+]
 
 /**
  * Verilen AçıkTCKT'yi `bölümler`'e ayırıp her bölümü ayrı bir unlockable
@@ -30,7 +73,7 @@ var InfoGroup;
  * @param {!Array<!InfoGroup>} kümeler
  * @return {!eth.ERC721Unlockable}
  */
-const hazırla = (açıkAnahtar, açıkTckt, kümeler) => {
+const tcktVerisiHazırla = (açıkAnahtar, açıkTckt, kümeler) => {
   const encoder = new TextEncoder();
 
   /**
@@ -70,4 +113,4 @@ const hazırla = (açıkAnahtar, açıkTckt, kümeler) => {
   });
 }
 
-export { hazırla };
+export { tcktVerisiHazırla };
