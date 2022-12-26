@@ -74,7 +74,7 @@ const base64 = (bytes) => {
   /** @type {string} */
   let binary = "";
   /** @type {number} */
-  const len = bytes.byteLength;
+  const len = bytes.length;
   for (let i = 0; i < len; i++) {
     binary += String.fromCharCode(bytes[i]);
   }

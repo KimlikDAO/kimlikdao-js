@@ -8,7 +8,7 @@ import { sign } from "../crypto/secp256k1";
 import { keccak256, keccak256Uint32 } from "../crypto/sha3";
 import evm from "../ethereum/evm";
 import { decryptUnlockable } from "../ethereum/unlockables";
-import { hex, uint8ArrayeBase64ten } from "../util/çevir";
+import { hex, hexten, uint8ArrayeBase64ten } from "../util/çevir";
 
 /**
  * Given an array of `EncryptedInfos` keys, determines a minimal set of
@@ -167,6 +167,9 @@ const hash = (infoSectionName, infoSection) => {
     /** @const {!Uint8Array} */
     const buff = new Uint8Array(64);
     new TextEncoder().encodeInto(KIMLIKDAO_HASH_PREFIX, buff);
+    /** @const {!Uint8Array} */
+    const ts = hexten(exposureReportID.signatureTs.toString(16));
+    buff.set(ts, 32 - ts.length);
     uint8ArrayeBase64ten(buff.subarray(32), exposureReportID.id);
     return hex(keccak256Uint32(new Uint32Array(buff.buffer)));
   }
