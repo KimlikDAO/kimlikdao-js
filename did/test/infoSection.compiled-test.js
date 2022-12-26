@@ -102,6 +102,18 @@ const testSignInfoSection = () => {
     recoverInfoSectionSigners("humanID", decryptedInfos2["humanID"])[0],
     vm.addr(2n)
   );
+
+  decryptedInfos1["humanID"].secp256k1.push(
+    decryptedInfos2["humanID"].secp256k1[0]);
+
+  assertElemEq(recoverInfoSectionSigners("humanID", decryptedInfos1["humanID"]),
+    [vm.addr(1n), vm.addr(2n)]);
+
+  decryptedInfos1["humanID"].secp256k1.push(
+    decryptedInfos2["humanID"].secp256k1[0]);
+
+  assertElemEq(recoverInfoSectionSigners("humanID", decryptedInfos1["humanID"]),
+    [vm.addr(1n), vm.addr(2n)]);
 }
 
 testSelectEncryptedInfos();

@@ -153,7 +153,7 @@ const decryptInfoSections = async (nft, infoSections, provider, address) => {
 }
 
 /** @const {string} */
-const KIMLIKDAO_HASH_PREFIX = "\x19KimlikDAO hash";
+const KIMLIKDAO_HASH_PREFIX = "\x19KimlikDAO hash\n";
 
 /**
  * @param {string} infoSectionName
@@ -194,6 +194,11 @@ const signInfoSection = (infoSectionName, infoSection, signatureTs, privateKey) 
 }
 
 /**
+ * Returns the list of unique signers of an `InfoSection`.
+ *
+ * Note these signers still need to be validated against the `TCKTSigners`
+ * contract.
+ *
  * @param {string} infoSectionName
  * @param {!did.InfoSection} infoSection
  * @return {!Array<string>}
@@ -201,7 +206,10 @@ const signInfoSection = (infoSectionName, infoSection, signatureTs, privateKey) 
 const recoverInfoSectionSigners = (infoSectionName, infoSection) => {
   /** @const {string} */
   const h = hash(infoSectionName, infoSection);
-  return infoSection.secp256k1.map((signature) => evm.signerAddress(h, signature));
+  /** @const {!Array<string>} */
+  const signers = infoSection.secp256k1.map((signature) =>
+    evm.signerAddress(h, signature));
+  return [...new Set(signers)];
 }
 
 /**
