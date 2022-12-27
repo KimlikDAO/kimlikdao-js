@@ -48,17 +48,5 @@ cloudflare.KeyValue.prototype.put = function (key, value) { };
  */
 const caches = {};
 
-caches.default = {};
-
-/**
- * @nosideeffects
- * @param {string} key
- * @return {Promise<Response>}
- */
-caches.default.match = function (key) { };
-
-/**
- * @param {string} key
- * @param {Response} value
- */
-caches.default.put = function (key, value) { };
+/** @const {!Cache} */
+caches.default;
