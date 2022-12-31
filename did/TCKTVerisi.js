@@ -12,7 +12,6 @@ import { TCKT_ADDR } from '../ethereum/TCKT';
  */
 const KIMLIKDAO_URL = "https://kimlikdao.org";
 
-
 const İmzaİsteğiTR = `TCKT Erişim İsteği:
 -------------------------------------------------
 Bu mesajı imzaladığınızda, bağlı uygulama TCKT’nizin
@@ -69,7 +68,7 @@ var InfoGroup;
  * içinde şifreler ve bir `eth.ERC721Unlockable` oluşturur.
  *
  * @param {string} açıkAnahtar
- * @param {!did.DecryptedInfos} açıkTckt
+ * @param {!did.DecryptedSections} açıkTckt
  * @param {!Array<!InfoGroup>} kümeler
  * @return {!eth.ERC721Unlockable}
  */
@@ -81,7 +80,7 @@ const tcktVerisiHazırla = (açıkAnahtar, açıkTckt, kümeler) => {
    * @return {!eth.EncryptedData}
    */
   const unlockableHazırla = (bölümAdları) => {
-    /** @const {!did.DecryptedInfos} */
+    /** @const {!did.DecryptedSections} */
     const bölümler = {};
     for (const bölüm of bölümAdları)
       if (bölüm in açıkTckt) bölümler[bölüm] = açıkTckt[bölüm];

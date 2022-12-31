@@ -60,22 +60,3 @@ nvi.IletisimBilgileri;
  */
 nvi.AdresBilgileri;
 
-/**
- * @typedef {{
- *   access_token: string,
- *   token_type: string,
- *   expires_in: number,
- *   scope: string
- * }}
- */
-var OAuthAccessToken;
-
-/**
- * @typedef {{
- *   grant_type: string,
- *   code: string,
- *   client_id: string,
- *   client_secret: string,
- * }}
- */
-var OAuthAccessTokenRequest;

@@ -1,11 +1,11 @@
 /**
- * TCKT için ek `InfoSection` tanımları.
+ * TCKT için ek `did.Section` tanımları.
  *
  * @author KimlikDAO
  * @externs
  */
 
- /**
+/**
  * @interface
  * @extends {did.AddressInfo}
  * @extends {nvi.AdresBilgileri}
@@ -16,14 +16,14 @@ did.TürkiyeAdresi = function () { }
  * Kişinin kütük bilgilerini içerir bilgi kartı.
  *
  * @interface
- * @extends {did.InfoSection}
+ * @extends {did.Section}
  * @extends {nvi.KutukBilgileri}
  */
 did.KütükBilgileri = function () { }
 
 /**
  * @interface
- * @extends {did.InfoSection}
+ * @extends {did.Section}
  */
 did.SoyZinciri = function () { }
 

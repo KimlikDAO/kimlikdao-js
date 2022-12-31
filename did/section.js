@@ -1,5 +1,5 @@
 /**
- * @fileoverview Info section manipulation tools.
+ * @fileoverview `did.Section` implementation and manipulation function.
  *
  * @author KimlikDAO
  */
@@ -11,24 +11,24 @@ import { decryptUnlockable } from "../ethereum/unlockables";
 import { hex, hexten, uint8ArrayeBase64ten } from "../util/çevir";
 
 /**
- * Given an array of `EncryptedInfos` keys, determines a minimal set of
- * `EncryptedInfos` which, when unlocked, would cover all the desired
- * `InfoSection`'s.
+ * Given an array of `did.EncryptedSections` keys, determines a minimal set of
+ * `did.EncryptedSections` keys which, when unlocked, would cover all the
+ * desired `did.Section`'s.
  *
  * The selected unlockables are returned as an array of values from the
- * `unlockableKeys` array.
+ * `encryptedSectionKeys` array.
  *
- * @param {!Array<string>} encryptedInfosKeys
- * @param {!Array<string>} infoSectionKeys
+ * @param {!Array<string>} encryptedSectionsKeys
+ * @param {!Array<string>} sectionKeys
  * @return {!Array<string>} unlockable keys which together have all the desired
- *                         `InfoSection`s.
+ *                         `did.Section`s.
  */
-const selectEncryptedInfos = (encryptedInfosKeys, infoSectionKeys) => {
+const selectEncryptedSections = (encryptedSectionsKeys, sectionKeys) => {
   // If there is a solution with 1 or 2 unlockables, we'll find the optimal
   // solution using exhaustive search, which takes O(n^2) time where
   // `n = |nft.unlockables|`. Otherwise, we'll resort to a greedy approach.
   /** @const {Set<string>} */
-  const iss = new Set(infoSectionKeys);
+  const sks = new Set(sectionKeys);
 
   /**
    * @const {Array<{
@@ -43,14 +43,14 @@ const selectEncryptedInfos = (encryptedInfosKeys, infoSectionKeys) => {
     let bestI = -1;
     /** @type {number} */
     let bestExc = 1e9;
-    for (const key of encryptedInfosKeys) {
+    for (const key of encryptedSectionsKeys) {
       /** @const {!Array<string>} */
       const sections = key.split(",");
       /** @const {!Set<string>} */
-      const inc = new Set(sections.filter((e) => iss.has(e)));
+      const inc = new Set(sections.filter((e) => sks.has(e)));
       /** @const {!Set<string>} */
-      const exc = new Set(sections.filter((e) => !iss.has(e)));
-      if (inc.size == iss.size && exc.size < bestExc) {
+      const exc = new Set(sections.filter((e) => !sks.has(e)));
+      if (inc.size == sks.size && exc.size < bestExc) {
         bestI = arr.length;
         bestExc = exc.size;
       }
@@ -86,7 +86,7 @@ const selectEncryptedInfos = (encryptedInfosKeys, infoSectionKeys) => {
   let bestExc = 1e9;
   for (let i = 0; i < n; ++i)
     for (let j = i + 1; j < n; ++j)
-      if (infoSectionKeys.every((x) => arr[i].inc.has(x) || arr[j].inc.has(x))) {
+      if (sectionKeys.every((x) => arr[i].inc.has(x) || arr[j].inc.has(x))) {
         const exc = score(arr[i].exc, arr[j].exc);
         if (exc < bestExc) {
           bestI = i;
@@ -104,11 +104,11 @@ const selectEncryptedInfos = (encryptedInfosKeys, infoSectionKeys) => {
   /** @const {!Array<string>} */
   const res = [];
   for (const entry of arr) {
-    if (!iss.size) break;
+    if (!sks.size) break;
     /** @type {boolean} */
     let helpful = false;
     for (const elm of entry.inc)
-      helpful |= iss.delete(elm);
+      helpful |= sks.delete(elm);
     if (helpful)
       res.push(entry.key);
   }
@@ -117,123 +117,126 @@ const selectEncryptedInfos = (encryptedInfosKeys, infoSectionKeys) => {
 
 /**
  * @param {!eth.ERC721Unlockable} nft
- * @param {!Array<string>} infoSections
+ * @param {!Array<string>} sectionNames
  * @param {!eth.Provider} provider
  * @param {string} address
- * @return {Promise<!did.DecryptedInfos>}
+ * @return {Promise<!did.DecryptedSections>}
  */
-const decryptInfoSections = async (nft, infoSections, provider, address) => {
+const decryptSections = async (nft, sectionNames, provider, address) => {
   /** @const {!Array<string>} */
-  const encryptedInfosKeys = selectEncryptedInfos(
+  const encryptedSectionsKeys = selectEncryptedSections(
     Object.keys(nft.unlockables),
-    infoSections
+    sectionNames
   );
 
-  /** @const {!did.DecryptedInfos} */
-  const decryptedInfos = {};
+  /** @const {!did.DecryptedSections} */
+  const decryptedSections = {};
 
-  for (let i = 0; i < encryptedInfosKeys.length; ++i) {
+  for (let i = 0; i < encryptedSectionsKeys.length; ++i) {
     if (i > 0)
       await new Promise((resolve) => setTimeout(() => resolve(), 100));
-    /** @type {!did.EncryptedInfos} */
-    const encryptedInfos = /** @type {!did.EncryptedInfos} */(
-      nft.unlockables[encryptedInfosKeys[i]]);
-    delete encryptedInfos.merkleRoot;
+    /** @type {!did.EncryptedSections} */
+    const encryptedSections = /** @type {!did.EncryptedSections} */(
+      nft.unlockables[encryptedSectionsKeys[i]]);
+    delete encryptedSections.merkleRoot;
     /** @const {?string} */
-    const decryptedText = await decryptUnlockable(encryptedInfos, provider, address);
+    const decryptedText = await decryptUnlockable(encryptedSections, provider, address);
     if (decryptedText)
-      Object.assign(decryptedInfos,
-        /** @type {!did.DecryptedInfos} */(JSON.parse(decryptedText)));
+      Object.assign(decryptedSections,
+        /** @type {!did.DecryptedSections} */(JSON.parse(decryptedText)));
   }
   /** @const {!Set<string>} */
-  const infoSectionSet = new Set(infoSections);
-  for (const infoSection in decryptedInfos)
-    if (!infoSectionSet.has(infoSection)) delete decryptedInfos[infoSection];
-  return decryptedInfos;
+  const sectionNamesSet = new Set(sectionNames);
+  for (const section in decryptedSections)
+    if (!sectionNamesSet.has(section)) delete decryptedSections[section];
+  return decryptedSections;
 }
 
 /** @const {string} */
 const KIMLIKDAO_HASH_PREFIX = "\x19KimlikDAO hash\n";
 
 /**
- * @param {string} infoSectionName
- * @param {!did.InfoSection} infoSection
+ * @param {string} sectionName
+ * @param {!did.Section} section
  * @return {string}
  */
-const hash = (infoSectionName, infoSection) => {
-  if (infoSectionName == "exposureReportID") {
-    /** @const {!did.ExposureReportID} */
-    const exposureReportID = /** @type {!did.ExposureReportID} */(infoSection);
+const hash = (sectionName, section) => {
+  if (sectionName == "exposureReport") {
+    /** @const {!did.ExposureReport} */
+    const exposureReport = /** @type {!did.ExposureReport} */(section);
     /** @const {!Uint8Array} */
     const buff = new Uint8Array(64);
     new TextEncoder().encodeInto(KIMLIKDAO_HASH_PREFIX, buff);
     /** @const {!Uint8Array} */
-    const ts = hexten(exposureReportID.signatureTs.toString(16));
+    const ts = hexten(exposureReport.signatureTs.toString(16));
     buff.set(ts, 32 - ts.length);
-    uint8ArrayeBase64ten(buff.subarray(32), exposureReportID.id);
+    uint8ArrayeBase64ten(buff.subarray(32), exposureReport.id);
     return hex(keccak256Uint32(new Uint32Array(buff.buffer)));
   }
   /** @const {Set<string>} */
   const notHashed = new Set(["secp256k1", "bls12_381"]);
   return keccak256(
-    KIMLIKDAO_HASH_PREFIX + JSON.stringify(infoSection,
-      Object.keys(infoSection).filter((x) => !notHashed.has(x)).sort())
+    KIMLIKDAO_HASH_PREFIX + JSON.stringify(section,
+      Object.keys(section).filter((x) => !notHashed.has(x)).sort())
   );
 }
 
 /**
- * @param {string} infoSectionName
- * @param {!did.InfoSection} infoSection
- * @param {number} signatureTs
- * @param {!bigint} privateKey
- */
-const signInfoSection = (infoSectionName, infoSection, signatureTs, privateKey) => {
-  infoSection.signatureTs = signatureTs;
-  /** @const {!bigint} */
-  const d = BigInt("0x" + hash(infoSectionName, infoSection));
-  let { r, s, yParity } = sign(d, privateKey);
-  if (yParity) s += (1n << 255n);
-  infoSection.secp256k1 = [evm.uint256(r) + evm.uint256(s)];
-}
-
-/**
- * Returns the list of unique signers of an `InfoSection`.
+ * Returns the list of unique signers of an `did.Section`.
  *
  * Note these signers still need to be validated against the `TCKTSigners`
  * contract.
  *
- * @param {string} infoSectionName
- * @param {!did.InfoSection} infoSection
+ * @param {string} sectionName
+ * @param {!did.Section} section
  * @return {!Array<string>}
  */
-const recoverInfoSectionSigners = (infoSectionName, infoSection) => {
+const recoverSectionSigners = (sectionName, section) => {
   /** @const {string} */
-  const h = hash(infoSectionName, infoSection);
+  const h = hash(sectionName, section);
   /** @const {!Array<string>} */
-  const signers = infoSection.secp256k1.map((signature) =>
+  const signers = section.secp256k1.map((signature) =>
     evm.signerAddress(h, signature));
   return [...new Set(signers)];
 }
 
 /**
- * Signs a give `did.DecryptedInfos` in-place.
- *
- * @param {!did.DecryptedInfos} decryptedInfos
+ * @param {string} sectionName
+ * @param {!did.Section} section
+ * @param {string} commitment
  * @param {number} signatureTs
  * @param {!bigint} privateKey
- * @return {!did.DecryptedInfos}
  */
-const signDecryptedInfos = (decryptedInfos, signatureTs, privateKey) => {
-  for (const key in decryptedInfos)
-    signInfoSection(key, decryptedInfos[key], signatureTs, privateKey);
-  return decryptedInfos;
+const signSection = (sectionName, section, commitment, signatureTs, privateKey) => {
+  section.commitment = commitment;
+  section.signatureTs = signatureTs;
+  /** @const {!bigint} */
+  const d = BigInt("0x" + hash(sectionName, section));
+  let { r, s, yParity } = sign(d, privateKey);
+  if (yParity) s += (1n << 255n);
+  section.secp256k1 = [evm.uint256(r) + evm.uint256(s)];
+}
+
+/**
+ * Signs a given `did.DecryptedSections` in-place.
+ *
+ * @param {!did.DecryptedSections} decryptedSections
+ * @param {string} commitment
+ * @param {number} signatureTs
+ * @param {!bigint} privateKey
+ * @return {!did.DecryptedSections}
+ */
+const signDecryptedSections = (decryptedSections, commitment, signatureTs, privateKey) => {
+  for (const key in decryptedSections)
+    signSection(key, decryptedSections[key], commitment, signatureTs, privateKey);
+  return decryptedSections;
 }
 
 export {
-  decryptInfoSections,
+  decryptSections,
   hash,
-  recoverInfoSectionSigners,
-  selectEncryptedInfos,
-  signDecryptedInfos,
-  signInfoSection,
+  recoverSectionSigners,
+  selectEncryptedSections,
+  signDecryptedSections,
+  signSection,
 };

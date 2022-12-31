@@ -1,10 +1,11 @@
-build/did/test/infoSection.compiled-test.js: did/test/infoSection.compiled-test.js \
-    did/infoSection.js did/types.js \
-    api/edevletApi.js \
+build/did/test/section.compiled-test.js: did/test/section.compiled-test.js \
+    did/section.d.js did/section.js \
+    did/exposureReport.d.js did/exposureReport.js \
     crypto/sha3.js crypto/modular.js crypto/secp256k1.js \
     ethereum/evm.js ethereum/jsonrpc.js \
     ethereum/provider.js ethereum/unlockables.js \
     ethereum/ERC721Unlockable.js \
+    node/nvi.js \
     testing/assert.js testing/nodeHeader.js \
     util/çevir.js
 	mkdir -p $(dir $@)
@@ -19,4 +20,4 @@ build/did/test/infoSection.compiled-test.js: did/test/infoSection.compiled-test.
 	node $@
 
 .PHONY: did.test
-did.test: build/did/test/infoSection.compiled-test.js
+did.test: build/did/test/section.compiled-test.js

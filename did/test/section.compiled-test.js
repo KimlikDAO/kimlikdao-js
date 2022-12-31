@@ -1,13 +1,13 @@
 import { G } from "/crypto/secp256k1";
 import { keccak256Uint32 } from "/crypto/sha3";
-import { hash, recoverInfoSectionSigners, selectEncryptedInfos, signDecryptedInfos } from "/did/infoSection";
+import { hash, recoverSectionSigners, selectEncryptedSections, signDecryptedSections } from "/did/section";
 import evm from "/ethereum/evm.js";
 import { assertElemEq, assertEq, assertStats } from "/testing/assert";
 import { base64, hex, hexten } from "/util/çevir";
 
-const testSelectEncryptedInfos = () => {
+const testSelectEncryptedSections = () => {
   /** @const {!Array<string>} */
-  const encryptedInfosKeys = [
+  const encryptedSectionsKeys = [
     "a",
     "a,b",
     "a,b,c",
@@ -24,9 +24,9 @@ const testSelectEncryptedInfos = () => {
     "1,4,u,v,s",
   ];
 
-  const check = (infoSections, expected) =>
+  const check = (sections, expected) =>
     assertElemEq(
-      selectEncryptedInfos(encryptedInfosKeys, infoSections),
+      selectEncryptedSections(encryptedSectionsKeys, sections),
       expected
     );
 
@@ -71,16 +71,16 @@ vm.addr = (privKey) => {
   return "0x" + hex(keccak256Uint32(new Uint32Array(buff.buffer)).subarray(12));
 }
 
-const testSignInfoSection = () => {
-  /** @const {!did.DecryptedInfos} */
-  const decryptedInfos1 = {
+const testSignSection = () => {
+  /** @const {!did.DecryptedSections} */
+  const decryptedSections1 = {
     "humanID": /** @type {!did.HumanID} */({
       generic: "1234A234"
     })
   };
 
-  /** @const {!did.DecryptedInfos} */
-  const decryptedInfos2 = {
+  /** @const {!did.DecryptedSections} */
+  const decryptedSections2 = {
     "humanID": /** @type {!did.HumanID} */({
       generic: "1234A234",
       bls12_381: "asdfadsf",
@@ -90,30 +90,30 @@ const testSignInfoSection = () => {
 
   /** @const {number} */
   const timestamp = ~~(Date.now() / 1000);
-  signDecryptedInfos(decryptedInfos1, timestamp, 1n);
-  signDecryptedInfos(decryptedInfos2, timestamp, 2n);
+  signDecryptedSections(decryptedSections1, "commit", timestamp, 1n);
+  signDecryptedSections(decryptedSections2, "commit", timestamp, 2n);
 
-  assertEq(decryptedInfos1["humanID"].secp256k1.length, 1);
-  assertEq(decryptedInfos2["humanID"].secp256k1.length, 1);
+  assertEq(decryptedSections1["humanID"].secp256k1.length, 1);
+  assertEq(decryptedSections2["humanID"].secp256k1.length, 1);
   assertEq(
-    recoverInfoSectionSigners("humanID", decryptedInfos1["humanID"])[0],
+    recoverSectionSigners("humanID", decryptedSections1["humanID"])[0],
     vm.addr(1n)
   );
   assertEq(
-    recoverInfoSectionSigners("humanID", decryptedInfos2["humanID"])[0],
+    recoverSectionSigners("humanID", decryptedSections2["humanID"])[0],
     vm.addr(2n)
   );
 
-  decryptedInfos1["humanID"].secp256k1.push(
-    decryptedInfos2["humanID"].secp256k1[0]);
+  decryptedSections1["humanID"].secp256k1.push(
+    decryptedSections2["humanID"].secp256k1[0]);
 
-  assertElemEq(recoverInfoSectionSigners("humanID", decryptedInfos1["humanID"]),
+  assertElemEq(recoverSectionSigners("humanID", decryptedSections1["humanID"]),
     [vm.addr(1n), vm.addr(2n)]);
 
-  decryptedInfos1["humanID"].secp256k1.push(
-    decryptedInfos2["humanID"].secp256k1[0]);
+  decryptedSections1["humanID"].secp256k1.push(
+    decryptedSections2["humanID"].secp256k1[0]);
 
-  assertElemEq(recoverInfoSectionSigners("humanID", decryptedInfos1["humanID"]),
+  assertElemEq(recoverSectionSigners("humanID", decryptedSections1["humanID"]),
     [vm.addr(1n), vm.addr(2n)]);
 }
 
@@ -121,7 +121,7 @@ const testHash = () => {
   {
     const buff = new Uint8Array(32);
     buff[31] = buff[30] = buff[29] = 123;
-    assertEq(hash("exposureReportID", /** @const {!did.ExposureReportID} */({
+    assertEq(hash("exposureReport", /** @const {!did.ExposureReport} */({
       id: base64(buff),
       signatureTs: 123
     })), "43eadff4f6142463dc8d8a271e14406c9b11b166b704c846dcd705439bf321f9");
@@ -129,7 +129,7 @@ const testHash = () => {
   {
     const buff = new Uint8Array(32);
     buff[31] = buff[30] = buff[29] = buff[28] = 170;
-    assertEq(hash("exposureReportID", /** @const {!did.ExposureReportID} */({
+    assertEq(hash("exposureReport", /** @const {!did.ExposureReport} */({
       id: base64(buff),
       signatureTs: 123
     })), "396f822b3d8cef6a211a07d8147540acf33bedf67417277245dac8e04d5ec31d");
@@ -137,7 +137,7 @@ const testHash = () => {
   {
     const buff = new Uint8Array(32);
     buff[31] = buff[30] = buff[29] = buff[28] = 170;
-    assertEq(hash("exposureReportID", /** @const {!did.ExposureReportID} */({
+    assertEq(hash("exposureReport", /** @const {!did.ExposureReport} */({
       id: base64(buff),
       signatureTs: 123123123123
     })), "0a9a3c0c8d1fa507641e0bab6d90adee12cb6a6efa544da55b5ca76b326f1740");
@@ -145,6 +145,6 @@ const testHash = () => {
 }
 
 testHash();
-testSelectEncryptedInfos();
-testSignInfoSection();
+testSelectEncryptedSections();
+testSignSection();
 assertStats();

@@ -9,9 +9,9 @@
 const did = {};
 
 /**
- * A signed group of user data (e.g., geo address, contact info).
+ * A signed section of user data (e.g., geo address, contact info).
  * Each signature contains a timestamp and a wallet commitment; therefore
- * each group of data is signed *for* a walet and *at* a certain time.
+ * each section of data is signed *for* a walet and *at* a certain time.
  *
  * One exception to this is the `exposureReportID`, which is not committed
  * to a wallet (but still contains a signature timestamp), since it is used in
@@ -20,20 +20,30 @@ const did = {};
  * @interface
  * @struct
  */
-did.InfoSection = function () { }
+did.Section = function () { }
 
 /** @type {number} */
-did.InfoSection.prototype.signatureTs;
+did.Section.prototype.signatureTs;
 
 /** @type {string} */
-did.InfoSection.prototype.commitment;
+did.Section.prototype.commitment;
+
+/**
+ * The blinding factor for the wallet commitment.
+ *
+ * This piece of data is never sent to the signer nodes so that the signers
+ * can never associate a person info to a wallet address.
+ *
+ * @type {string}
+ */
+did.Section.prototype.commitmentR;
 
 /**
  * The aggregated bls12-381 signature from various signer nodes.
  *
  * @type {string}
  */
-did.InfoSection.prototype.bls12_381;
+did.Section.prototype.bls12_381;
 
 /**
  * The secp256k1 signatures kept as a list of 64 bytes compact signatures,
@@ -43,14 +53,14 @@ did.InfoSection.prototype.bls12_381;
  *
  * @type {Array<string>}
  */
-did.InfoSection.prototype.secp256k1;
+did.Section.prototype.secp256k1;
 
 /**
  * Contains the fundamental identification data of a person such as
  * name, date of birth, national id etc.
  *
  * @interface
- * @extends {did.InfoSection}
+ * @extends {did.Section}
  */
 did.PersonInfo = function () { };
 
@@ -97,7 +107,7 @@ did.PersonInfo.prototype.exposureReportID;
  * An info section containing verified contact info for a person / entity.
  *
  * @record
- * @extends {did.InfoSection}
+ * @extends {did.Section}
  */
 did.ContactInfo = function () { }
 
@@ -109,7 +119,7 @@ did.ContactInfo.prototype.phone;
 
 /**
  * @interface
- * @extends {did.InfoSection}
+ * @extends {did.Section}
  */
 did.AddressInfo = function () { }
 
@@ -120,7 +130,7 @@ did.AddressInfo.prototype.country;
 
 /**
  * @interface
- * @extends {did.InfoSection}
+ * @extends {did.Section}
  */
 did.HumanID = function () { }
 
@@ -128,38 +138,29 @@ did.HumanID = function () { }
 did.HumanID.prototype.generic;
 
 /**
- * @interface
- * @extends {did.InfoSection}
- */
-did.ExposureReportID = function () { }
-
-/** @type {string} */
-did.ExposureReportID.prototype.id;
-
-/**
  * A collection of `InfoSections` keyed by a string name.
  *
- * @typedef {!Object<string, !did.InfoSection>}
+ * @typedef {!Object<string, !did.Section>}
  */
-did.DecryptedInfos;
+did.DecryptedSections;
 
 /**
- * A collection of `InfoSection`s indexed by string keys which have been
+ * A collection of `did.Section`s indexed by string keys which have been
  * encrypted as an `Unlockable`. In addition to the `Unlockable` fields,
- * contains the merkle root of the `InfoSection`s therein.
+ * contains the merkle root of the `did.Section`s therein.
  *
  * @struct
  * @interface
  * @extends {eth.Unlockable}
  */
-did.EncryptedInfos = function () { }
+did.EncryptedSections = function () { }
 
 /** @type {string} */
-did.EncryptedInfos.prototype.merkleRoot;
+did.EncryptedSections.prototype.merkleRoot;
 
 /**
- * Merkle proof is an object mapping a `EncryptedInfos` key to a base64 encoded
- * level hash.
+ * Merkle proof is an object mapping a `EncryptedSections` key to a base64
+ * encoded level hash.
  *
  * @typedef {!Object<string, string>}
  */
