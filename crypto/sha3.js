@@ -10,7 +10,7 @@ import { hex } from '../util/çevir';
  * the length requirement.
  *
  * @param {!Uint32Array} words A typed array of `u32`s to be hashed.
- * @return {!Uint8Array} hex encoded hash.
+ * @return {!Uint32Array} hash as a Uint32Arrray of length 8.
  */
 const keccak256Uint32 = (words) => {
   /** @const {!Uint32Array} */
@@ -32,7 +32,7 @@ const keccak256Uint32 = (words) => {
   s[j] ^= 1;
   s[33] ^= 1 << 31;
   f(s);
-  return new Uint8Array(s.buffer).subarray(0, 32);
+  return s.subarray(0, 8);
 }
 
 /**

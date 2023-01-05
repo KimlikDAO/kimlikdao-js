@@ -1,21 +1,34 @@
 /**
- * @fileoverview API veri şekli tanımları.
+ * @fileoverview Errors returned from a KimlikDAO protocol node.
  *
  * @author KimlikDAO
- * @externs
  */
 
 /**
- * @interface
- * @struct
+ * @param {number} httpStatus
+ * @param {ErrorCode} errorCode
+ * @return {!Response}
  */
-function HataBildirimi(kod, ek) {
-    this.kod = kod;
-    this.ek = ek;
-}
+const err = (httpStatus, errorCode) => Response.json(
+  /** @type {HataBildirimi} */({ kod: errorCode }),
+  { status: httpStatus }
+);
 
-/** @type {number} */
-HataBildirimi.prototype.kod;
+/**
+ * @param {number} httpStatus
+ * @param {ErrorCode} errorCode
+ * @param {!Array<string>} messages
+ * @return {!Response}
+ */
+const errWithMessage = (httpStatus, errorCode, messages) = Response.json(
+  /** @type {HataBildirimi} */({ kod: errorCode, ek: messages }),
+  { status: httpStatus }
+);
 
-/** @type {Array<string>} */
-HataBildirimi.prototype.ek;
+/**
+ * @param {ErrorCode} kod
+ * @param {!Array<string>=} ek
+ * @return {Promise<*>}
+ */
+const reject = (kod, ek) =>
+  Promise.reject(/** @type {HataBildirimi} */({ kod, ek }));

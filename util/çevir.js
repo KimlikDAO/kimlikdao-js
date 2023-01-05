@@ -94,6 +94,10 @@ const base64ten = (b64) => {
   return buffer;
 };
 
+/**
+ * @param {!Uint8Array|!Array<number>}
+ * @param {string}
+ */
 const uint8ArrayeBase64ten = (buffer, b64) => {
   const decoded = atob(b64);
   const len = decoded.length;
@@ -109,4 +113,4 @@ export {
   hexten,
   uint8ArrayeBase64ten,
   Uint8denHexe,
-}
+};

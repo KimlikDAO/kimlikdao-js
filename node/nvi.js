@@ -59,4 +59,3 @@ nvi.IletisimBilgileri;
  * }}
  */
 nvi.AdresBilgileri;
-
