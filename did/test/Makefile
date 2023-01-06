@@ -6,7 +6,7 @@ build/did/test/section.compiled-test.js: did/test/section.compiled-test.js \
     ethereum/provider.js ethereum/unlockables.js \
     ethereum/ERC721Unlockable.js \
     node/nvi.js \
-    testing/assert.js testing/nodeHeader.js \
+    testing/assert.js testing/nodeHeader.js testing/process.d.js \
     util/çevir.js
 	mkdir -p $(dir $@)
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \

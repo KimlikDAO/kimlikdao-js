@@ -171,7 +171,8 @@ const hash = (sectionName, section) => {
     const ts = hexten(exposureReport.signatureTs.toString(16));
     buff.set(ts, 32 - ts.length);
     uint8ArrayeBase64ten(buff.subarray(32), exposureReport.id);
-    return hex(keccak256Uint32(new Uint32Array(buff.buffer)));
+    return hex(new Uint8Array(
+      keccak256Uint32(new Uint32Array(buff.buffer)).buffer, 0, 32));
   }
   /** @const {Set<string>} */
   const notHashed = new Set(["secp256k1", "bls12_381"]);

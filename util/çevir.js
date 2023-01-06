@@ -95,8 +95,8 @@ const base64ten = (b64) => {
 };
 
 /**
- * @param {!Uint8Array|!Array<number>}
- * @param {string}
+ * @param {!Uint8Array|!Array<number>} buffer
+ * @param {string} b64
  */
 const uint8ArrayeBase64ten = (buffer, b64) => {
   const decoded = atob(b64);

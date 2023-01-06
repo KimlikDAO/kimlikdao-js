@@ -122,8 +122,12 @@ const signerAddress = (digest, signature) => {
   const Q = recoverSigner(BigInt("0x" + digest), r, yParity
     ? yParityAndS - (1n << 255n) : yParityAndS, yParity);
 
+  /** @const {!Uint8Array} */
   const buff = hexten(uint256(Q.x) + uint256(Q.y));
-  return "0x" + hex(keccak256Uint32(new Uint32Array(buff.buffer)).subarray(12));
+  /** @const {!Uint8Array} */
+  const hash = new Uint8Array(
+    keccak256Uint32(new Uint32Array(buff.buffer)).buffer, 12, 20);
+  return "0x" + hex(hash);
 }
 
 /**

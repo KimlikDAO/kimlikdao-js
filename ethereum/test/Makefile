@@ -1,7 +1,7 @@
 build/ethereum/test/evm.compiled-test.js: ethereum/test/evm.compiled-test.js \
     crypto/secp256k1.js crypto/sha3.js crypto/modular.js \
     ethereum/evm.js \
-    testing/assert.js testing/nodeHeader.js \
+    testing/assert.js testing/nodeHeader.js testing/process.d.js \
     util/çevir.js
 	mkdir -p $(dir $@)
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \

@@ -8,11 +8,14 @@ const vm = {};
 
 /**
  * @param {!bigint} privKey
+ * @return {string}
  */
 vm.addr = (privKey) => {
   const Q = G.copy().multiply(privKey).project();
+  /** @const {!Uint8Array} */
   const buff = hexten(evm.uint256(Q.x) + evm.uint256(Q.y));
-  return "0x" + hex(keccak256Uint32(new Uint32Array(buff.buffer)).subarray(12));
+  return "0x" + hex(new Uint8Array(
+    keccak256Uint32(new Uint32Array(buff.buffer)).buffer, 12, 20));
 }
 
 /**
