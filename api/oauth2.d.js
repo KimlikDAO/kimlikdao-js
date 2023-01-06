@@ -6,7 +6,7 @@
 /**
  * @const
  */
-const jsonrpc = {};
+const oauth2 = {};
 
 /**
  * @typedef {{

@@ -12,13 +12,14 @@ import { keccak256 } from "/lib/crypto/sha3";
  * suitable VDF.
  *
  * @param {string} localIdNumber
- * @return {!ExposureReport}
+ * @param {string} exposureReportSecret
+ * @return {!did.ExposureReportID}
  */
-const generate = (localIdNumber) => {
-  return {
-    id: keccak256(localIdNumber),
+const generate = (localIdNumber, exposureReportSecret) => {
+  return /** @type {!did.ExposureReportID} */({
+    id: keccak256(localIdNumber + exposureReportSecret),
     proof: ""
-  }
+  });
 }
 
 export { generate };

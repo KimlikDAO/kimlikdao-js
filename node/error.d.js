@@ -23,14 +23,18 @@ const ErrorCode = {
 
 /**
  * @interface
- * @struct
+ *
+ * @param {!ErrorCode} kod
+ * @param {!Array<string>=} ek
  */
 function HataBildirimi(kod, ek) {
+  /** @const {!ErrorCode} */
   this.kod = kod;
+  /** @const {Array<string>} */
   this.ek = ek;
 }
 
-/** @type {ErrorCode} */
+/** @type {!ErrorCode} */
 HataBildirimi.prototype.kod;
 
 /** @type {Array<string>} */

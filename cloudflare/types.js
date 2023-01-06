@@ -23,6 +23,20 @@ cloudflare.Request.prototype.cf;
 cloudflare.Request.prototype.cf.clientAcceptEncoding
 
 /**
+ * The Cloudflare Response object contains this convenience method.
+ *
+ * @param {!Object} jsonObj
+ * @param {!Object=} options
+ * @return {!Response}
+ */
+Response.json = function(jsonObj, options) {}
+
+/**
+ * @return {Iterator<Blob>}
+ */
+FormData.prototype.values = function() {}
+
+/**
  * @interface
  */
 cloudflare.KeyValue = function () { }

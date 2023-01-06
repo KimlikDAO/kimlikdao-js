@@ -5,7 +5,7 @@ build/did/test/section.compiled-test.js: did/test/section.compiled-test.js \
     ethereum/evm.js ethereum/jsonrpc.js \
     ethereum/provider.js ethereum/unlockables.js \
     ethereum/ERC721Unlockable.js \
-    node/nvi.js \
+    node/nvi.d.js \
     testing/assert.js testing/nodeHeader.js testing/process.d.js \
     util/çevir.js
 	mkdir -p $(dir $@)
