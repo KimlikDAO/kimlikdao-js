@@ -32,6 +32,10 @@ cloudflare.Request.prototype.cf.clientAcceptEncoding
 Response.json = function(jsonObj, options) {}
 
 /**
+ * This method is only available in web workers so we define it here.
+ *
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/FormData/values
+ *
  * @return {Iterator<Blob>}
  */
 FormData.prototype.values = function() {}

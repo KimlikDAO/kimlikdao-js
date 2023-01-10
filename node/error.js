@@ -9,8 +9,8 @@
  * @param {!ErrorCode} errorCode
  * @return {!Response}
  */
-const err = (httpStatus, errorCode) => Response.json(
-  /** @type {!HataBildirimi} */({ kod: errorCode }),
+const err = (httpStatus, errorCode) => new Response(
+  JSON.stringify(/** @type {!HataBildirimi} */({ kod: errorCode })),
   { status: httpStatus }
 );
 
@@ -20,8 +20,11 @@ const err = (httpStatus, errorCode) => Response.json(
  * @param {!Array<string>} messages
  * @return {!Response}
  */
-const errWithMessage = (httpStatus, errorCode, messages) => Response.json(
-  /** @type {!HataBildirimi} */({ kod: errorCode, ek: messages }),
+const errWithMessage = (httpStatus, errorCode, messages) => new Response(
+  JSON.stringify(/** @type {!HataBildirimi} */({
+    kod: errorCode,
+    ek: messages
+  })),
   { status: httpStatus }
 );
 
