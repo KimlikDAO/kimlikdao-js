@@ -99,7 +99,7 @@ did.PersonInfo.prototype.gender;
  * delay function, therefore for maximum privacy, one may choose to discard an
  * EVM address used for an `exposureReport`.
  *
- * @type {string}
+ * @type {!did.ExposureReportID|string}
  */
 did.PersonInfo.prototype.exposureReportID;
 
@@ -127,15 +127,6 @@ did.AddressInfo = function () { }
  * @type {string}
  */
 did.AddressInfo.prototype.country;
-
-/**
- * @interface
- * @extends {did.Section}
- */
-did.HumanID = function () { }
-
-/** @type {string} */
-did.HumanID.prototype.generic;
 
 /**
  * A collection of `did.Sections` keyed by a string name.

@@ -1,6 +1,7 @@
 build/did/test/section.compiled-test.js: did/test/section.compiled-test.js \
     did/section.d.js did/section.js \
     did/exposureReport.d.js did/exposureReport.js \
+    did/humanID.d.js did/humanID.js \
     crypto/sha3.js crypto/modular.js crypto/secp256k1.js \
     ethereum/evm.js ethereum/jsonrpc.js \
     ethereum/provider.js ethereum/unlockables.js \

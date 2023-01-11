@@ -15,11 +15,11 @@ import { keccak256 } from "/lib/crypto/sha3";
  * @param {string} exposureReportSecret
  * @return {!did.ExposureReportID}
  */
-const generate = (localIdNumber, exposureReportSecret) => {
+const generateReportID = (localIdNumber, exposureReportSecret) => {
   return /** @type {!did.ExposureReportID} */({
     id: keccak256(localIdNumber + exposureReportSecret),
     proof: ""
   });
 }
 
-export { generate };
+export { generateReportID };

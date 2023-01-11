@@ -36,8 +36,17 @@ const errWithMessage = (httpStatus, errorCode, messages) => new Response(
 const reject = (kod, ek) =>
   Promise.reject(/** @type {!HataBildirimi} */({ kod, ek }));
 
+/**
+ * @param {!HataBildirimi} hata
+ * @return {!Response}
+ */
+const errorResponse = (hata) => new Response(
+  JSON.stringify(hata), { status: 400 }
+);
+
 export {
   err,
+  errorResponse,
   errWithMessage,
   reject
 };
