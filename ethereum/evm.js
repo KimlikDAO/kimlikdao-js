@@ -50,7 +50,7 @@ const adresDüzelt = (adres) => {
   if (küçükVar && büyükVar && farkVar) {
     return null;
   }
-  return new TextDecoder('ascii').decode(sağlama);
+  return new TextDecoder().decode(sağlama);
 }
 
 /**

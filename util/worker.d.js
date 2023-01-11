@@ -9,6 +9,5 @@ const close = function () { };
 
 /**
  * @param {MessageEvent} msg
- * @return {Promise<void>}
  */
-let onmessage = async function (msg) { };
+let onmessage = function (msg) { };

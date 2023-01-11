@@ -138,7 +138,7 @@ did.HumanID = function () { }
 did.HumanID.prototype.generic;
 
 /**
- * A collection of `InfoSections` keyed by a string name.
+ * A collection of `did.Sections` keyed by a string name.
  *
  * @typedef {!Object<string, !did.Section>}
  */

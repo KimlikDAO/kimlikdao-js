@@ -279,6 +279,7 @@ const f = (s) => {
 }
 
 export {
+  f,
   keccak256,
   keccak256Uint32,
   keccak256Uint8
