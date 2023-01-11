@@ -1,4 +1,4 @@
-/** @const {Array<string>} */
+/** @const {!Array<string>} */
 const Uint8denHexe = [];
 for (let /** number */ n = 0; n <= 0xff; ++n) {
   const hexOctet = n.toString(16).padStart(2, "0");
@@ -10,11 +10,10 @@ for (let /** number */ n = 0; n <= 0xff; ++n) {
  * @return {string} hex temsil eden dizi.
  */
 const hex = (buff) => {
+  /** @const {!Array<string>} */
   const octets = new Array(buff.length);
-
   for (let /** number */ i = 0; i < buff.length; ++i)
     octets[i] = Uint8denHexe[buff[i]];
-
   return octets.join("");
 }
 
@@ -24,46 +23,21 @@ const hex = (buff) => {
  */
 const hexten = (str) => {
   if (str.length & 1) str += "0";
-  let buff = new Uint8Array(str.length / 2);
+  /** @const {!Uint8Array} */
+  const buff = new Uint8Array(str.length / 2);
   for (let i = 0; i < buff.length; ++i)
     buff[i] = parseInt(str.slice(2 * i, 2 * i + 2), 16);
   return buff;
 }
 
 /**
- * @const {string}
- * @noinline
+ * @param {!Uint8Array} buff
+ * @param {string} str
  */
-const Base58Chars =
-  '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-
-const Base58Map = Array(256).fill(-1)
-for (let i = 0; i < Base58Chars.length; ++i)
-  Base58Map[Base58Chars.charCodeAt(i)] = i
-
-const base58 = (bytes) => {
-  const result = [];
-
-  for (const byte of bytes) {
-    let carry = byte
-    for (let j = 0; j < result.length; ++j) {
-      const x = (Base58Map[result[j]] << 8) + carry
-      result[j] = Base58Chars.charCodeAt(x % 58)
-      carry = (x / 58) | 0
-    }
-    while (carry) {
-      result.push(Base58Chars.charCodeAt(carry % 58))
-      carry = (carry / 58) | 0
-    }
-  }
-
-  for (const byte of bytes)
-    if (byte) break
-    else result.push('1'.charCodeAt(0))
-
-  result.reverse()
-
-  return String.fromCharCode(...result)
+const uint8ArrayeHexten = (buff, str) => {
+  if (str.length & 1) str += "0";
+  for (let i = 0; i < buff.length; ++i)
+    buff[i] = parseInt(str.slice(2 * i, 2 * i + 2), 16);
 }
 
 /**
@@ -106,11 +80,11 @@ const uint8ArrayeBase64ten = (buffer, b64) => {
 }
 
 export {
-  base58,
   base64,
   base64ten,
   hex,
   hexten,
   uint8ArrayeBase64ten,
+  uint8ArrayeHexten,
   Uint8denHexe,
 };

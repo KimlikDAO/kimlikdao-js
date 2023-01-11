@@ -1,4 +1,43 @@
-import { base58 } from '../util/çevir';
+/**
+ * @const {string}
+ * @noinline
+ */
+const Base58Chars = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+
+/**
+ * @const {Array<number>}
+ */
+const Base58Map = Array(256).fill(-1);
+for (let i = 0; i < Base58Chars.length; ++i)
+  Base58Map[Base58Chars.charCodeAt(i)] = i;
+
+/**
+ * @param {!Uint8Array} bytes
+ * @return {string}
+ */
+const base58 = (bytes) => {
+  const result = [];
+
+  for (const byte of bytes) {
+    let carry = byte
+    for (let j = 0; j < result.length; ++j) {
+      const x = (Base58Map[result[j]] << 8) + carry
+      result[j] = Base58Chars.charCodeAt(x % 58)
+      carry = (x / 58) | 0
+    }
+    while (carry) {
+      result.push(Base58Chars.charCodeAt(carry % 58))
+      carry = (carry / 58) | 0
+    }
+  }
+  for (const byte of bytes)
+    if (byte) break
+    else result.push(49)
+
+  result.reverse()
+
+  return String.fromCharCode(...result)
+}
 
 /**
  * Write an integer in the Continue-Bit-Encoding.
@@ -58,7 +97,7 @@ const hash = (data) => {
  */
 const CID = (hash) => {
   let bytes = new Uint8Array(34);
-  bytes.set([18, 32], 0)
+  bytes.set([18, 32])
   bytes.set(hash, 2);
   return base58(bytes);
 }
