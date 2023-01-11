@@ -5,7 +5,7 @@
 const Base58Chars = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 
 /**
- * @const {Array<number>}
+ * @const {!Array<number>}
  */
 const Base58Map = Array(256).fill(-1);
 for (let i = 0; i < Base58Chars.length; ++i)
@@ -16,6 +16,7 @@ for (let i = 0; i < Base58Chars.length; ++i)
  * @return {string}
  */
 const base58 = (bytes) => {
+  /** @const {!Array<number>} */
   const result = [];
 
   for (const byte of bytes) {
@@ -35,7 +36,6 @@ const base58 = (bytes) => {
     else result.push(49)
 
   result.reverse()
-
   return String.fromCharCode(...result)
 }
 
@@ -83,6 +83,7 @@ const hash = (data) => {
   writeCBE(padded.subarray(1), m);
   padded.set([8, 2, 18], 1 + mEncodedLen);
   writeCBE(padded.subarray(4 + mEncodedLen), n);
+  /** @const {number} */
   const dataOffset = 4 + mEncodedLen + nEncodedLen;
   padded.set(data, dataOffset);
   padded[dataOffset + n] = 24;
