@@ -47,7 +47,7 @@ const uint8ArrayeHexten = (buff, str) => {
 const base64 = (bytes) => {
   /** @type {string} */
   let binary = "";
-  /** @type {number} */
+  /** @const {number} */
   const len = bytes.length;
   for (let i = 0; i < len; i++) {
     binary += String.fromCharCode(bytes[i]);
@@ -60,8 +60,11 @@ const base64 = (bytes) => {
  * @return {!Uint8Array}
  */
 const base64ten = (b64) => {
+  /** @const {string} */
   const decoded = atob(b64);
+  /** @const {!Uint8Array} */
   const buffer = new Uint8Array(decoded.length);
+  /** @const {number} */
   const len = decoded.length;
   for (let i = 0; i < len; ++i)
     buffer[i] = decoded.charCodeAt(i);
@@ -73,7 +76,9 @@ const base64ten = (b64) => {
  * @param {string} b64
  */
 const uint8ArrayeBase64ten = (buffer, b64) => {
+  /** @const {string} */
   const decoded = atob(b64);
+  /** @const {number} */
   const len = decoded.length;
   for (let i = 0; i < len; ++i)
     buffer[i] = decoded.charCodeAt(i);

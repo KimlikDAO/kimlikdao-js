@@ -29,21 +29,21 @@ Vitest'leri çalıştırmak için `yarn vitest` komutunu çalıştırmak yeterli
  
 # Dizin yapısı
 
-`api`: e-Devlet API tanımları
+`api`: Standart protokol tanımları (örneğin: jsonrpc, oauth2)
 
 `cloudflare`: Cloudflare Workers platformu ile ilgili tanımlar
 
 `crypto`: Kriptografik fonksiyonlar ve kütüphaneler
 
+`did`: KimlikDAO'nun DID ve TCKT tanımları
+
 `ethereum`: Ethereum node'ları ile etkileşim araçları
 
-`tckt`: KimlikDAO'nun TCKT veri tanımları
+`node`: KimlikDAO protocol node'larıyla konuşurken gerekli tanımlar
 
 `testing`: Test yazma kütüphaneleri
 
 `util`: Çevirme araçları ve extern tanımları
-
-`ipfs.js`: Basit IPFS istemcisi
 
 # Yeni modüller
 
