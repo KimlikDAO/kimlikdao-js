@@ -97,7 +97,7 @@ const addToWallet = () =>
  * @param {string} to
  * @param {string} value value in native token, encoded as a hex string.
  * @param {string} calldata hex encoded calldata.
- * @return {Promise<*>}
+ * @return {!Promise<*>}
  */
 const sendTransactionTo = (from, to, value, calldata) =>
   ethereum.request(/** @type {eth.Request} */({
@@ -114,7 +114,7 @@ const sendTransactionTo = (from, to, value, calldata) =>
  * @param {string} address
  * @param {string} value value in native tokens, encoded as a hex string.
  * @param {string} calldata hex encoded calldata.
- * @return {Promise<*>}
+ * @return {!Promise<*>}
  */
 const sendTransaction = (address, value, calldata) =>
   sendTransactionTo(address, TCKT_ADDR, value, calldata);
@@ -139,7 +139,7 @@ const NonceCache = {};
  * @param {string} chainId
  * @param {string} address Owner address including the 0x.
  * @param {number} token
- * @return {Promise<string>} The nonce for (chain, token, address).
+ * @return {!Promise<string>} The nonce for (chain, token, address).
  */
 const getNonce = (chainId, address, token) => {
   const cached = NonceCache[chainId + address + token];
@@ -156,14 +156,14 @@ const getNonce = (chainId, address, token) => {
  * TODO(KimlikDAO-bot): Update to the new method signature
  *
  * @param {string} address
- * @return {Promise<string>}
+ * @return {!Promise<string>}
  */
 const handleOf = (address) =>
   callMethod(TCKT_ADDR, "0x8a591c8a" + evm.address(address));
 
 /**
  * @param {string} address
- * @return {Promise<number>}
+ * @return {!Promise<number>}
  */
 const revokesRemaining = (address) =>
   callMethod(TCKT_ADDR, "0x11ac4634" + evm.address(address))
@@ -172,7 +172,7 @@ const revokesRemaining = (address) =>
 /**
  * @param {string} address
  * @param {number} deltaWeight
- * @return {Promise<*>}
+ * @return {!Promise<*>}
  */
 const reduceRevokeThreshold = (address, deltaWeight) =>
   sendTransaction(address, "0", "0xab505b1c" + evm.uint256(deltaWeight));
@@ -181,7 +181,7 @@ const reduceRevokeThreshold = (address, deltaWeight) =>
  * @param {string} address
  * @param {number} deltaWeight revoker weight.
  * @param {string} revokerAddress revoker address.
- * @return {Promise<*>}
+ * @return {!Promise<*>}
  */
 const addRevoker = (address, deltaWeight, revokerAddress) =>
   sendTransaction(address, "0", "0xf02b3297" +
@@ -189,7 +189,7 @@ const addRevoker = (address, deltaWeight, revokerAddress) =>
 
 /**
  * @param {string} address
- * @return {Promise<*>}
+ * @return {!Promise<*>}
  */
 const revoke = (address) =>
   sendTransaction(address, "0", "0xb6549f75");
@@ -197,7 +197,7 @@ const revoke = (address) =>
 /**
  * @param {string} address
  * @param {string} friend
- * @return {Promise<*>}
+ * @return {!Promise<*>}
  */
 const revokeFriend = (address, friend) =>
   sendTransaction(address, "0", "0x3a2c82c7" + evm.address(friend));
@@ -206,7 +206,7 @@ const revokeFriend = (address, friend) =>
  * Returns the list of addresses that can be revoked by `revoker`.
  *
  * @param {string} revoker
- * @return {Promise<*>}
+ * @return {!Promise<*>}
  */
 const getRevokeeAddresses = (revoker) =>
   ethereum.request(/** @type {eth.Request} */({
@@ -228,8 +228,8 @@ const getRevokeeAddresses = (revoker) =>
  * @param {string} address
  * @param {string} cid
  * @param {number} revokeThreshold
- * @param {Object<string, number>} revokers
- * @return {Promise<*>}
+ * @param {!Object<string, number>} revokers
+ * @return {!Promise<*>}
  */
 const createWithRevokers = (chainId, address, cid, revokeThreshold, revokers) =>
   priceIn(chainId, 0).then(([high, low]) => {
@@ -243,8 +243,8 @@ const createWithRevokers = (chainId, address, cid, revokeThreshold, revokers) =>
 /**
  * @param {number} revokeThreshold The threshold for vote weight after which
  *                                 the TCKT is revoked.
- * @param {Object<string, number>} revokers (Address, weight) pairs for the
- *                                          revokers.
+ * @param {!Object<string, number>} revokers (Address, weight) pairs for the
+ *                                           revokers.
  */
 const serializeRevokers = (revokeThreshold, revokers) => {
   /** @type {string} */
@@ -263,8 +263,8 @@ const serializeRevokers = (revokeThreshold, revokers) => {
 /**
  * @param {string} cid
  * @param {number} revokeThreshold
- * @param {Object<string, number>} revokers
- * @return {Promise<*>}
+ * @param {!Object<string, number>} revokers
+ * @return {!Promise<*>}
  */
 const createWithRevokersWithTokenPermit = (address, cid, revokeThreshold, revokers, signature) =>
   revokeThreshold == 0
@@ -277,9 +277,9 @@ const createWithRevokersWithTokenPermit = (address, cid, revokeThreshold, revoke
  * @param {string} address
  * @param {string} cid
  * @param {number} revokeThreshold
- * @param {Object<string, number>} revokers
+ * @param {!Object<string, number>} revokers
  * @param {number} token
- * @return {Promise<*>}
+ * @return {!Promise<*>}
  */
 const createWithRevokersWithTokenPayment = (chainId, address, cid, revokeThreshold, revokers, token) => {
   const tokenSerialized = evm.uint96(0) + TokenData[chainId][token][0];
@@ -292,7 +292,7 @@ const createWithRevokersWithTokenPayment = (chainId, address, cid, revokeThresho
 /**
  * @param {string} chainId
  * @param {number} token
- * @return {Promise<!Array<number>>} price of TCKT in the given currency
+ * @return {!Promise<!Array<number>>} price of TCKT in the given currency
  */
 const priceIn = (chainId, token) => {
   const chain = chainId;
@@ -311,7 +311,8 @@ const priceIn = (chainId, token) => {
 }
 
 /**
- * @return {Promise<number>}
+ * @param {string} chainId
+ * @return {!Promise<number>}
  */
 const estimateNetworkFee = (chainId) => {
   const hack = {
@@ -350,7 +351,7 @@ const getApprovalFor = (chainId, address, token) => sendTransactionTo(
  *                               [1..3].
  * @param {boolean} withRevokers Whether the user has set up valid revokers to
  *                               qualify for a discount.
- * @return {Promise<string>}     Calldata serialized permission.
+ * @return {!Promise<string>}    Calldata serialized permission.
  */
 const getPermitFor = (chainId, owner, token, withRevokers) =>
   Promise.all([priceIn(chainId, token), getNonce(chainId, owner, token)])

@@ -120,7 +120,7 @@ const selectEncryptedSections = (encryptedSectionsKeys, sectionKeys) => {
  * @param {!Array<string>} sectionNames
  * @param {!eth.Provider} provider
  * @param {string} address
- * @return {Promise<!did.DecryptedSections>}
+ * @return {!Promise<!did.DecryptedSections>}
  */
 const decryptSections = async (nft, sectionNames, provider, address) => {
   /** @const {!Array<string>} */

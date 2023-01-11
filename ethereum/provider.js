@@ -12,7 +12,7 @@ eth.Provider = function () { }
 
 /**
  * @param {eth.Request} params
- * @return {Promise<string>|Promise<!Array<string>>}
+ * @return {!Promise<string>|!Promise<!Array<string>>}
  **/
 eth.Provider.prototype.request = function (params) { };
 

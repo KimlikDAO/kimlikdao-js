@@ -49,7 +49,7 @@ cloudflare.KeyValue = function () { }
  * @nosideeffects
  * @param {string} key
  * @param {string} type
- * @return {Promise<ArrayBuffer>}
+ * @return {!Promise<ArrayBuffer>}
  */
 cloudflare.KeyValue.prototype.get = function (key, type) { };
 
@@ -57,7 +57,7 @@ cloudflare.KeyValue.prototype.get = function (key, type) { };
  * @nosideeffects
  * @param {string} key
  * @param {string|ArrayBuffer} value
- * @return {Promise<*>}
+ * @return {!Promise<*>}
  */
 cloudflare.KeyValue.prototype.put = function (key, value) { };
 

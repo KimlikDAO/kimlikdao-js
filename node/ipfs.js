@@ -64,7 +64,7 @@ const writeCBE = (buff, n) => {
 
 /**
  * @param {!Uint8Array} data Uint8Array olarak dosya
- * @return {Promise<!Uint8Array>}
+ * @return {!Promise<!Uint8Array>}
  */
 const hash = (data) => {
   /** @const {number} */
@@ -105,7 +105,7 @@ const CID = (hash) => {
 /**
  * @param {string} nodeUrl
  * @param {!Uint8Array} cidByte
- * @return {Promise<string>}
+ * @return {!Promise<string>}
  */
 const cidBytetanOku = (nodeUrl, cidByte) => {
   const yerelCID = CID(cidByte);
@@ -121,7 +121,7 @@ const cidBytetanOku = (nodeUrl, cidByte) => {
 /**
  * @param {string} nodeUrl
  * @param {string} veri IPFS'e yazılacak veri.
- * @return {Promise<!Uint8Array>} onaylanmış IPFS cidByte.
+ * @return {!Promise<!Uint8Array>} onaylanmış IPFS cidByte.
  */
 const yaz = (nodeUrl, veri) => {
   /** @type {!Uint8Array} */
