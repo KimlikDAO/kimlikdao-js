@@ -10,9 +10,9 @@ import { base64ten, hex, hexten, uint8ArrayeBase64ten } from "../util/çevir";
  * @param {!eth.Unlockable} unlockable
  * @param {!eth.Provider} provider
  * @param {string} address
- * @return {Promise<string>}
+ * @return {!Promise<string>}
  */
-const decryptUnlockable = (unlockable, provider, address) => {
+const decrypt = (unlockable, provider, address) => {
   /** @const {TextEncoder} */
   const encoder = new TextEncoder();
   switch (unlockable.version) {
@@ -49,4 +49,4 @@ const decryptUnlockable = (unlockable, provider, address) => {
   return Promise.reject();
 }
 
-export { decryptUnlockable };
+export { decrypt };

@@ -3,9 +3,10 @@ build/did/test/section.compiled-test.js: did/test/section.compiled-test.js \
     did/exposureReport.d.js did/exposureReport.js \
     did/humanID.d.js did/humanID.js \
     crypto/sha3.js crypto/modular.js crypto/secp256k1.js \
-    ethereum/evm.js ethereum/jsonrpc.js \
-    ethereum/provider.js ethereum/unlockables.js \
-    ethereum/ERC721Unlockable.js \
+    ethereum/ERC721Unlockable.d.js \
+    ethereum/evm.js ethereum/jsonrpc.d.js \
+    ethereum/provider.d.js \
+    ethereum/unlockable.d.js ethereum/unlockable.js \
     node/nvi.d.js \
     testing/assert.js testing/nodeHeader.js testing/process.d.js \
     util/çevir.js

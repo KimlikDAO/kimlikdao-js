@@ -1,6 +1,6 @@
 /**
  * @fileoverview An extension to ERC721Metadata, which allows for encrypted
- * data stored inside the NFT.
+ * data to be stored inside an NFT.
  *
  * @author KimlikDAO
  * @externs
@@ -32,16 +32,6 @@ eth.ERC721Metadata.prototype.background_color;
 
 /** @type {string} */
 eth.ERC721Metadata.prototype.youtube_url;
-
-/**
- * @interface
- * @struct
- * @extends {eth.EncryptedData}
- */
-eth.Unlockable = function () { }
-
-/** @type {string|!Object<string, Array<string>>} */
-eth.Unlockable.prototype.userPrompt;
 
 /**
  * @interface

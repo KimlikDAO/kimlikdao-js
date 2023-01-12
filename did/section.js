@@ -7,7 +7,7 @@
 import { sign } from "../crypto/secp256k1";
 import { keccak256, keccak256Uint32 } from "../crypto/sha3";
 import evm from "../ethereum/evm";
-import { decryptUnlockable } from "../ethereum/unlockables";
+import { decrypt } from "../ethereum/unlockable";
 import { hex, hexten, uint8ArrayeBase64ten } from "../util/çevir";
 
 /**
@@ -140,7 +140,7 @@ const decryptSections = async (nft, sectionNames, provider, address) => {
       nft.unlockables[encryptedSectionsKeys[i]]);
     delete encryptedSections.merkleRoot;
     /** @const {?string} */
-    const decryptedText = await decryptUnlockable(encryptedSections, provider, address);
+    const decryptedText = await decrypt(encryptedSections, provider, address);
     if (decryptedText)
       Object.assign(decryptedSections,
         /** @type {!did.DecryptedSections} */(JSON.parse(decryptedText)));

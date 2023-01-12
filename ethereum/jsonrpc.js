@@ -1,52 +1,19 @@
-/**
- * @fileoverview Etherem json-rpc parameter definitions
- *
- * @author KimlikDAO
- * @externs
- */
-
-/** @const */
-var eth;
 
 /**
- * Represents an ethereum transaction, to be sent to a provider.
- *
- * @interface
- * @struct
+ * @param {string} url
+ * @param {string} method
+ * @param {!Array<*>} params
  */
-eth.Transaction = function () { }
+const request = () => fetch(url, {
+  method: "POST",
+  headers: { "content-type": "application/json" },
+  body: JSON.stringify(/** @type {!jsonrpc.Request} */({
+    jsonrpc: "2.0",
+    id: 1,
+    method,
+    params
+  }))
+}).then((res) => res.ok ? res.json() : Promise.reject())
+  .then((/** @type {jsonrpc.Response} */ res) => res.result || Promise.reject());
 
-/** @type {string} */
-eth.Transaction.prototype.to;
-
-/** @type {string} */
-eth.Transaction.prototype.from;
-
-/** @type {string} */
-eth.Transaction.prototype.value;
-
-/** @type {string} */
-eth.Transaction.prototype.data;
-
-/** @type {string} */
-eth.Transaction.prototype.chainId;
-
-/**
- * Represents a `eth_getLogs` request parameters.
- *
- * @interface
- * @struct
- */
-eth.GetLogs = function () { }
-
-/** @type {string} */
-eth.GetLogs.prototype.fromBlock;
-
-/** @type {string} */
-eth.GetLogs.prototype.toBlock;
-
-/** @type {string} */
-eth.GetLogs.prototype.address;
-
-/** @type {Array<string>} */
-eth.GetLogs.prototype.topics;
+export { request };
