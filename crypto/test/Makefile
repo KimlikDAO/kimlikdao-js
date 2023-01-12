@@ -4,6 +4,8 @@ build/crypto/test/secp256k1.compiled-test.js: crypto/test/secp256k1.compiled-tes
                                               util/çevir.js
 	mkdir -p $(dir $@)
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
+                             --jscomp_error=strictCheckTypes \
+                             --jscomp_error=unusedLocalVariables \
                              --emit_use_strict \
                              --module_resolution NODE \
                              --assume_function_wrapper \
@@ -21,6 +23,8 @@ build/crypto/test/integration.compiled-test.js: crypto/test/integration.compiled
                                                 util/çevir.js
 	mkdir -p $(dir $@)
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
+                             --jscomp_error=strictCheckTypes \
+                             --jscomp_error=unusedLocalVariables \
                              --emit_use_strict \
                              --module_resolution NODE \
                              --assume_function_wrapper \
@@ -37,6 +41,8 @@ build/crypto/test/modular.compiled-test.js: crypto/test/modular.compiled-test.js
                                             util/çevir.js
 	mkdir -p $(dir $@)
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
+                             --jscomp_error=strictCheckTypes \
+                             --jscomp_error=unusedLocalVariables \
                              --emit_use_strict \
                              --module_resolution NODE \
                              --assume_function_wrapper \
@@ -53,6 +59,8 @@ build/crypto/test/sha3.compiled-test.js: crypto/test/sha3.compiled-test.js crypt
                                          util/çevir.js
 	mkdir -p $(dir $@)
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
+                             --jscomp_error=strictCheckTypes \
+                             --jscomp_error=unusedLocalVariables \
                              --emit_use_strict \
                              --module_resolution NODE \
                              --assume_function_wrapper \

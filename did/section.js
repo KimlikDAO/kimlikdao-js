@@ -108,7 +108,7 @@ const selectEncryptedSections = (encryptedSectionsKeys, sectionKeys) => {
     /** @type {boolean} */
     let helpful = false;
     for (const elm of entry.inc)
-      helpful |= sks.delete(elm);
+      helpful ||= sks.delete(elm);
     if (helpful)
       res.push(entry.key);
   }

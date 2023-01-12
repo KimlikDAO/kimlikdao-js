@@ -37,11 +37,11 @@ const adresDüzelt = (adres) => {
     if (65 <= c && c <= 90) {
       büyükVar = true;
       sağlama[i] = (e > 55) ? c : c + 32;
-      farkVar |= !(e > 55);
+      farkVar ||= !(e > 55);
     } else if (97 <= c && c <= 122) {
       küçükVar = true;
       sağlama[i] = (e > 55) ? c - 32 : c;
-      farkVar |= (e > 55);
+      farkVar ||= (e > 55);
     } else if (48 <= c && c <= 57) {
       sağlama[i] = c;
     } else return null;

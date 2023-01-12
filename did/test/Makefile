@@ -12,6 +12,8 @@ build/did/test/section.compiled-test.js: did/test/section.compiled-test.js \
     util/çevir.js
 	mkdir -p $(dir $@)
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
+                             --jscomp_error=strictCheckTypes \
+                             --jscomp_error=unusedLocalVariables \
                              --module_resolution NODE \
                              --assume_function_wrapper \
                              --dependency_mode PRUNE \

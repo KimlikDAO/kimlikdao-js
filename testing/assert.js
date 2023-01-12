@@ -1,6 +1,11 @@
+/** @type {number} */
 let TrueAsserts = 0;
+/** @type {number} */
 let FalseAsserts = 0;
 
+/**
+ * @param {boolean} value
+ */
 const updateCounters = (value) => value ? TrueAsserts += 1 : FalseAsserts += 1;
 
 /**

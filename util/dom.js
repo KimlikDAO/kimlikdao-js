@@ -1,13 +1,7 @@
-// FIXME(KimlikDAO-bot): https://github.com/google/closure-compiler/issues/1601
-if (typeof goog === 'undefined' && typeof globalThis !== 'undefined') {
-  globalThis.goog = {
-    define: (n, v) => v,
-  };
-}
 /**
  * @define {boolean}
  */
-const TR = goog.define('TR', true);
+const TR = true;
 
 /**
  * @noinline
@@ -85,8 +79,6 @@ const telefondanMetne = (telefon) =>
   telefon.slice(0, 3) + " (" + telefon.slice(3, 6) + ") " + telefon.slice(6, 9) + " " +
   telefon.slice(9, 11) + " " + telefon.slice(11);
 
-
-
 export default {
   adla,
   adlaGizle,
@@ -96,6 +88,6 @@ export default {
   göster,
   menüYarat,
   paradanMetne,
-  TR,
   telefondanMetne,
+  TR,
 };

@@ -55,7 +55,7 @@ eth.WatchAsset = function () { }
 /** @type {string} */
 eth.WatchAsset.prototype.type;
 
-/** @type {Object<string, string>} */
+/** @struct */
 eth.WatchAsset.prototype.options;
 
 /** @type {string} */
