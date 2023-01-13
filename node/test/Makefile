@@ -1,4 +1,5 @@
-build/node/test/ipfs.compiled-test.js: node/test/ipfs.compiled-test.js node/ipfs.js \
+build/node/test/ipfs.compiled-test.js: node/test/ipfs.compiled-test.js \
+    node/ipfs.d.js node/ipfs.js node/error.d.js \
     testing/assert.js testing/nodejs.d.js testing/nodejs.js \
     util/çevir.js
 	mkdir -p $(dir $@)

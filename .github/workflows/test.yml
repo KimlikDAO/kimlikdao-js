@@ -8,6 +8,7 @@ on:
 
 jobs:
   check:
+    name: Unit tests
     strategy:
       fail-fast: true
 

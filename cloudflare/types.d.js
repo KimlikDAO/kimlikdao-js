@@ -16,11 +16,12 @@ const cloudflare = {};
  */
 cloudflare.Request = function () { }
 
-/** @const */
+/**
+ * @const {{
+ *   clientAcceptEncoding: ?string
+ * }}
+ */
 cloudflare.Request.prototype.cf;
-
-/** @const {?string} */
-cloudflare.Request.prototype.cf.clientAcceptEncoding
 
 /**
  * The Cloudflare Response object contains this convenience method.

@@ -1,4 +1,4 @@
-import { G, sign } from "/crypto/secp256k1";
+import { nth, sign } from "/crypto/secp256k1";
 import { keccak256Uint32 } from "/crypto/sha3";
 import evm from "/ethereum/evm";
 import { assertEq, assertStats } from "/testing/assert";
@@ -11,9 +11,9 @@ const vm = {};
  * @return {string}
  */
 vm.addr = (privKey) => {
-  const Q = G.copy().multiply(privKey).project();
+  const { /** !bigint */ x, /** !bigint */ y } = nth(privKey);
   /** @const {!Uint8Array} */
-  const buff = hexten(evm.uint256(Q.x) + evm.uint256(Q.y));
+  const buff = hexten(evm.uint256(x) + evm.uint256(y));
   return "0x" + hex(new Uint8Array(
     keccak256Uint32(new Uint32Array(buff.buffer)).buffer, 12, 20));
 }

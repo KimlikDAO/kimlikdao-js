@@ -3,7 +3,6 @@
  *
  * @author KimlikDAO
  */
-import { kutula } from '../crypto/ed25519';
 import { TCKT_ADDR } from '../ethereum/TCKT';
 
 /**
@@ -67,12 +66,11 @@ var InfoGroup;
  * Verilen AçıkTCKT'yi `bölümler`'e ayırıp her bölümü ayrı bir unlockable
  * içinde şifreler ve bir `eth.ERC721Unlockable` oluşturur.
  *
- * @param {string} açıkAnahtar
  * @param {!did.DecryptedSections} açıkTckt
  * @param {!Array<!InfoGroup>} kümeler
  * @return {!eth.ERC721Unlockable}
  */
-const tcktVerisiHazırla = (açıkAnahtar, açıkTckt, kümeler) => {
+const hazırla = (açıkAnahtar, açıkTckt, kümeler) => {
   const encoder = new TextEncoder();
 
   /**
@@ -91,7 +89,7 @@ const tcktVerisiHazırla = (açıkAnahtar, açıkTckt, kümeler) => {
     encoder.encodeInto(TCKT_ADDR, dolgulu)
     dolgulu[42] = 10;
     dolgulu.set(encoded, 43);
-    return kutula(açıkAnahtar, dolgulu);
+    return {};
   }
 
   /** @const {!Object<string, !eth.Unlockable>} */
@@ -112,4 +110,4 @@ const tcktVerisiHazırla = (açıkAnahtar, açıkTckt, kümeler) => {
   });
 }
 
-export { tcktVerisiHazırla };
+export { hazırla };

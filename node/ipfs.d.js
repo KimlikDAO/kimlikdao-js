@@ -3,10 +3,12 @@
  * @externs
  */
 
+/** @const */
 node.ipfs = {};
 
 /**
  * @constructor
+ * @struct
  */
 node.ipfs.AddResult = function () { }
 

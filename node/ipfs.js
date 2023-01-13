@@ -112,7 +112,7 @@ const cidBytetanOku = (nodeUrl, cidByte) => {
   const yerelCID = CID(cidByte);
   return fetch(nodeUrl + "ipfs/" + yerelCID)
     .then((res) => res.arrayBuffer())
-    .then((buf) => hash(new Uint8Array(buf))
+    .then((/** @type {!ArrayBuffer} */ buf) => hash(new Uint8Array(buf))
       .then((gelenByte) => CID(gelenByte) === yerelCID
         ? new TextDecoder().decode(buf)
         : Promise.reject("IPFS hash'i tutmadı"))
@@ -135,10 +135,10 @@ const yaz = (nodeUrl, veri) => {
     body: formData
   })
     .then((res) => res.json())
-    .then((res) => res["Hash"])
+    .then((/** @type {!node.ipfs.AddResult} */ res) => res.Hash)
 
   return Promise.all([hash(encoded), gelenSöz])
-    .then(([yerel, gelen]) => {
+    .then(([/** !Uint8Array */ yerel, /** string */ gelen]) => {
       if (CID(yerel) != gelen) {
         console.log(CID(yerel));
         console.log(gelen);
