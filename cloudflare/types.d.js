@@ -16,10 +16,10 @@ const cloudflare = {};
  */
 cloudflare.Request = function () { }
 
-/** @type {Object} */
+/** @const */
 cloudflare.Request.prototype.cf;
 
-/** @type {?string} */
+/** @const {?string} */
 cloudflare.Request.prototype.cf.clientAcceptEncoding
 
 /**

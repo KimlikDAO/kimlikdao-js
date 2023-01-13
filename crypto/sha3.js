@@ -74,7 +74,7 @@ const keccak256Uint8 = (bytes) => {
   else s[j] ^= bytes[loc] | bytes[loc + 1] << 8 | bytes[loc + 2] << 16 | (1 << 24);
   s[33] ^= 1 << 31;
   f(s);
-  return new Uint8Array(s.buffer).subarray(0, 32);
+  return new Uint8Array(s.buffer, 0, 32);
 }
 
 /**
