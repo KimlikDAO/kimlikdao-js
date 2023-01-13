@@ -20,56 +20,118 @@ const MILLION = 1000_000;
 /** @const {!bigint} */
 const TRILLION = 1_000_000n * 1_000_000n;
 
-/** @const {Object<string,Array<Array<*>>>} */
+/**
+ * @typedef {{
+ *   address: string,
+ *   name: string,
+ *   decimals: number,
+ *   version: number
+ * }}
+ */
+let TokenInfo;
+
+/** @const {Object<string, !Array<TokenInfo>>} */
 const TokenData = {
   "0x1": [
-    [""],
-    ["dAC17F958D2ee523a2206206994597C13D831ec7", "Tether USD", 6, 0],
-    ["A0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", "USD Coin", 6, 2],
-    ["2C537E5624e4af88A7ae4060C022609376C8D0EB", "BiLira", 6, 0],
-    ["4Fabb145d64652a948d72533023f6E7A623C7C53", "Binance USD", 18, 0]
+    null, {
+      address: "dAC17F958D2ee523a2206206994597C13D831ec7",
+      name: "Tether USD",
+      decimals: 6,
+      version: 0
+    }, {
+      address: "A0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+      name: "USD Coin",
+      decimals: 6,
+      version: 2
+    }, {
+      address: "2C537E5624e4af88A7ae4060C022609376C8D0EB",
+      name: "BiLira",
+      decimals: 6,
+      version: 0
+    }, {
+      address: "4Fabb145d64652a948d72533023f6E7A623C7C53",
+      name: "Binance USD",
+      decimals: 18,
+      version: 0
+    }
   ],
   "0xa86a": [
-    [""],
-    ["9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7", "TetherToken", 6, 1],
-    ["B97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E", "USD Coin", 6, 2],
-    ["564A341Df6C126f90cf3ECB92120FD7190ACb401", "BiLira", 6, 2],
-    ["9C9e5fD8bbc25984B178FdCE6117Defa39d2db39", "BUSD Token", 18, 1]
+    null, {
+      address: "9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7",
+      name: "TetherToken",
+      decimals: 6,
+      version: 1
+    }, {
+      address: "B97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+      name: "USD Coin",
+      decimals: 6,
+      version: 2
+    }, {
+      address: "564A341Df6C126f90cf3ECB92120FD7190ACb401",
+      name: "BiLira",
+      decimals: 6,
+      version: 2
+    }, {
+      address: "9C9e5fD8bbc25984B178FdCE6117Defa39d2db39",
+      name: "BUSD Token",
+      decimals: 18,
+      version: 1
+    }
   ],
   "0x89": [
-    [""],
-    ["c2132D05D31c914a87C6611C10748AEb04B58e8F", "(PoS) Tether USD", 6, 0],
-    ["2791Bca1f2de4661ED88A30C99A7a9449Aa84174", "USD Coin (PoS)", 6, 1],
-    ["4Fb71290Ac171E1d144F7221D882BECAc7196EB5", "BiLira", 6, 0],
-    ["9C9e5fD8bbc25984B178FdCE6117Defa39d2db39", "BUSD Token", 18, 1]
+    null, {
+      address: "c2132D05D31c914a87C6611C10748AEb04B58e8F",
+      name: "(PoS) Tether USD",
+      decimals: 6,
+      version: 0
+    }, {
+      address: "2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+      name: "USD Coin (PoS)",
+      decimals: 6,
+      version: 1
+    }, {
+      address: "4Fb71290Ac171E1d144F7221D882BECAc7196EB5",
+      name: "BiLira",
+      decimals: 6,
+      version: 0
+    }, {
+      address: "9C9e5fD8bbc25984B178FdCE6117Defa39d2db39",
+      name: "BUSD Token",
+      decimals: 18,
+      version: 1
+    }
   ],
   "0xa4b1": [
-    [""],
-    ["Fd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9", "Tether USD", 6, 1],
-    ["FF970A61A04b1cA14834A43f5dE4533eBDDB5CC8", "USD Coin (Arb1)", 6, 1],
-    [""],
-    [""]
+    null, {
+      address: "Fd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
+      name: "Tether USD",
+      decimals: 6,
+      version: 1
+    }, {
+      address: "FF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
+      name: "USD Coin (Arb1)",
+      decimals: 6,
+      version: 1
+    }, null, null
   ],
   "0x38": [
-    [""],
-    [""],
-    [""],
-    [""],
-    ["e9e7CEA3DedcA5984780Bafc599bD69ADd087D56", "BUSD Token", 18, 0],
+    null, null, null, null, {
+      address: "e9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
+      name: "BUSD Token",
+      decimals: 18,
+      version: 0
+    },
   ],
   "0x406": [
-    [""],
-    [""],
-    [""],
-    [""],
-    [""]
+    null, null, null, null, null
   ],
   "0xfa": [
-    [""],
-    [""],
-    ["04068DA6C83AFCFA0e13ba15A6696662335D5B75", "USD Coin", 6, 1],
-    [""],
-    [""]
+    null, null, {
+      address: "04068DA6C83AFCFA0e13ba15A6696662335D5B75",
+      name: "USD Coin",
+      decimals: 6,
+      version: 1
+    }, null, null
   ],
 };
 
@@ -80,9 +142,9 @@ const TokenData = {
  * wallet supports adding an NFT this way, so we disable this.
  */
 const addToWallet = () =>
-  ethereum.request(/** @type {eth.Request} */({
+  ethereum.request(/** @type {!eth.Request} */({
     method: 'wallet_watchAsset',
-    params: /** @type {eth.WatchAsset} */({
+    params: /** @type {!eth.WatchAsset} */({
       type: 'ERC721',
       options: {
         address: TCKT_ADDR,
@@ -100,9 +162,9 @@ const addToWallet = () =>
  * @return {!Promise<*>}
  */
 const sendTransactionTo = (from, to, value, calldata) =>
-  ethereum.request(/** @type {eth.Request} */({
+  ethereum.request(/** @type {!eth.Request} */({
     method: "eth_sendTransaction",
-    params: [/** @type {eth.Transaction} */({
+    params: [/** @type {!eth.Transaction} */({
       from,
       to,
       value: "0x" + value,
@@ -122,17 +184,18 @@ const sendTransaction = (address, value, calldata) =>
 /**
  * @param {string} contract Contract adddress given with the 0x prefix
  * @param {string} calldata Calldata transmitted to the contract verbatim.
+ * @return {!Promise<string>}
  */
 const callMethod = (contract, calldata) =>
-  ethereum.request(/** @type {eth.Request} */({
+  ethereum.request(/** @type {!eth.Request} */({
     method: "eth_call",
-    params: [/** @type {eth.Transaction} */({
+    params: [/** @type {!eth.Transaction} */({
       to: contract,
       data: calldata
     }), "latest"]
   }))
 
-/** @const {Object<string, string>} */
+/** @const {!Object<string, string>} */
 const NonceCache = {};
 
 /**
@@ -145,7 +208,7 @@ const getNonce = (chainId, address, token) => {
   const cached = NonceCache[chainId + address + token];
   return cached
     ? Promise.resolve(cached) : callMethod(
-      "0x" + TokenData[chainId][token][0], "0x7ecebe00" + evm.address(address)
+      "0x" + TokenData[chainId][token].address, "0x7ecebe00" + evm.address(address)
     ).then((nonce) => {
       NonceCache[chainId + address + token] = nonce;
       return nonce;
@@ -209,9 +272,9 @@ const revokeFriend = (address, friend) =>
  * @return {!Promise<*>}
  */
 const getRevokeeAddresses = (revoker) =>
-  ethereum.request(/** @type {eth.Request} */({
+  ethereum.request(/** @type {!eth.Request} */({
     method: "eth_getLogs",
-    params: [/** @type {eth.GetLogs} */({
+    params: [/** @type {!eth.GetLogs} */({
       address: TCKT_ADDR,
       fromBlock: "0x12A3AE7",
       toBlock: "0x12A3AE7",
@@ -245,6 +308,7 @@ const createWithRevokers = (chainId, address, cid, revokeThreshold, revokers) =>
  *                                 the TCKT is revoked.
  * @param {!Object<string, number>} revokers (Address, weight) pairs for the
  *                                           revokers.
+ * @return {string} serialized revoker list.
  */
 const serializeRevokers = (revokeThreshold, revokers) => {
   /** @type {string} */
@@ -261,9 +325,11 @@ const serializeRevokers = (revokeThreshold, revokers) => {
 }
 
 /**
+ * @param {string} address
  * @param {string} cid
  * @param {number} revokeThreshold
  * @param {!Object<string, number>} revokers
+ * @param {string} signature as a length 64 hex string.
  * @return {!Promise<*>}
  */
 const createWithRevokersWithTokenPermit = (address, cid, revokeThreshold, revokers, signature) =>
@@ -282,7 +348,7 @@ const createWithRevokersWithTokenPermit = (address, cid, revokeThreshold, revoke
  * @return {!Promise<*>}
  */
 const createWithRevokersWithTokenPayment = (chainId, address, cid, revokeThreshold, revokers, token) => {
-  const tokenSerialized = evm.uint96(0) + TokenData[chainId][token][0];
+  const tokenSerialized = evm.uint96(0) + TokenData[chainId][token].address;
   return revokeThreshold == 0
     ? sendTransaction(address, "0", "0xdaca45f7" + cid + tokenSerialized)
     : sendTransaction(address, "0", "0x3e36b2f7" + cid +
@@ -328,11 +394,11 @@ const estimateNetworkFee = (chainId) => {
 }
 
 /**
+ * Returns now + 20 mins as a timestamp in seconds.
+ *
  * @return {number}
  */
-const getDeadline = () => {
-  return Math.trunc(Date.now() / 1000) + 20 * 60;
-}
+const getDeadline = () => 20 * 60 + (Date.now() / 1000 | 0);
 
 /**
  * @param {string} chainId
@@ -355,9 +421,12 @@ const getApprovalFor = (chainId, address, token) => sendTransactionTo(
  */
 const getPermitFor = (chainId, owner, token, withRevokers) =>
   Promise.all([priceIn(chainId, token), getNonce(chainId, owner, token)])
-    .then(([price, nonce]) => {
+    .then(([/** !Array<number> */ price, /** string */ nonce]) => {
+      /** @const {string} */
       const deadline = evm.uint96(getDeadline());
+      /** @const {!TokenInfo} */
       const tokenData = TokenData[chainId][token];
+      /** @const {string} */
       const typedSignData = JSON.stringify({
         "types": {
           "EIP712Domain": [
@@ -375,10 +444,10 @@ const getPermitFor = (chainId, owner, token, withRevokers) =>
           ]
         },
         "domain": {
-          "name": tokenData[1],
-          "version": "" + tokenData[3],
+          "name": tokenData.name,
+          "version": "" + tokenData.version,
           "chainId": chainId,
-          "verifyingContract": "0x" + tokenData[0]
+          "verifyingContract": "0x" + tokenData.address
         },
         "primaryType": "Permit",
         "message": {
@@ -389,11 +458,11 @@ const getPermitFor = (chainId, owner, token, withRevokers) =>
           "deadline": "0x" + deadline
         }
       });
-      return ethereum.request(/** @type {eth.Request} */({
+      return ethereum.request(/** @type {!eth.Request} */({
         method: "eth_signTypedData_v4",
         params: [owner, typedSignData]
-      })).then((signature) =>
-        deadline + tokenData[0].toLowerCase() + evm.compactSignature(signature)
+      })).then((/** @type {string} */ signature) =>
+        deadline + tokenData.address.toLowerCase() + evm.compactSignature(signature)
       );
     });
 
@@ -402,15 +471,15 @@ const getPermitFor = (chainId, owner, token, withRevokers) =>
  * @param {number} token
  * @return {boolean}
  */
-const isTokenAvailable = (chainId, token) =>
-  TokenData[chainId][token][0] !== "";
+const isTokenAvailable = (chainId, token) => !!TokenData[chainId][token];
 
 /**
  * @param {string} chainId
  * @param {number} token internal token id; see `TokenData`.
+ * @return {boolean}
  */
 const isTokenERC20Permit = (chainId, token) =>
-  TokenData[chainId][token].length > 3 && TokenData[chainId][token][3]
+  !!(TokenData[chainId][token] && TokenData[chainId][token].version)
 
 export default {
   addRevoker,
