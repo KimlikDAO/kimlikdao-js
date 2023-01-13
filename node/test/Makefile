@@ -1,5 +1,5 @@
 build/node/test/ipfs.compiled-test.js: node/test/ipfs.compiled-test.js node/ipfs.js \
-    testing/assert.js testing/process.d.js \
+    testing/assert.js testing/nodejs.d.js testing/nodejs.js \
     util/çevir.js
 	mkdir -p $(dir $@)
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
@@ -12,7 +12,7 @@ build/node/test/ipfs.compiled-test.js: node/test/ipfs.compiled-test.js node/ipfs
                              --entry_point $< \
                              --js $^ \
                              --js_output_file $@
-	yarn uglifyjs testing/nodeHeader.js $@ -m -o $@
+	yarn uglifyjs testing/nodejs.js $@ -m -o $@
 	node $@
 
 .PHONY: node.test

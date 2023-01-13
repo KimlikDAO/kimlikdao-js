@@ -15,3 +15,6 @@ build/crypto/bench/secp256k1.bench.js: crypto/bench/secp256k1.bench.js crypto/se
                              --js_output_file $@
 	yarn uglifyjs testing/nodejs.js $@ -m -o $@
 	node $@
+
+.PHONY: crypto.benchmark
+crypto.benchmark: build/crypto/bench/secp256k1.bench.js
