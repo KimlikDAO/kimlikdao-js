@@ -20,15 +20,17 @@ const base58 = (bytes) => {
   const result = [];
 
   for (const byte of bytes) {
-    let carry = byte
+    /** @type {number} */
+    let carry = byte;
     for (let j = 0; j < result.length; ++j) {
-      const x = (Base58Map[result[j]] << 8) + carry
-      result[j] = Base58Chars.charCodeAt(x % 58)
-      carry = (x / 58) | 0
+      /** @const {number} */
+      const x = (Base58Map[result[j]] << 8) + carry;
+      result[j] = Base58Chars.charCodeAt(x % 58);
+      carry = (x / 58) | 0;
     }
     while (carry) {
-      result.push(Base58Chars.charCodeAt(carry % 58))
-      carry = (carry / 58) | 0
+      result.push(Base58Chars.charCodeAt(carry % 58));
+      carry = (carry / 58) | 0;
     }
   }
   for (const byte of bytes)
@@ -69,8 +71,8 @@ const writeCBE = (buff, n) => {
 const hash = (data) => {
   /** @const {number} */
   const n = data.length;
-  // Since IPFS blocks are capped at 2^16 bytes, their length can always be written
-  // in 3 7-bit chunks.
+  // Since IPFS blocks are capped at 2^16 bytes, their length can always be
+  // written in 3 7-bit chunks.
   /** @const {number} */
   const nEncodedLen = n < 128 ? 1 : n < 16384 ? 2 : 3;
   /** @const {number} */
@@ -97,7 +99,8 @@ const hash = (data) => {
  * @return {string} CID
  */
 const CID = (hash) => {
-  let bytes = new Uint8Array(34);
+  /** @const {!Uint8Array} */
+  const bytes = new Uint8Array(34);
   bytes.set([18, 32])
   bytes.set(hash, 2);
   return base58(bytes);
@@ -125,11 +128,12 @@ const cidBytetanOku = (nodeUrl, cidByte) => {
  * @return {!Promise<!Uint8Array>} onaylanmış IPFS cidByte.
  */
 const yaz = (nodeUrl, veri) => {
-  /** @type {!Uint8Array} */
+  /** @const {!Uint8Array} */
   const encoded = new TextEncoder().encode(veri);
-  console.log(encoded.length);
+  /** @const {!FormData} */
   const formData = new FormData()
   formData.set("blob", new Blob([encoded]));
+  /** @const {!Promise<string>} */
   const gelenSöz = fetch(nodeUrl + "api/v0/add", {
     method: "POST",
     body: formData
@@ -139,11 +143,9 @@ const yaz = (nodeUrl, veri) => {
 
   return Promise.all([hash(encoded), gelenSöz])
     .then(([/** !Uint8Array */ yerel, /** string */ gelen]) => {
-      if (CID(yerel) != gelen) {
-        console.log(CID(yerel));
-        console.log(gelen);
-        Promise.reject("IPFS'ten farklı sonuç döndü.");
-      }
+      if (CID(yerel) != gelen)
+        Promise.reject("IPFS'ten farklı sonuç döndü."
+          + ` Yerel: ${CID(yerel)}, Gelen: ${gelen}`);
       return yerel;
     })
 }

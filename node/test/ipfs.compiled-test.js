@@ -2,35 +2,44 @@
 import ipfs from "/node/ipfs";
 import { assertEq, assertStats } from "/testing/assert";
 
-const testCID = async () => {
-  /** @const {TextEncoder} */
+/**
+ * @return {!Promise<void>}
+ */
+const testCID = () => {
+  /** @const {!TextEncoder} */
   const encoder = new TextEncoder();
 
-  assertEq(
-    ipfs.CID(/** @type {!Uint8Array} */(
-      await ipfs.hash(encoder.encode("a".repeat(2680))))),
-    "Qmawd3DRAY5YwtCzQe8gBumMXA1JCrzvbH2WQR6ZTykVoG"
-  );
-
-  assertEq(
-    ipfs.CID(/** @type {!Uint8Array} */(
-      await ipfs.hash(encoder.encode("KimlikDAO\n")))),
-    "QmafCiqeYQtiXokAEUB4ToMcZJREhJcShbzvjrYmC1WCsi"
-  );
-
-  assertEq(
-    ipfs.CID(/** @type {!Uint8Array} */(
-      await ipfs.hash(encoder.encode("foo\n")))),
-    "QmYNmQKp6SuaVrpgWRsPTgCQCnpxUYGq76YEKBXuj2N4H6"
-  );
-
-  assertEq(
-    ipfs.CID(/** @type {!Uint8Array} */(
-      await ipfs.hash(encoder.encode("a".repeat(31337))))),
-    "Qmbq6rxwg5uKYAEhdFvPnBqzbJWAPfhB4LwF4yGamvzWSR"
-  );
-
-  assertStats();
+  return Promise.all([
+    ipfs.hash(encoder.encode("a".repeat(2680)))
+      .then((/** @type {!Uint8Array} */ hash) =>
+        assertEq(ipfs.CID(hash), "Qmawd3DRAY5YwtCzQe8gBumMXA1JCrzvbH2WQR6ZTykVoG")),
+    ipfs.hash(encoder.encode("KimlikDAO\n"))
+      .then((/** @type {!Uint8Array} */ hash) =>
+        assertEq(ipfs.CID(hash), "QmafCiqeYQtiXokAEUB4ToMcZJREhJcShbzvjrYmC1WCsi")),
+    ipfs.hash(encoder.encode("foo\n"))
+      .then((/** @type {!Uint8Array} */ hash) =>
+        assertEq(ipfs.CID(hash), "QmYNmQKp6SuaVrpgWRsPTgCQCnpxUYGq76YEKBXuj2N4H6")),
+    ipfs.hash(encoder.encode("a".repeat(31337)))
+      .then((/** @type {!Uint8Array} */ hash) =>
+        assertEq(ipfs.CID(hash), "Qmbq6rxwg5uKYAEhdFvPnBqzbJWAPfhB4LwF4yGamvzWSR")),
+  ]).then((_) => {});
 }
 
-testCID();
+/** @const {string} */
+const IPFS_URL = "https://ipfs.kimlikdao.org/";
+
+/**
+ * @return {!Promise<void>}
+ */
+const testYazOku = () => {
+  /** @const {string} */
+  const text = "Everything not saved will be lost";
+  return ipfs.yaz(IPFS_URL, text)
+    .then((h) => ipfs.cidBytetanOku(IPFS_URL, h))
+    .then((/** string */ gelen) => assertEq(gelen, text));
+}
+
+Promise.all([
+  testCID(),
+  testYazOku(),
+]).then(assertStats);
