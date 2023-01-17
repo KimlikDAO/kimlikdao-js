@@ -1,6 +1,11 @@
 import { G } from "/crypto/secp256k1";
 import { keccak256Uint32 } from "/crypto/sha3";
-import { hash, recoverSectionSigners, selectEncryptedSections, signDecryptedSections } from "/did/section";
+import {
+  hash,
+  recoverSectionSigners,
+  selectEncryptedSections,
+  signDecryptedSections
+} from "/did/section";
 import evm from "/ethereum/evm.js";
 import { assertElemEq, assertEq, assertStats } from "/testing/assert";
 import { base64, hex, hexten } from "/util/çevir";

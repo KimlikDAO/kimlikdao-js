@@ -27,7 +27,7 @@ const selectEncryptedSections = (encryptedSectionsKeys, sectionKeys) => {
   // If there is a solution with 1 or 2 unlockables, we'll find the optimal
   // solution using exhaustive search, which takes O(n^2) time where
   // `n = |nft.unlockables|`. Otherwise, we'll resort to a greedy approach.
-  /** @const {Set<string>} */
+  /** @const {!Set<string>} */
   const sks = new Set(sectionKeys);
 
   /**
@@ -64,8 +64,8 @@ const selectEncryptedSections = (encryptedSectionsKeys, sectionKeys) => {
   /**
    * Calculates 100 * |A \cup B| + |A| + |B|.
    *
-   * @param {Set<string>} A
-   * @param {Set<string>} B
+   * @param {!Set<string>} A
+   * @param {!Set<string>} B
    * @return {number}
    */
   const score = (A, B) => {

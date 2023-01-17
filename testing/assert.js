@@ -39,12 +39,12 @@ const assertEq = (given, expected) => {
 
 /**
  * @template T
- * @param {Array<T>} given
- * @param {Array<T>} expected
+ * @param {!Array<T>} given
+ * @param {!Array<T>} expected
  * @return {boolean}
  */
 const assertElemEq = (given, expected) => {
-  /** @const {Set<T>} */
+  /** @const {!Set<T>} */
   const expectSet = new Set(expected);
   /** @const {boolean} */
   const value = given.length == expectSet.size && given.every((x) => expectSet.has(x));
