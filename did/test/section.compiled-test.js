@@ -1,68 +1,9 @@
 import { G } from "/crypto/secp256k1";
 import { keccak256Uint32 } from "/crypto/sha3";
-import {
-  hash,
-  recoverSectionSigners,
-  selectEncryptedSections,
-  signDecryptedSections
-} from "/did/section";
+import { hash, recoverSectionSigners, signSection } from "/did/section";
 import evm from "/ethereum/evm.js";
 import { assertElemEq, assertEq, assertStats } from "/testing/assert";
 import { base64, hex, hexten } from "/util/çevir";
-
-const testSelectEncryptedSections = () => {
-  /** @const {!Array<string>} */
-  const encryptedSectionsKeys = [
-    "a",
-    "a,b",
-    "a,b,c",
-    "a,b,c,d",
-    "b,c,d",
-    "c,d",
-    "c,d,e",
-    "A,B,C,E,F,G",
-    "A,B,D,E,F,G",
-    "A,C,D,X,Y",
-    "B,C,D,Z,T",
-    "1,2,u",
-    "1,3,u,v",
-    "1,4,u,v,s",
-  ];
-
-  const check = (sections, expected) =>
-    assertElemEq(
-      selectEncryptedSections(encryptedSectionsKeys, sections),
-      expected
-    );
-
-  const testSimple = () => {
-    check(["a"], ["a"]);
-    check(["b"], ["a,b"]);
-    check(["c"], ["c,d"]);
-    check(["d"], ["c,d"]);
-    check(["e"], ["c,d,e"]);
-    check(["a", "b"], ["a,b"]);
-    check(["a", "c"], ["a,b,c"]);
-    check(["a", "b", "d"], ["a,b,c,d"]);
-  }
-
-  const testTwoUnlockables = () => {
-    check(["a", "e"], ["a", "c,d,e"]);
-    check(["b", "e"], ["b,c,d", "c,d,e"]);
-    check(["a", "b", "e"], ["a,b", "c,d,e"]);
-
-    check(["A", "B", "C", "D"], ["A,B,C,E,F,G", "A,B,D,E,F,G"])
-  }
-
-  const testGreedy = () => {
-    check(["1", "2", "3", "4"], ["1,2,u", "1,3,u,v", "1,4,u,v,s"]);
-    check(["a", "e", "1", "2"], ["a", "c,d,e", "1,2,u"]);
-    check(["a", "e", "1", "2", "4"], ["a", "c,d,e", "1,2,u", "1,4,u,v,s"]);
-  }
-  testSimple();
-  testTwoUnlockables();
-  testGreedy();
-}
 
 /** @const */
 const vm = {};
@@ -77,52 +18,6 @@ vm.addr = (privKey) => {
   const buff = hexten(evm.uint256(Q.x) + evm.uint256(Q.y));
   return "0x" + hex(new Uint8Array(
     keccak256Uint32(new Uint32Array(buff.buffer)).buffer, 12, 20));
-}
-
-const testSignSection = () => {
-  /** @const {!did.DecryptedSections} */
-  const decryptedSections1 = {
-    "humanID": /** @type {!did.HumanID} */({
-      generic: "1234A234"
-    })
-  };
-
-  /** @const {!did.DecryptedSections} */
-  const decryptedSections2 = {
-    "humanID": /** @type {!did.HumanID} */({
-      generic: "1234A234",
-      bls12_381: "asdfadsf",
-      secp256k1: ["incorrect_sign"]
-    })
-  };
-
-  /** @const {number} */
-  const timestamp = ~~(Date.now() / 1000);
-  signDecryptedSections(decryptedSections1, "commit", timestamp, 1n);
-  signDecryptedSections(decryptedSections2, "commit", timestamp, 2n);
-
-  assertEq(decryptedSections1["humanID"].secp256k1.length, 1);
-  assertEq(decryptedSections2["humanID"].secp256k1.length, 1);
-  assertEq(
-    recoverSectionSigners("humanID", decryptedSections1["humanID"])[0],
-    vm.addr(1n)
-  );
-  assertEq(
-    recoverSectionSigners("humanID", decryptedSections2["humanID"])[0],
-    vm.addr(2n)
-  );
-
-  decryptedSections1["humanID"].secp256k1.push(
-    decryptedSections2["humanID"].secp256k1[0]);
-
-  assertElemEq(recoverSectionSigners("humanID", decryptedSections1["humanID"]),
-    [vm.addr(1n), vm.addr(2n)]);
-
-  decryptedSections1["humanID"].secp256k1.push(
-    decryptedSections2["humanID"].secp256k1[0]);
-
-  assertElemEq(recoverSectionSigners("humanID", decryptedSections1["humanID"]),
-    [vm.addr(1n), vm.addr(2n)]);
 }
 
 const testHash = () => {
@@ -152,7 +47,41 @@ const testHash = () => {
   }
 }
 
+const testSignSection = () => {
+  /** @const {!did.HumanID} */
+  const humanID1 = /** @type {!did.HumanID} */({
+    id: "1234A234"
+  })
+
+  /** @const {!did.HumanID} */
+  const humanID2 = /** @type {!did.HumanID} */({
+    id: "1234A234",
+    bls12_381: "asdfadsf",
+    secp256k1: ["incorrect_sign"]
+  })
+
+  /** @const {number} */
+  const timestamp = ~~(Date.now() / 1000);
+  signSection("humanID", humanID1, "commit", timestamp, 1n);
+  signSection("humanID", humanID2, "commit", timestamp, 2n);
+
+  assertEq(humanID1.secp256k1.length, 1);
+  assertEq(humanID2.secp256k1.length, 1);
+  assertEq(recoverSectionSigners("humanID", humanID1)[0], vm.addr(1n));
+  assertEq(recoverSectionSigners("humanID", humanID2)[0], vm.addr(2n));
+
+  humanID1.secp256k1.push(humanID2.secp256k1[0]);
+
+  assertElemEq(recoverSectionSigners("humanID", humanID1),
+    [vm.addr(1n), vm.addr(2n)]);
+
+  humanID1.secp256k1.push(humanID2.secp256k1[0]);
+
+  assertElemEq(recoverSectionSigners("humanID", humanID1),
+    [vm.addr(1n), vm.addr(2n)]);
+}
+
 testHash();
-testSelectEncryptedSections();
 testSignSection();
+
 assertStats();
