@@ -84,11 +84,21 @@ const uint8ArrayeBase64ten = (buffer, b64) => {
     buffer[i] = decoded.charCodeAt(i);
 }
 
+/**
+ * TODO(KimlikDAO-bot): To microbenchmarking to determine whether to use
+ * `toString(8)` and concat adjacent character into base64.
+ *
+ * @param {!bigint|number} sayı
+ * @return {string} base64 olarak yazılmış sayı.
+ */
+const sayıdanBase64e = (sayı) => base64(hexten(sayı.toString(16)));
+
 export {
   base64,
   base64ten,
   hex,
   hexten,
+  sayıdanBase64e,
   uint8ArrayeBase64ten,
   uint8ArrayeHexten,
   Uint8denHexe,
