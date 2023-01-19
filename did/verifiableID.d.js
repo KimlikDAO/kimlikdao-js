@@ -33,7 +33,7 @@ did.VerifiableID = function () { }
 did.VerifiableID.prototype.id;
 
 /**
- * A deterministic secp256k1 signed person info, used as the input to the VDF.
+ * A deterministic bls12-381 signed person info, used as the input to the VDF.
  *
  * @type {string}
  */

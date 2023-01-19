@@ -7,7 +7,10 @@
 import { sign } from "../crypto/secp256k1";
 import { keccak256, keccak256Uint32 } from "../crypto/sha3";
 import evm from "../ethereum/evm";
-import { hex, hexten, uint8ArrayeBase64ten } from "../util/çevir";
+import {
+  base64, hex, hexten,
+  uint8ArrayeBase64ten, uint8ArrayeHexten
+} from "../util/çevir";
 
 /** @const {string} */
 const KIMLIKDAO_HASH_PREFIX = "\x19KimlikDAO hash\n";
@@ -32,11 +35,24 @@ const hash = (sectionName, section) => {
       keccak256Uint32(new Uint32Array(buff.buffer)).buffer, 0, 32));
   }
   /** @const {Set<string>} */
-  const notHashed = new Set(["secp256k1", "bls12_381"]);
+  const notHashed = new Set(["secp256k1", "bls12_381", "commitmentR"]);
   return keccak256(
     KIMLIKDAO_HASH_PREFIX + JSON.stringify(section,
       Object.keys(section).filter((x) => !notHashed.has(x)).sort())
   );
+}
+
+/**
+ * @param {string} ownerAddress
+ * @param {string} commitmentR
+ * @return {string} commitment
+ */
+const commit = (ownerAddress, commitmentR) => {
+  const buff = new Uint8Array(20, 32);
+  uint8ArrayeHexten(buff, ownerAddress.slice(2));
+  uint8ArrayeBase64ten(buff.subarray(20), commitmentR);
+  return base64(new Uint8Array(
+    keccak256Uint32(new Uint32Array(buff.buffer)).buffer, 0, 32));
 }
 
 /**
@@ -47,9 +63,13 @@ const hash = (sectionName, section) => {
  *
  * @param {string} sectionName
  * @param {!did.Section} section
+ * @param {string} ownerAddress
  * @return {!Array<string>}
  */
-const recoverSectionSigners = (sectionName, section) => {
+const recoverSectionSigners = (sectionName, section, ownerAddress) => {
+  if (sectionName != "exposureReport" && !section.commitment)
+    section.commitment = commit(ownerAddress, section.commitmentR);
+
   /** @const {string} */
   const h = hash(sectionName, section);
   /** @const {!Array<string>} */
@@ -76,6 +96,7 @@ const signSection = (sectionName, section, commitment, signatureTs, privateKey) 
 }
 
 export {
+  commit,
   hash,
   recoverSectionSigners,
   signSection,

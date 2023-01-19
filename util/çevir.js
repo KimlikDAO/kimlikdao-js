@@ -41,7 +41,7 @@ const uint8ArrayeHexten = (buff, str) => {
 }
 
 /**
- * @param {!Uint8Array} bytes base64'e dönüştürülecek buffer.
+ * @param {!Uint8Array|!Array<number>} bytes base64'e dönüştürülecek buffer.
  * @return {string} base64 temsil eden dizi.
  */
 const base64 = (bytes) => {

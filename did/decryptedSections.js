@@ -1,5 +1,5 @@
 import { decrypt } from "../ethereum/unlockable";
-import { signSection } from "./section";
+import { signSection, recoverSectionSigners } from "./section";
 
 /**
  * Given an array of `did.EncryptedSections` keys, determines a minimal set of
@@ -113,7 +113,7 @@ const selectEncryptedSections = (encryptedSectionsKeys, sectionKeys) => {
  * @param {string} address
  * @return {!Promise<!did.DecryptedSections>}
  */
-const decryptUnlockableNFT = async (nft, sectionNames, provider, address) => {
+const fromUnlockableNFT = async (nft, sectionNames, provider, address) => {
   /** @const {!Array<string>} */
   const encryptedSectionsKeys = selectEncryptedSections(
     Object.keys(nft.unlockables),
@@ -152,14 +152,32 @@ const decryptUnlockableNFT = async (nft, sectionNames, provider, address) => {
  * @param {!bigint} privateKey
  * @return {!did.DecryptedSections}
  */
-const signDecryptedSections = (decryptedSections, commitment, signatureTs, privateKey) => {
+const sign = (decryptedSections, commitment, signatureTs, privateKey) => {
   for (const key in decryptedSections)
     signSection(key, decryptedSections[key], commitment, signatureTs, privateKey);
   return decryptedSections;
 }
 
+/**
+ * Given a `did.DecryptedSections` outputs a map from section name to list of
+ * signers.
+ *
+ * @param {!did.DecryptedSections} decryptedSections containing commitmentR
+ *                                                   values.
+ * @param {string} ownerAddress starting with 0x.
+ * @return {!did.SignersPerSection} signers per section.
+ */
+const recoverSigners = (decryptedSections, ownerAddress) => {
+  /** @const {!did.SignersPerSection} */
+  const signerPerSection = {};
+  for (const key in decryptedSections)
+    signerPerSection[key] = recoverSectionSigners(key, decryptedSections[key], ownerAddress);
+  return signerPerSection;
+}
+
 export {
-  decryptUnlockableNFT,
+  fromUnlockableNFT,
+  recoverSigners,
   selectEncryptedSections,
-  signDecryptedSections,
+  sign,
 };

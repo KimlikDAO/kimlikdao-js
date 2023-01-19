@@ -1,6 +1,6 @@
 import { G } from "/crypto/secp256k1";
 import { keccak256Uint32 } from "/crypto/sha3";
-import { hash, recoverSectionSigners, signSection } from "/did/section";
+import { commit, hash, recoverSectionSigners, signSection } from "/did/section";
 import evm from "/ethereum/evm.js";
 import { assertElemEq, assertEq, assertStats } from "/testing/assert";
 import { base64, hex, hexten } from "/util/çevir";
@@ -60,25 +60,35 @@ const testSignSection = () => {
     secp256k1: ["incorrect_sign"]
   })
 
+  /** @const {string} */
+  const commitmentR = base64([1, 2, 3]);
   /** @const {number} */
   const timestamp = ~~(Date.now() / 1000);
-  signSection("humanID", humanID1, "commit", timestamp, 1n);
-  signSection("humanID", humanID2, "commit", timestamp, 2n);
+  signSection(
+    "humanID", humanID1, commit(vm.addr(1n), commitmentR), timestamp, 11n);
+  signSection(
+    "humanID", humanID2, commit(vm.addr(1n), commitmentR), timestamp, 12n);
+
+  // The owner attaches the commitmentR.
+  delete humanID1.commitment;
+  delete humanID2.commitment;
+  humanID1.commitmentR = commitmentR;
+  humanID2.commitmentR = commitmentR;
 
   assertEq(humanID1.secp256k1.length, 1);
   assertEq(humanID2.secp256k1.length, 1);
-  assertEq(recoverSectionSigners("humanID", humanID1)[0], vm.addr(1n));
-  assertEq(recoverSectionSigners("humanID", humanID2)[0], vm.addr(2n));
+  assertEq(recoverSectionSigners("humanID", humanID1, vm.addr(1n))[0], vm.addr(11n));
+  assertEq(recoverSectionSigners("humanID", humanID2, vm.addr(1n))[0], vm.addr(12n));
 
   humanID1.secp256k1.push(humanID2.secp256k1[0]);
 
-  assertElemEq(recoverSectionSigners("humanID", humanID1),
-    [vm.addr(1n), vm.addr(2n)]);
+  assertElemEq(recoverSectionSigners("humanID", humanID1, vm.addr(1n)),
+    [vm.addr(11n), vm.addr(12n)]);
 
   humanID1.secp256k1.push(humanID2.secp256k1[0]);
 
-  assertElemEq(recoverSectionSigners("humanID", humanID1),
-    [vm.addr(1n), vm.addr(2n)]);
+  assertElemEq(recoverSectionSigners("humanID", humanID1, vm.addr(1n)),
+    [vm.addr(11n), vm.addr(12n)]);
 }
 
 testHash();

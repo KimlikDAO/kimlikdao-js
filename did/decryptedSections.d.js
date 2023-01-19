@@ -13,6 +13,13 @@
 did.DecryptedSections;
 
 /**
+ * An object mapping section names to a list of signer addresses.
+ *
+ * @typedef {!Object<string, !Array<string>>}
+ */
+did.SignersPerSection;
+
+/**
  * A collection of `did.Section`s indexed by string keys which have been
  * encrypted as an `Unlockable`. In addition to the `Unlockable` fields,
  * contains the merkle root of the `did.Section`s therein.

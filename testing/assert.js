@@ -59,7 +59,10 @@ const assertElemEq = (given, expected) => {
 
 const assertStats = () => {
   const color = FalseAsserts == 0 ? "\x1b[42m" : "\x1b[41m";
-  console.log(`${color}${TrueAsserts} / ${TrueAsserts + FalseAsserts} assers true\x1b[0m`);
+  console.log(
+    `${color}${TrueAsserts} / ${TrueAsserts + FalseAsserts} assers true\x1b[0m ` +
+    `(${(performance.now() | 0) / 1000} seconds)`);
+  console.timeEnd("test");
   process.exit(FalseAsserts);
 }
 

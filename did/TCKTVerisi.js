@@ -67,10 +67,11 @@ var InfoGroup;
  * içinde şifreler ve bir `eth.ERC721Unlockable` oluşturur.
  *
  * @param {!did.DecryptedSections} açıkTckt
+ * @param {!eth.Provider} provider
  * @param {!Array<!InfoGroup>} kümeler
  * @return {!eth.ERC721Unlockable}
  */
-const hazırla = (açıkAnahtar, açıkTckt, kümeler) => {
+const hazırla = (açıkTckt, kümeler) => {
   const encoder = new TextEncoder();
 
   /**
