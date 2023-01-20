@@ -21,7 +21,7 @@ const ErrorCode = {
 /**
  * @param {!ErrorCode} kod
  * @param {!Array<string>=} ek
- * @return {Promise<*>}
+ * @return {!Promise<*>}
  */
 const reject = (kod, ek) =>
   Promise.reject(/** @type {!node.HataBildirimi} */({ kod, ek }));

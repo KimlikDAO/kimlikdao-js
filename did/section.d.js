@@ -83,6 +83,8 @@ did.PersonInfo.prototype.cityOfBirth;
 did.PersonInfo.prototype.gender;
 
 /**
+ * A length 64 hex string, encoding the 32-bytes exposureReportID.
+ *
  * When a DID holder gets their wallet private keys exposed, they can either
  * revoke the DID themselves, or use social revoking.
  *
@@ -99,7 +101,7 @@ did.PersonInfo.prototype.gender;
  * delay function, therefore for maximum privacy, one may choose to discard an
  * EVM address used for an `exposureReport`.
  *
- * @type {!did.VerifiableID|string}
+ * @type {string}
  */
 did.PersonInfo.prototype.exposureReportID;
 

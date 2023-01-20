@@ -9,7 +9,7 @@ import { G, N, Point } from "../crypto/secp256k1";
 import { keccak256, keccak256Uint32 } from "../crypto/sha3";
 import { evaluate } from "../crypto/wesolowski";
 import evm from "../ethereum/evm";
-import { base64, hex, hexten, sayıdanBase64e } from "../util/çevir";
+import { hex, hexten, sayıdanBase64e } from "../util/çevir";
 
 /** @const {number} */
 const KIMLIKDAO_VERIFIABLE_ID_ITERATIONS = 5_000_000;
@@ -67,7 +67,7 @@ const generate = (personKey, secret) => {
   /** @const {!Uint32Array} */
   const yArr = keccak256Uint32(new Uint32Array(hexten(y.toString(16)).buffer));
   return /** @type {!did.VerifiableID} */({
-    id: base64(new Uint8Array(yArr.buffer, 0, 32)),
+    id: hex(new Uint8Array(yArr.buffer, 0, 32)),
     g: evm.uint256(r) + evm.uint256(s),
     wesolowskiP: sayıdanBase64e(π),
     wesolowskiL: sayıdanBase64e(l),

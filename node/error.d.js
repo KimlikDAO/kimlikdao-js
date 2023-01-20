@@ -9,7 +9,8 @@
 const node = {};
 
 /**
- * @interface
+ * @struct
+ * @constructor
  *
  * @param {number} kod
  * @param {!Array<string>=} ek
@@ -17,12 +18,12 @@ const node = {};
 node.HataBildirimi = function(kod, ek) {
   /** @const {number} */
   this.kod = kod;
-  /** @const {Array<string>} */
+  /** @const {!Array<string>|undefined} */
   this.ek = ek;
 }
 
 /** @type {number} */
 node.HataBildirimi.prototype.kod;
 
-/** @type {Array<string>} */
+/** @type {!Array<string>|undefined} */
 node.HataBildirimi.prototype.ek;
