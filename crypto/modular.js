@@ -38,7 +38,7 @@ const inverse = (b, P) => {
  * @return {!bigint} x^n (mod P)
  */
 const exp = (x, n, P) => {
-
+  /** @type {!bigint} */
   let res = 1n;
   x %= P;
   while (n != 0) {
