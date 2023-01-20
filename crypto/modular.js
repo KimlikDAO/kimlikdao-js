@@ -27,4 +27,26 @@ const inverse = (b, P) => {
   return x;
 }
 
-export { inverse };
+/**
+ * Computes x^n (mod P) and outputs the least positive representation.
+ * The function is not constant time and should not be used in cases where
+ * side-channel attacks are possible.
+ *
+ * @param {!bigint} x
+ * @param {!bigint} n
+ * @param {!bigint} P
+ * @return {!bigint} x^n (mod P)
+ */
+const exp = (x, n, P) => {
+
+  let res = 1n;
+  x %= P;
+  while (n != 0) {
+    if (!!(n & 1n)) res = (res * x) % P;
+    x = (x * x) % P;
+    n >>= 1n;
+  }
+  return res;
+}
+
+export { inverse, exp };

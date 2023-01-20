@@ -1,4 +1,4 @@
-import { inverse } from "/crypto/modular";
+import { inverse, exp } from "/crypto/modular";
 import { assertEq, assertStats } from "/testing/assert";
 
 /**
@@ -47,5 +47,18 @@ const testInverse = () => {
   assertEq(inverse(P - 1n, P), P - 1n);
 }
 
+const testModularExp = () => {
+  const P = BigInt('0xDAD19B08F618992D3A5367F0E730B97C6DD113B6A2A493C9EDB0B68DBB1AEC020FB2A64C9644397AB016ABA5B40FA22655060824D9F308984D6734E2439BA08F')
+
+  assertEq(exp(7n, 5n, 11n), 10n);
+  assertEq(exp(2n, 5n, 3n), 2n);
+  assertEq(exp(9n, 0n, 5n), 1n);
+
+  assertEq(exp(5n, P - 1n, P), 1n % P)
+  assertEq(exp(333n, P - 1n, P), 1n % P)
+  assertEq(exp(11n, P - 1n, P), 1n % P)
+}
+
+testModularExp();
 testInverse();
 assertStats();
