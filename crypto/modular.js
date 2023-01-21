@@ -48,4 +48,14 @@ const exp = (a, x, M) => {
   return res;
 }
 
-export { exp, inverse };
+/**
+ * @param {!bigint} a
+ * @param {!bigint} x
+ * @param {!bigint} b
+ * @param {!bigint} y
+ * @param {!bigint} M
+ * @return {!bigint} a^x b^y (mod M)
+ */
+const expTimesExp = (a, x, b, y, M) => (exp(a, x, M) * exp(b, y, M)) % M;
+
+export { exp, expTimesExp, inverse };

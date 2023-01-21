@@ -1,3 +1,4 @@
+import { expTimesExp } from "./modular";
 
 /** @const {!bigint} */
 const N = BigInt("0x"
@@ -71,17 +72,28 @@ const evaluate = (g, t) => {
 }
 
 /**
- * Reconstructs y from the input g, proof π and hint l.
+ * Reconstructs y from the
+ *   logarithm of the difficulty parameter t,
+ *   VDF input g,
+ *   proof π and,
+ *   challenge l.
  *
+ * @param {number} logT
  * @param {!bigint} g
  * @param {!bigint} π
  * @param {!bigint} l
  * @return {!bigint} y reconstructred
  */
-const reconstruct = (g, π, l) => 0n
+const reconstructY = (logT, g, π, l) => {
+  /** @type {!bigint} */
+  let r = 2n;
+  for (let i = 0; i < logT; ++i)
+    r = (r * r) % l;
+  return expTimesExp(π, l, g, r, N);
+}
 
 export {
   evaluate,
   generateChallenge,
-  reconstruct
+  reconstructY
 };

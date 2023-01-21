@@ -7,12 +7,15 @@
 import { inverse } from "../crypto/modular";
 import { G, N, Point } from "../crypto/secp256k1";
 import { keccak256, keccak256Uint32 } from "../crypto/sha3";
-import { evaluate } from "../crypto/wesolowski";
+import { evaluate, reconstructY } from "../crypto/wesolowski";
 import evm from "../ethereum/evm";
 import { hex, hexten, sayıdanBase64e } from "../util/çevir";
 
 /** @const {number} */
-const KIMLIKDAO_VERIFIABLE_ID_ITERATIONS = 5_000_000;
+const KIMLIKDAO_VERIFIABLE_ID_LOG_ITERATIONS = 22;
+
+/** @const {number} */
+const KIMLIKDAO_VERIFIABLE_ID_ITERATIONS = 1 << 22;
 
 /**
  * @param {string} digest 256-bit hex encoded bytes.
@@ -79,6 +82,9 @@ const generate = (personKey, secret) => {
  * @param {string} publicKey
  * @return {boolean}
  */
-const verify = (verifiableID, publicKey) => false
+const verify = (verifiableID, publicKey) => {
+  return reconstructY(
+    KIMLIKDAO_VERIFIABLE_ID_LOG_ITERATIONS, 0n, 0n, 0n) == 1n;
+}
 
 export { generate, verify };

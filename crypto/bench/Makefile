@@ -17,7 +17,7 @@ build/crypto/bench/secp256k1.bench.js: crypto/bench/secp256k1.bench.js crypto/se
 	node $@
 
 build/crypto/bench/wesolowski.bench.js: crypto/bench/wesolowski.bench.js \
-    crypto/wesolowski.js
+    crypto/wesolowski.js crypto/modular.js
 	mkdir -p $(dir $@)
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
                              --jscomp_error=unusedLocalVariables \

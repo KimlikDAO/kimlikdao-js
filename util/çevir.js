@@ -85,8 +85,8 @@ const uint8ArrayeBase64ten = (buffer, b64) => {
 }
 
 /**
- * TODO(KimlikDAO-bot): To microbenchmarking to determine whether to use
- * `toString(8)` and concat adjacent character into base64.
+ * TODO(KimlikDAO-bot): Try microbenchmarking to determine whether to use
+ * `toString(8)` and concat adjacent characters into base64.
  *
  * @param {!bigint|number} sayı
  * @return {string} base64 olarak yazılmış sayı.
