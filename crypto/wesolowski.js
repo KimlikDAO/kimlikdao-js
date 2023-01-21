@@ -24,7 +24,7 @@ const P = [
 /**
  * Generates a challenge supposedly sent from the verifier to the prover.
  *
- * Thanks to the Fiat-Shamir heristic, the prover generates this from a an
+ * Thanks to the Fiat-Shamir heristic, the prover generates this from an
  * unpredictable function of the VDF output without any interaction.
  *
  * @param {!bigint} g
