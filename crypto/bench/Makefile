@@ -18,7 +18,7 @@ build/crypto/bench/secp256k1.bench.js: crypto/bench/secp256k1.bench.js crypto/se
 
 build/crypto/bench/modular.bench.js: crypto/bench/modular.bench.js \
     crypto/modular.js \
-    testing/assert.js testing/nodejs.d.js testing/nodejs.js
+    testing/assert.js testing/nodejs.d.js
 	mkdir -p $(dir $@)
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
                              --jscomp_error=unusedLocalVariables \
@@ -30,7 +30,7 @@ build/crypto/bench/modular.bench.js: crypto/bench/modular.bench.js \
                              --entry_point $< \
                              --js $^ \
                              --js_output_file $@
-	yarn uglifyjs testing/nodejs.js $@ -m -o $@
+	yarn uglifyjs $@ -m -o $@
 	node $@
 
 build/crypto/bench/wesolowski.bench.js: crypto/bench/wesolowski.bench.js \

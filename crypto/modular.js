@@ -38,14 +38,16 @@ const inverse = (b, P) => {
  * @return {!bigint} a^x (mod M)
  */
 const exp = (a, x, M) => {
-  /** @type {!bigint} */
-  let res = 1n;
+  /** @const {string} */
+  const xBits = x.toString(2);
   a %= M;
-  for (; x; x >>= 1n) {
-    if (x & 1n) res = (res * a) % M;
-    a = (a * a) % M;
+  /** @type {!bigint} */
+  let r = xBits.charCodeAt(0) == 49 ? a : 1n;
+  for (let i = 1; i < xBits.length; ++i) {
+    r = r * r % M;
+    if (xBits.charCodeAt(i) == 49) r = r * a % M;
   }
-  return res;
+  return r;
 }
 
 /**
@@ -57,8 +59,6 @@ const exp = (a, x, M) => {
  * @return {!bigint} a^x b^y (mod M)
  */
 const expTimesExp = (a, x, b, y, M) => {
-  /** @const {!bigint} */
-  const c = a * b % M;
   /** @type {string} */
   let xBits = x.toString(2);
   /** @type {string} */
@@ -67,17 +67,13 @@ const expTimesExp = (a, x, b, y, M) => {
     yBits = yBits.padStart(xBits.length, "0");
   else if (yBits.length > xBits.length)
     xBits = xBits.padStart(yBits.length, "0");
+  /** @const {!Array<!bigint>} */
+  const d = [1n, a, b, a * b % M];
   /** @type {!bigint} */
-  let r = xBits.charCodeAt(0) == 49
-    ? yBits.charCodeAt(0) == 49 ? c : a
-    : yBits.charCodeAt(0) == 49 ? b : 1n;
+  let r = d[(xBits.charCodeAt(0) - 48) + 2 * (yBits.charCodeAt(0) - 48)];
   for (let i = 1; i < xBits.length; ++i) {
     r = r * r % M;
-    /** @const {!bigint} */
-    const d = xBits.charCodeAt(i) == 49
-      ? yBits.charCodeAt(0) == 49 ? c : a
-      : yBits.charCodeAt(0) == 49 ? b : 1n;
-    r = r * d % M;
+    r = r * d[(xBits.charCodeAt(i) - 48) + 2 * (yBits.charCodeAt(i) - 48)] % M;
   }
   return r;
 }

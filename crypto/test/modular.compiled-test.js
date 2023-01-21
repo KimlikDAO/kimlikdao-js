@@ -1,4 +1,4 @@
-import { exp, inverse } from "/crypto/modular";
+import { exp, expTimesExp, inverse } from "/crypto/modular";
 import { assertEq, assertStats } from "/testing/assert";
 
 /**
@@ -47,7 +47,7 @@ const testInverse = () => {
   assertEq(inverse(P - 1n, P), P - 1n);
 }
 
-const testModularExp = () => {
+const testExp = () => {
   /** @const {!bigint} */
   const Q = BigInt("0x"
     + "DAD19B08F618992D3A5367F0E730B97C6DD113B6A2A493C9EDB0B68DBB1AEC02"
@@ -64,9 +64,22 @@ const testModularExp = () => {
   assertEq(exp(5n, P - 1n, P), 1n)
   assertEq(exp(333n, P - 1n, P), 1n)
   assertEq(exp(11n, P - 1n, P), 1n)
+
+  assertEq(exp(12n, 78n, 131n), 58n);
+  assertEq(exp(12n, 38n, 133n), 11n);
 }
 
-testModularExp();
+const testExpTimesExp = () => {
+  assertEq(expTimesExp(2n, 2n, 3n, 1n, 100n), 12n);
+  assertEq(expTimesExp(12n, 38n, 9n, 17n, 133n), 16n);
+  assertEq(expTimesExp(12n, 38n, 19n, 17n, 133n), 19n);
+  assertEq(expTimesExp(12n, 38n, 55n, 17n, 133n), 80n);
+  assertEq(expTimesExp(12n, 38n, 55n, 11231237n, 12938120389123n), 3120026537850n);
+  assertEq(expTimesExp(123n, 123n, 456n, 456n, 123456n), 120384n);
+}
+
 testInverse();
+testExp();
+testExpTimesExp();
 
 assertStats();

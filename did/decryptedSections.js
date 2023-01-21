@@ -1,5 +1,5 @@
 import { decrypt } from "../ethereum/unlockable";
-import { signSection, recoverSectionSigners } from "./section";
+import { recoverSectionSigners, signSection } from "./section";
 
 /**
  * Given an array of `did.EncryptedSections` keys, determines a minimal set of
