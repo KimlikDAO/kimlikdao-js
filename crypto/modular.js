@@ -28,22 +28,22 @@ const inverse = (b, P) => {
 }
 
 /**
- * Computes x^n (mod P) and outputs the least positive representation.
+ * Computes a^x (mod M) and outputs the least positive representation.
  * The function is not constant time and should not be used in cases where
  * side-channel attacks are possible.
  *
+ * @param {!bigint} a
  * @param {!bigint} x
- * @param {!bigint} n
- * @param {!bigint} P
- * @return {!bigint} x^n (mod P)
+ * @param {!bigint} M
+ * @return {!bigint} a^x (mod M)
  */
-const exp = (x, n, P) => {
+const exp = (a, x, M) => {
   /** @type {!bigint} */
   let res = 1n;
-  x %= P;
-  for (; n; n >>= 1n) {
-    if (!!(n & 1n)) res = (res * x) % P;
-    x = (x * x) % P;
+  a %= M;
+  for (; x; x >>= 1n) {
+    if (x & 1n) res = (res * a) % M;
+    a = (a * a) % M;
   }
   return res;
 }
