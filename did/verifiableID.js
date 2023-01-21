@@ -1,5 +1,5 @@
 /**
- * @fileoverview HumanID implementation.
+ * @fileoverview A preliminary VerifiableID implementation.
  *
  * @author KimlikDAO
  */
@@ -74,4 +74,11 @@ const generate = (personKey, secret) => {
   });
 }
 
-export { generate };
+/**
+ * @param {!did.VerifiableID} verifiableID
+ * @param {string} publicKey
+ * @return {boolean}
+ */
+const verify = (verifiableID, publicKey) => false
+
+export { generate, verify };

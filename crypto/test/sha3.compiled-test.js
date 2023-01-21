@@ -2,6 +2,7 @@ import { keccak256 as keccak256_orig } from "./sha3_orig";
 import { keccak256 as keccak256_prev } from "./sha3_prev";
 import { keccak256, keccak256Uint32 } from "/crypto/sha3";
 import { assertArrayEq, assertEq, assertStats } from "/testing/assert";
+import { hex } from "/util/çevir";
 
 const testKeccak256 = () => {
   assertEq(
@@ -95,6 +96,13 @@ const testKeccakUint32 = () => {
     new Uint32Array([
       1877774715, 2536810181, 353523037, 1382876301, 1489394885, 2273392375, 1724133069, 2263322640
     ])
+  );
+
+  assertEq(
+    hex(new Uint8Array(
+      keccak256Uint32(
+        new Uint32Array([0, 0, 0, 0xFF000000])).buffer, 0, 32)),
+    "83c1ba322bb919d20c2e09ca70fd27bc245617a9e9abd5315b8afaebc4136044"
   );
 }
 
