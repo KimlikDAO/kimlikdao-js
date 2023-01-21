@@ -39,6 +39,32 @@ const assertEq = (given, expected) => {
 
 /**
  * @template T
+ * @param {!Array<T>|!Uint32Array} given
+ * @param {!Array<T>|!Uint32Array} expected
+ * @return {boolean}
+ */
+const assertArrayEq = (given, expected) => {
+  /** @type {boolean} */
+  let value = true;
+  if (given.length != expected.length) {
+    value = false;
+  } else {
+    for (let i = 0; i < expected.length; ++i)
+      if (given[i] != expected[i]) {
+        value = false;
+        break;
+      }
+  }
+  updateCounters(value);
+  if (!value) {
+    console.error(`Hata: beklenen ${expected}`);
+    console.error(`       verilen ${given}`);
+  }
+  return value;
+}
+
+/**
+ * @template T
  * @param {!Array<T>} given
  * @param {!Array<T>} expected
  * @return {boolean}
@@ -68,7 +94,8 @@ const assertStats = () => {
 
 export {
   assert,
-  assertEq,
+  assertArrayEq,
   assertElemEq,
+  assertEq,
   assertStats,
 };

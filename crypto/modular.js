@@ -41,12 +41,11 @@ const exp = (x, n, P) => {
   /** @type {!bigint} */
   let res = 1n;
   x %= P;
-  while (n != 0) {
+  for (; n; n >>= 1n) {
     if (!!(n & 1n)) res = (res * x) % P;
     x = (x * x) % P;
-    n >>= 1n;
   }
   return res;
 }
 
-export { inverse, exp };
+export { exp, inverse };
