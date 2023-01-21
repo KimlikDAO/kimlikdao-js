@@ -30,4 +30,5 @@ const benchMultiplyMiddle = () => {
 
 benchMultiplyBeginEnd();
 benchMultiplyMiddle();
+
 assertStats();

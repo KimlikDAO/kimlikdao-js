@@ -25,7 +25,7 @@ const testHash = () => {
     const buff = new Uint8Array(32);
     buff[31] = buff[30] = buff[29] = 123;
     assertEq(hash("exposureReport", /** @const {!did.ExposureReport} */({
-      id: base64(buff),
+      id: hex(buff),
       signatureTs: 123
     })), "43eadff4f6142463dc8d8a271e14406c9b11b166b704c846dcd705439bf321f9");
   }
@@ -33,7 +33,7 @@ const testHash = () => {
     const buff = new Uint8Array(32);
     buff[31] = buff[30] = buff[29] = buff[28] = 170;
     assertEq(hash("exposureReport", /** @const {!did.ExposureReport} */({
-      id: base64(buff),
+      id: hex(buff),
       signatureTs: 123
     })), "396f822b3d8cef6a211a07d8147540acf33bedf67417277245dac8e04d5ec31d");
   }
@@ -41,7 +41,7 @@ const testHash = () => {
     const buff = new Uint8Array(32);
     buff[31] = buff[30] = buff[29] = buff[28] = 170;
     assertEq(hash("exposureReport", /** @const {!did.ExposureReport} */({
-      id: base64(buff),
+      id: hex(buff),
       signatureTs: 123123123123
     })), "0a9a3c0c8d1fa507641e0bab6d90adee12cb6a6efa544da55b5ca76b326f1740");
   }

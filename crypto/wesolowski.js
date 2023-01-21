@@ -45,7 +45,7 @@ const generateChallenge = (g, y) => {
   for (const p of P) {
     /** @const {number} */
     const r = Number(h % BigInt(p));
-    for (let i = r ? p - r : r; i < 2048; i += p)
+    for (let i = r ? p - r : 0; i < 2048; i += p)
       t[i] = 1;
   }
   return 0n;

@@ -21,20 +21,50 @@ const KIMLIKDAO_HASH_PREFIX = "\x19KimlikDAO hash\n";
  * @return {string}
  */
 const hash = (sectionName, section) => {
-  if (sectionName == "exposureReport") {
-    /** @const {!did.ExposureReport} */
-    const exposureReport = /** @type {!did.ExposureReport} */(section);
-    /** @const {!Uint8Array} */
-    const buff = new Uint8Array(64);
-    new TextEncoder().encodeInto(KIMLIKDAO_HASH_PREFIX, buff);
-    /** @const {!Uint8Array} */
-    const ts = hexten(exposureReport.signatureTs.toString(16));
-    buff.set(ts, 32 - ts.length);
-    uint8ArrayeBase64ten(buff.subarray(32), exposureReport.id);
-    return hex(new Uint8Array(
-      keccak256Uint32(new Uint32Array(buff.buffer)).buffer, 0, 32));
+  switch (sectionName) {
+    case "exposureReport": {
+      /** @const {!did.ExposureReport} */
+      const exposureReport = /** @type {!did.ExposureReport} */(section);
+      /**
+       * The `exposureReport` is hashed in an EVM friedly way.
+       * 16 bytes KIMLIKDAO_HASH_PREFIX,
+       * 16 bytes signatureTs (big endian),
+       * 32 bytes exposureReport.id
+       *
+       * @const {!Uint8Array} */
+      const buff = new Uint8Array(64);
+      new TextEncoder().encodeInto(KIMLIKDAO_HASH_PREFIX, buff);
+      /** @const {!Uint8Array} */
+      const ts = hexten(exposureReport.signatureTs.toString(16));
+      buff.set(ts, 32 - ts.length);
+      uint8ArrayeHexten(buff.subarray(32), exposureReport.id);
+      return hex(new Uint8Array(
+        keccak256Uint32(new Uint32Array(buff.buffer)).buffer, 0, 32));
+    }
+
+    case "humanID": {
+      /** @const {!did.HumanID} */
+      const humanID = /** @type {!did.HumanID} */(section);
+      /**
+       * The `humanID` is hashed in an EVM friednly way.
+       * 16 bytes KIMLIKDAO_HASH_PREFIX,
+       * 16 bytes signatureTs (big endian),
+       * 32 bytes commitment,
+       * 32 bytes humanID.id
+       *
+       * @const {!Uint8Array} */
+      const buff = new Uint8Array(96);
+      new TextEncoder().encodeInto(KIMLIKDAO_HASH_PREFIX, buff);
+      /** @const {!Uint8Array} */
+      const ts = hexten(humanID.signatureTs.toString(16));
+      buff.set(ts, 32 - ts.length);
+      uint8ArrayeBase64ten(buff.subarray(32), humanID.commitment);
+      uint8ArrayeHexten(buff.subarray(64), humanID.id);
+      return hex(new Uint8Array(
+        keccak256Uint32(new Uint32Array(buff.buffer)).buffer, 0, 32));
+    }
   }
-  /** @const {Set<string>} */
+  /** @const {!Set<string>} */
   const notHashed = new Set(["secp256k1", "bls12_381", "commitmentR"]);
   return keccak256(
     KIMLIKDAO_HASH_PREFIX + JSON.stringify(section,
