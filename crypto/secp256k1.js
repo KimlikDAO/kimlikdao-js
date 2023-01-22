@@ -51,10 +51,8 @@ const sqrt = (n) => {
    * @return {!bigint}
    */
   const tower = (b, pow) => {
-    while (pow-- > 0) {
-      b *= b;
-      b %= P;
-    }
+    while (pow-- > 0)
+      b = b * b % P;
     return b;
   }
   const b2 = (((n * n) % P) * n) % P;
@@ -259,6 +257,15 @@ Point.prototype.multiply = function (n) {
 }
 
 /**
+ * @param {!Point} P
+ * @param {!bigint} a
+ * @param {!Point} Q
+ * @param {!bigint} b
+ * @return {!Point} a.P + b.Q
+ */
+const timesPlusTimes = (P, a, Q, b) => P.multiply(a).increment(Q.multiply(b));
+
+/**
  * @param {!Point} p
  * @param {!Point} q
  * @return {boolean}
@@ -314,16 +321,14 @@ const verify = (digest, r, s, pubKey) => {
   if (s <= 0n || N <= s) return false;
   /** @const {!bigint} */
   const is = inverse(s, N);
-  /** @type {!Point} */
-  const U1 = G.copy().multiply((digest * is) % N);
   /** @const {!Point} */
-  const U2 = pubKey.copy().multiply((r * is) % N);
-  U1.increment(U2);
-  const z2 = (U1.z * U1.z) % P;
+  const U = timesPlusTimes(G.copy(), digest * is % N, pubKey.copy(), r * is % N);
+  /** @const {!bigint} */
+  const z2 = (U.z * U.z) % P;
   if (!z2) return false;
-  if ((r * z2) % P === U1.x) return true;
+  if ((r * z2) % P === U.x) return true;
   r += N;
-  return (r < P) && (r * z2) % P === U1.x;
+  return (r < P) && (r * z2) % P === U.x;
 }
 
 /**
@@ -344,10 +349,7 @@ const recoverSigner = (digest, r, s, yParity) => {
   /** @const {Point} */
   const K = Point.from(r, yParity);
   if (!K) return O;
-  /** @type {!Point} */
-  const U1 = K.multiply((s * ir) % N);
-  const U2 = G.copy().multiply((digest * ir) % N).negate();
-  return U1.increment(U2).project();
+  return timesPlusTimes(K, s * ir % N, G.copy().negate(), digest * ir % N).project();
 }
 
 /**
