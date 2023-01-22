@@ -241,12 +241,19 @@ Point.prototype.copy = function () {
  * @return {!Point}
  */
 Point.prototype.multiply = function (n) {
-  let d = this.copy();
-  this.x = this.y = this.z = 0n;
-  while (n > 0n) {
-    if (n & 1n) this.increment(d);
-    d.double();
-    n >>= 1n;
+  if (!n) {
+    this.x = this.y = this.z = 0n;
+    return this;
+  }
+  /** @const {string} */
+  const nBits = n.toString(2);
+  /** @const {!Point} */
+  const d = this.copy();
+
+  for (let i = 1; i < nBits.length; ++i) {
+    this.double();
+    if (nBits.charCodeAt(i) == 49)
+      this.increment(d);
   }
   return this;
 }
