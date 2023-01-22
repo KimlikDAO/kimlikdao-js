@@ -7,9 +7,9 @@
 import { inverse } from "../crypto/modular";
 import { G, N, Point } from "../crypto/secp256k1";
 import { keccak256, keccak256Uint32 } from "../crypto/sha3";
-import { evaluate, reconstructY } from "../crypto/wesolowski";
+import { evaluate, generateChallenge, reconstructY } from "../crypto/wesolowski";
 import evm from "../ethereum/evm";
-import { hex, hexten, sayıdanBase64e } from "../util/çevir";
+import { base64tenSayıya, hex, hexten, sayıdanBase64e } from "../util/çevir";
 
 /** @const {number} */
 const KIMLIKDAO_VERIFIABLE_ID_LOG_ITERATIONS = 22;
@@ -58,11 +58,11 @@ const sign = (digest, privKey) => {
 
 /**
  * @param {string} personKey
- * @param {string} secret a 256 bit hex encoded bytes.
+ * @param {string} privateKey a 256 bit hex encoded bytes.
  * @return {!did.VerifiableID}
  */
-const generate = (personKey, secret) => {
-  let { r, s, yParity } = sign(keccak256(personKey), secret)
+const generate = (personKey, privateKey) => {
+  let { r, s, yParity } = sign(keccak256(personKey), privateKey)
   const { y, π, l } = evaluate(r, KIMLIKDAO_VERIFIABLE_ID_ITERATIONS);
 
   if (yParity) s += (1n << 255n);
@@ -79,12 +79,21 @@ const generate = (personKey, secret) => {
 
 /**
  * @param {!did.VerifiableID} verifiableID
+ * @param {string} personKey
  * @param {string} publicKey
  * @return {boolean}
  */
-const verify = (verifiableID, publicKey) => {
-  return reconstructY(
-    KIMLIKDAO_VERIFIABLE_ID_LOG_ITERATIONS, 0n, 0n, 0n) == 1n;
+const verify = (verifiableID, personKey, publicKey) => {
+  /** @const {!bigint} */
+  const g = 0n;
+  /** @const {!bigint} */
+  const π = base64tenSayıya(verifiableID.wesolowskiP);
+  /** @const {!bigint} */
+  const l = base64tenSayıya(verifiableID.wesolowskiL);
+  /** @const {!bigint} */
+  const y = reconstructY(
+    KIMLIKDAO_VERIFIABLE_ID_LOG_ITERATIONS, g, π, l);
+  return generateChallenge(g, y) == l;
 }
 
 export { generate, verify };

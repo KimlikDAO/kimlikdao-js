@@ -93,9 +93,19 @@ const uint8ArrayeBase64ten = (buffer, b64) => {
  */
 const sayıdanBase64e = (sayı) => base64(hexten(sayı.toString(16)));
 
+/**
+ * TODO(KimlikDAO-bot): Try microbenchmarking to determine whether to use
+ * `toString(8)` and concat adjacent characters into base64.
+ *
+ * @param {string} str
+ * @return {!bigint}
+ */
+const base64tenSayıya = (str) => BigInt("0x" + hex(base64ten(str)));
+
 export {
   base64,
   base64ten,
+  base64tenSayıya,
   hex,
   hexten,
   sayıdanBase64e,
