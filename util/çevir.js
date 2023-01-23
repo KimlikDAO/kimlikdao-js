@@ -42,7 +42,7 @@ const uint8ArrayeHexten = (buff, str) => {
  * Verilen bir hex dizisini Uint32Array'e yazar.
  *
  * Uzunluğu 8'in katı olmayan hex dizileriyle kullanıldığında dikkatli
- * olunmalı: en sağdaki tam olmayan öbek dolgusuz BE olarak okunur.
+ * olunmalı: en sağdaki tam olmayan öbek dolgusuz LE olarak okunur.
  *
  * @param {!Uint32Array} buff
  * @param {string} str

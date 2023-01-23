@@ -34,7 +34,7 @@ const P = [
  * @return {!bigint}
  */
 const generateChallenge = (g, y) => {
-  // (1) Hash g and y
+  // (1) Hash g and y to obtain h.
   /** @const {!Uint32Array} */
   const buff = new Uint32Array(33);
   uint32ArrayeHexten(buff.subarray(1), y.toString(16));
@@ -42,6 +42,9 @@ const generateChallenge = (g, y) => {
   /** @const {!bigint} */
   const h = BigInt("0x" + keccak256Uint32ToHex(buff));
 
+  // (2) Find a non-smooth number in the vicinity of h deterministically.
+  // We do 500 rounds of sieve followed by a Rabin-Miller test with a small
+  // number of test primes.
   /**
    * Bit vector to keep the sieve results.
    *
@@ -72,14 +75,37 @@ const generateChallenge = (g, y) => {
  * }}
  */
 const evaluate = (g, t) => {
+  /**
+   * (1) Calculate y = g^{2^t} (mod N)
+   *
+   * @type {!bigint}
+   */
   let y = g;
   for (let i = 0; i < t; ++i)
     y = y * y % N;
 
-  /** @const {!bigint} */
+  /**
+   * (2) Generate the challenge y = generateChallenge(g, y).
+   *
+   * @const {!bigint}
+   */
   const l = generateChallenge(g, y);
 
-  return { y, π: 0n, l }
+  /**
+   * (2) Construct the proof π = g^{⌊2^t / l⌋}
+   *
+   * @type {!bigint}
+   */
+  let π = 1n;
+  for (let i = 0, r = 1n; i < t; ++i) {
+    π = π * π % N;
+    r *= 2n;
+    if (r >= l) {
+      π = π * g % N;
+      r -= l;
+    }
+  }
+  return { y, π, l }
 }
 
 /**
