@@ -13,8 +13,9 @@ build/node/test/ipfs.compiled-test.js: node/test/ipfs.compiled-test.js \
                              --entry_point $< \
                              --js $^ \
                              --js_output_file $@
-	yarn uglifyjs testing/nodejs.js $@ -m -o $@
+	yarn uglifyjs testing/nodejs.js $@ -m -c toplevel,unsafe -o $@
 	node $@
+	wc $@
 
 .PHONY: node.test
 node.test: $(addprefix build/, $(wildcard node/test/*.compiled-test.js))

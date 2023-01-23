@@ -15,6 +15,7 @@ build/crypto/test/secp256k1.compiled-test.js: crypto/test/secp256k1.compiled-tes
                              --js_output_file $@
 	yarn uglifyjs testing/nodejs.js $@ -m -c toplevel,unsafe -o $@
 	node $@
+	wc $@
 
 build/crypto/test/integration.compiled-test.js: crypto/test/integration.compiled-test.js \
                                                 crypto/secp256k1.js crypto/sha3.js crypto/modular.js \
@@ -34,6 +35,7 @@ build/crypto/test/integration.compiled-test.js: crypto/test/integration.compiled
                              --js_output_file $@
 	yarn uglifyjs testing/nodejs.js $@ -m -c toplevel,unsafe -o $@
 	node $@
+	wc $@
 
 build/crypto/test/modular.compiled-test.js: crypto/test/modular.compiled-test.js \
                                             crypto/modular.js \
@@ -52,6 +54,7 @@ build/crypto/test/modular.compiled-test.js: crypto/test/modular.compiled-test.js
                              --js_output_file $@
 	yarn uglifyjs $@ -m -c toplevel,unsafe -o $@
 	node $@
+	wc $@
 
 build/crypto/test/sha3.compiled-test.js: crypto/test/sha3.compiled-test.js crypto/test/sha3_*.js \
                                          crypto/sha3.js \
@@ -70,6 +73,7 @@ build/crypto/test/sha3.compiled-test.js: crypto/test/sha3.compiled-test.js crypt
                              --js_output_file $@
 	yarn uglifyjs $@ -m -c toplevel,unsafe -o $@
 	node $@
+	wc $@
 
 build/crypto/test/wesolowski.compiled-test.js: crypto/test/wesolowski.compiled-test.js \
     crypto/wesolowski.js crypto/modular.js crypto/sha3.js \

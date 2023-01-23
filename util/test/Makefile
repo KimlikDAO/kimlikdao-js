@@ -11,8 +11,9 @@ build/util/test/çevir.compiled-test.js: util/test/çevir.compiled-test.js \
                              --entry_point $< \
                              --js $^ \
                              --js_output_file $@
-	yarn uglifyjs $@ --compress toplevel --mangle -o $@
+	yarn uglifyjs $@ -m -c toplevel,unsafe -o $@
 	node $@
+	wc $@
 
 .PHONY: util.test
 did.test: $(addprefix build/, $(wildcard util/test/*.compiled-test.js))

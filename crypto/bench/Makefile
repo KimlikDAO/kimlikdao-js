@@ -13,8 +13,9 @@ build/crypto/bench/secp256k1.bench.js: crypto/bench/secp256k1.bench.js crypto/se
                              --entry_point $< \
                              --js $^ \
                              --js_output_file $@
-	yarn uglifyjs testing/nodejs.js $@ -m -o $@
+	yarn uglifyjs testing/nodejs.js $@ -m -c toplevel,unsafe -o $@
 	node $@
+	wc $@
 
 build/crypto/bench/modular.bench.js: crypto/bench/modular.bench.js \
     crypto/modular.js \
@@ -30,8 +31,9 @@ build/crypto/bench/modular.bench.js: crypto/bench/modular.bench.js \
                              --entry_point $< \
                              --js $^ \
                              --js_output_file $@
-	yarn uglifyjs $@ -m -o $@
+	yarn uglifyjs $@ -m -c toplevel,unsafe -o $@
 	node $@
+	wc $@
 
 build/crypto/bench/wesolowski.bench.js: crypto/bench/wesolowski.bench.js \
     crypto/wesolowski.js crypto/modular.js crypto/sha3.js \
@@ -47,8 +49,9 @@ build/crypto/bench/wesolowski.bench.js: crypto/bench/wesolowski.bench.js \
                              --entry_point $< \
                              --js $^ \
                              --js_output_file $@
-	yarn uglifyjs testing/nodejs.js $@ -m -o $@
+	yarn uglifyjs testing/nodejs.js $@ -m -c toplevel,unsafe -o $@
 	node $@
+	wc $@
 
 .PHONY: crypto.benchmark
 crypto.benchmark: $(addprefix build/, $(wildcard crypto/bench/*.bench.js))
