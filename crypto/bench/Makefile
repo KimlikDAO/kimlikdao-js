@@ -34,7 +34,8 @@ build/crypto/bench/modular.bench.js: crypto/bench/modular.bench.js \
 	node $@
 
 build/crypto/bench/wesolowski.bench.js: crypto/bench/wesolowski.bench.js \
-    crypto/wesolowski.js crypto/modular.js
+    crypto/wesolowski.js crypto/modular.js crypto/sha3.js \
+    util/çevir.js
 	mkdir -p $(dir $@)
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
                              --jscomp_error=unusedLocalVariables \

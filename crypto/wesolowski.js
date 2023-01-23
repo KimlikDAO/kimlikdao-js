@@ -1,11 +1,13 @@
+import { uint32ArrayeHexten } from "../util/çevir";
 import { expTimesExp } from "./modular";
+import { keccak256Uint32ToHex } from "./sha3";
 
 /** @const {!bigint} */
 const N = BigInt("0x"
-  + "E66615571EE49BBE095C57B25C7E2610C875EB3C0124ECB5F9B14A82D9177833"
-  + "12FBD4EFE90B1D4DF4987810CAF5578151AEB795C2770E31F3D50428A0C16A0A"
-  + "3185FC7222373078F417D77BEFBAE999C0FE0D44D10A073054BB5582C4D6779A"
-  + "A006C5EC2866E0F023339D3420E92C33C5BE0B7D15D96C5E9B1AF3ED1335552E");
+  + "e0b7782dbd6c9fc269cc5259ca7be1b451c9fbbc20293434852f6f3e86034609"
+  + "32b66001276a399f2e20dc942c627159b28652138463e1fc59446d8715ae651c"
+  + "ff6823ba0a6202d12f34b4ca06d6ae6cecd7b9962df8380a5469b79145c8b433"
+  + "d493d82aeb28a0305bf0c766377f005fd5de2d3594867116237c5c40fd542575");
 
 /** @const {!Array<number>} */
 const P = [
@@ -32,6 +34,14 @@ const P = [
  * @return {!bigint}
  */
 const generateChallenge = (g, y) => {
+  // (1) Hash g and y
+  /** @const {!Uint32Array} */
+  const buff = new Uint32Array(33);
+  uint32ArrayeHexten(buff.subarray(1), y.toString(16));
+  uint32ArrayeHexten(buff, g.toString(16));
+  /** @const {!bigint} */
+  const h = BigInt("0x" + keccak256Uint32ToHex(buff));
+
   /**
    * Bit vector to keep the sieve results.
    *
@@ -40,15 +50,16 @@ const generateChallenge = (g, y) => {
    * @const {!Uint8Array}
    */
   const t = new Uint8Array(2048);
-  /** @const {!bigint} */
-  const h = 1337n;
   for (const p of P) {
     /** @const {number} */
     const r = Number(h % BigInt(p));
     for (let i = r ? p - r : 0; i < 2048; i += p)
       t[i] = 1;
   }
-  return 0n;
+  /** @type {number} */
+  let i = 0;
+  while (t[i]) ++i;
+  return h + BigInt(i);
 }
 
 /**
@@ -72,16 +83,12 @@ const evaluate = (g, t) => {
 }
 
 /**
- * Reconstructs y from the
- *   logarithm of the difficulty parameter t,
- *   VDF input g,
- *   proof π and,
- *   challenge l.
+ * Reconstructs y from the paramters:
  *
- * @param {number} logT
- * @param {!bigint} g
- * @param {!bigint} π
- * @param {!bigint} l
+ * @param {number} logT the logarithm of the difficulty parameter t
+ * @param {!bigint} g the input to the VDF
+ * @param {!bigint} π the Wesolowski proof for the challenge l,
+ * @param {!bigint} l the challenge generated from a secure hash of g, y.
  * @return {!bigint} y reconstructred
  */
 const reconstructY = (logT, g, π, l) => {

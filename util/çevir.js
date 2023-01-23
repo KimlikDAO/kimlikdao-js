@@ -1,9 +1,7 @@
 /** @const {!Array<string>} */
-const Uint8denHexe = [];
-for (let /** number */ n = 0; n <= 0xff; ++n) {
-  const hexOctet = n.toString(16).padStart(2, "0");
-  Uint8denHexe.push(hexOctet);
-}
+const Uint8denHexe = Array(255);
+for (let /** number */ i = 0; i < 256; ++i)
+  Uint8denHexe[i] = i.toString(16).padStart(2, "0");
 
 /**
  * @param {!Uint8Array} buff hex'e çevrilecek Uint8Array.
@@ -11,10 +9,10 @@ for (let /** number */ n = 0; n <= 0xff; ++n) {
  */
 const hex = (buff) => {
   /** @const {!Array<string>} */
-  const octets = new Array(buff.length);
+  const ikililer = new Array(buff.length);
   for (let /** number */ i = 0; i < buff.length; ++i)
-    octets[i] = Uint8denHexe[buff[i]];
-  return octets.join("");
+    ikililer[i] = Uint8denHexe[buff[i]];
+  return ikililer.join("");
 }
 
 /**
@@ -22,11 +20,11 @@ const hex = (buff) => {
  * @return {!Uint8Array} byte dizisi
  */
 const hexten = (str) => {
-  if (str.length & 1) str += "0";
+  if (str.length & 1) str = "0" + str;
   /** @const {!Uint8Array} */
   const buff = new Uint8Array(str.length / 2);
-  for (let i = 0; i < buff.length; ++i)
-    buff[i] = parseInt(str.slice(2 * i, 2 * i + 2), 16);
+  for (let i = 0, j = 0; i < str.length; ++j, i += 2)
+    buff[j] = parseInt(str.slice(i, i + 2), 16);
   return buff;
 }
 
@@ -35,9 +33,23 @@ const hexten = (str) => {
  * @param {string} str
  */
 const uint8ArrayeHexten = (buff, str) => {
-  if (str.length & 1) str += "0";
-  for (let i = 0; i < buff.length; ++i)
-    buff[i] = parseInt(str.slice(2 * i, 2 * i + 2), 16);
+  if (str.length & 1) str = "0" + str;
+  for (let i = 0, j = 0; i < str.length; ++j, i += 2)
+    buff[j] = parseInt(str.slice(i, i + 2), 16);
+}
+
+/**
+ * Verilen bir hex dizisini Uint32Array'e yazar.
+ *
+ * Uzunluğu 8'in katı olmayan hex dizileriyle kullanıldığında dikkatli
+ * olunmalı: en sağdaki tam olmayan öbek dolgusuz BE olarak okunur.
+ *
+ * @param {!Uint32Array} buff
+ * @param {string} str
+ */
+const uint32ArrayeHexten = (buff, str) => {
+  for (let i = 0, j = 0; i < str.length; ++j, i += 8)
+    buff[j] = parseInt(str.slice(i, i + 8), 16);
 }
 
 /**
@@ -49,9 +61,8 @@ const base64 = (bytes) => {
   let binary = "";
   /** @const {number} */
   const len = bytes.length;
-  for (let i = 0; i < len; i++) {
+  for (let i = 0; i < len; i++)
     binary += String.fromCharCode(bytes[i]);
-  }
   return btoa(binary);
 }
 
@@ -62,10 +73,10 @@ const base64 = (bytes) => {
 const base64ten = (b64) => {
   /** @const {string} */
   const decoded = atob(b64);
-  /** @const {!Uint8Array} */
-  const buffer = new Uint8Array(decoded.length);
   /** @const {number} */
   const len = decoded.length;
+  /** @const {!Uint8Array} */
+  const buffer = new Uint8Array(len);
   for (let i = 0; i < len; ++i)
     buffer[i] = decoded.charCodeAt(i);
   return buffer;
@@ -111,5 +122,6 @@ export {
   sayıdanBase64e,
   uint8ArrayeBase64ten,
   uint8ArrayeHexten,
+  uint32ArrayeHexten,
   Uint8denHexe,
 };

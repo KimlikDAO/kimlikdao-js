@@ -16,10 +16,10 @@ describe('çevir tests', () => {
     );
   })
 
-  it('should handle missing trailing zero', () => {
+  it('should handle missing leading zero', () => {
     assert.deepEqual(
       hexten("10203"),
-      Uint8Array.from([16, 32, 48])
+      Uint8Array.from([1, 2, 3])
     );
   })
 })

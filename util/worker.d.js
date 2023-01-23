@@ -8,6 +8,7 @@
 const close = function () { };
 
 /**
- * @param {MessageEvent} msg
+ * @param {!MessageEvent<*>} msg
+ * @return {void}
  */
 let onmessage = function (msg) { };

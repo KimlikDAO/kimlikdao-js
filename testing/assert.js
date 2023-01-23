@@ -39,8 +39,8 @@ const assertEq = (given, expected) => {
 
 /**
  * @template T
- * @param {!Array<T>|!Uint32Array} given
- * @param {!Array<T>|!Uint32Array} expected
+ * @param {!Array<T>|!Uint8Array|!Uint32Array} given
+ * @param {!Array<T>|!Uint8Array|!Uint32Array} expected
  * @return {boolean}
  */
 const assertArrayEq = (given, expected) => {
