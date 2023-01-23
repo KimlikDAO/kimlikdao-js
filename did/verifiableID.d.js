@@ -33,11 +33,11 @@ did.VerifiableID = function () { }
 did.VerifiableID.prototype.id;
 
 /**
- * A deterministic bls12-381 signed person info, used as the input to the VDF.
+ * A RSASSA-PKCS1-v1_5 signature of person info, used as the input to the VDF.
  *
  * @type {string}
  */
-did.VerifiableID.prototype.g;
+did.VerifiableID.prototype.x;
 
 /**
  * Wesolowski proof π parameter as a base64 encoded number.

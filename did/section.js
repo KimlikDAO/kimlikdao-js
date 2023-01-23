@@ -5,7 +5,7 @@
  */
 
 import { sign } from "../crypto/secp256k1";
-import { keccak256, keccak256Uint32 } from "../crypto/sha3";
+import { keccak256, keccak256Uint32, keccak256Uint32ToHex } from "../crypto/sha3";
 import evm from "../ethereum/evm";
 import {
   base64, hex, hexten,
@@ -38,8 +38,7 @@ const hash = (sectionName, section) => {
       const ts = hexten(exposureReport.signatureTs.toString(16));
       buff.set(ts, 32 - ts.length);
       uint8ArrayeHexten(buff.subarray(32), exposureReport.id);
-      return hex(new Uint8Array(
-        keccak256Uint32(new Uint32Array(buff.buffer)).buffer, 0, 32));
+      return keccak256Uint32ToHex(new Uint32Array(buff.buffer));
     }
 
     case "humanID": {
@@ -60,8 +59,7 @@ const hash = (sectionName, section) => {
       buff.set(ts, 32 - ts.length);
       uint8ArrayeBase64ten(buff.subarray(32), humanID.commitment);
       uint8ArrayeHexten(buff.subarray(64), humanID.id);
-      return hex(new Uint8Array(
-        keccak256Uint32(new Uint32Array(buff.buffer)).buffer, 0, 32));
+      return keccak256Uint32ToHex(new Uint32Array(buff.buffer));
     }
   }
   /** @const {!Set<string>} */

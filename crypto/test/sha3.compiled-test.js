@@ -76,7 +76,7 @@ const compareKeccak256 = () => {
   }
 }
 
-const testKeccakUint32 = () => {
+const testKeccak256Uint32 = () => {
   assertArrayEq(
     keccak256Uint32(new Uint32Array([1, 2, 3, 4, 5])),
     new Uint32Array([
@@ -135,7 +135,7 @@ const compareKeccak256Speed = () => {
 
 testKeccak256();
 compareKeccak256();
-testKeccakUint32();
+testKeccak256Uint32();
 compareKeccak256Speed();
 
 assertStats();

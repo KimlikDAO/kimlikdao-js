@@ -26,7 +26,7 @@ const P = [
 /**
  * Generates a challenge supposedly sent from the verifier to the prover.
  *
- * Thanks to the Fiat-Shamir heristic, the prover generates this from an
+ * Thanks to the Fiat-Shamir heuristic, the prover generates this from an
  * unpredictable function of the VDF output without any interaction.
  *
  * @param {!bigint} g
@@ -34,21 +34,24 @@ const P = [
  * @return {!bigint}
  */
 const generateChallenge = (g, y) => {
-  // (1) Hash g and y to obtain h.
+  // (1) Hash g and y to obtain an odd h.
   /** @const {!Uint32Array} */
-  const buff = new Uint32Array(33);
-  uint32ArrayeHexten(buff.subarray(1), y.toString(16));
-  uint32ArrayeHexten(buff, g.toString(16));
+  const buff = new Uint32Array(40);
+  uint32ArrayeHexten(buff, y.toString(16).padStart(256, "0"));
+  uint32ArrayeHexten(buff.subarray(32), g.toString(16).padStart(64, "0"));
   /** @const {!bigint} */
-  const h = BigInt("0x" + keccak256Uint32ToHex(buff));
+  const h = BigInt("0x" + keccak256Uint32ToHex(buff)) | 1n;
 
   // (2) Find a non-smooth number in the vicinity of h deterministically.
-  // We do 500 rounds of sieve followed by a Rabin-Miller test with a small
+  // We do 500 rounds of sieve followed by a Miller-Rabin test with a small
   // number of test primes.
   /**
    * Bit vector to keep the sieve results.
    *
-   * `t[i] == 1` implies that `h + i` is composite.
+   * `t[i] > 0` implies that `h + i` is composite.
+   * 
+   * Further, i odd => 2^{t[i]} | h + i, namely for odd residues, we keep
+   * power of 2s of h + i, to be used in the Miller-Rabin test.
    *
    * @const {!Uint8Array}
    */
@@ -97,9 +100,8 @@ const evaluate = (g, t) => {
    * @type {!bigint}
    */
   let π = 1n;
-  for (let i = 0, r = 1n; i < t; ++i) {
+  for (let i = 0, r = 2n; i < t; ++i, r <<= 1n) {
     π = π * π % N;
-    r *= 2n;
     if (r >= l) {
       π = π * g % N;
       r -= l;

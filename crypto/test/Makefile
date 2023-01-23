@@ -90,9 +90,5 @@ build/crypto/test/wesolowski.compiled-test.js: crypto/test/wesolowski.compiled-t
 	node $@
 	wc $@
 
-.PHONY: crypto/secp256k1
-crypto/secp256k1: build/crypto/test/secp256k1.bench.js \
-                  build/crypto/test/secp256k1.compiled-test.js
-
 .PHONY: crypto.test
 crypto.test: $(addprefix build/, $(wildcard crypto/test/*.compiled-test.js))

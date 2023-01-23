@@ -4,88 +4,59 @@
  * @author KimlikDAO
  */
 
-import { inverse } from "../crypto/modular";
-import { G, N, Point } from "../crypto/secp256k1";
-import { keccak256, keccak256Uint32 } from "../crypto/sha3";
+import { keccak256Uint32ToHex } from "../crypto/sha3";
 import { evaluate, generateChallenge, reconstructY } from "../crypto/wesolowski";
-import evm from "../ethereum/evm";
-import { base64tenSayıya, hex, hexten, sayıdanBase64e } from "../util/çevir";
+import {
+  base64, base64ten, base64tenSayıya, sayıdanBase64e,
+  uint32ArrayeHexten
+} from "../util/çevir";
 
 /** @const {number} */
-const KIMLIKDAO_VERIFIABLE_ID_LOG_ITERATIONS = 22;
+const KIMLIKDAO_VERIFIABLE_ID_LOG_ITERATIONS = 20;
 
 /** @const {number} */
-const KIMLIKDAO_VERIFIABLE_ID_ITERATIONS = 1 << 22;
+const KIMLIKDAO_VERIFIABLE_ID_ITERATIONS = 1 << 20;
 
 /**
- * @param {string} digest 256-bit hex encoded bytes.
- * @param {string} privKey 256-bit hex encoded bytes.
- * @return {{
- *   r: !bigint,
- *   s: !bigint,
- *   yParity: boolean
- * }}
- */
-const sign = (digest, privKey) => {
-  /** @const {!Uint32Array} */
-  const buff = new Uint32Array(hexten(digest + privKey).buffer);
-  /** @const {!bigint} */
-  const d = BigInt("0x" + digest);
-  /** @const {!bigint} */
-  const pk = BigInt("0x" + privKey)
-
-  for (; ; ++buff[0]) {
-    /** @const {!bigint} */
-    const k = BigInt("0x" + hex(new Uint8Array(keccak256Uint32(buff).buffer, 0, 32)));
-    if (k <= 0 || N <= k) continue; // probability ~2^{-128}, i.e., a near impossibility.
-    /** @type {!Point} */
-    const K = G.copy().multiply(k).project();
-    /** @const {!bigint} */
-    const r = K.x;
-    if (r >= N) continue; // probability ~2^{-128}, i.e., a near impossibility.
-    /** @type {!bigint} */
-    let s = (inverse(k, N) * ((d + r * pk) % N)) % N;
-    if (s == 0n) continue; // probability ~2^{-256}
-    /** @type {boolean} */
-    let yParity = !!(K.y & 1n);
-    if (s > (N >> 1n)) {
-      s = N - s;
-      yParity = !yParity;
-    }
-    return { r, s, yParity }
-  }
-}
-
-/**
- * @param {string} personKey
- * @param {string} privateKey a 256 bit hex encoded bytes.
- * @return {!did.VerifiableID}
+ * @param {string} personKey An arbitrary string about a person.
+ * @param {string} privateKey A base64 encoded RSA private key.
+ * @return {!Promise<!did.VerifiableID>}
  */
 const generate = (personKey, privateKey) => {
-  let { r, s, yParity } = sign(keccak256(personKey), privateKey)
-  const { y, π, l } = evaluate(r, KIMLIKDAO_VERIFIABLE_ID_ITERATIONS);
-
-  if (yParity) s += (1n << 255n);
-
-  /** @const {!Uint32Array} */
-  const yArr = keccak256Uint32(new Uint32Array(hexten(y.toString(16)).buffer));
-  return /** @type {!did.VerifiableID} */({
-    id: hex(new Uint8Array(yArr.buffer, 0, 32)),
-    g: evm.uint256(r) + evm.uint256(s),
-    wesolowskiP: sayıdanBase64e(π),
-    wesolowskiL: sayıdanBase64e(l),
-  });
+  return crypto.subtle.importKey("pkcs8", base64ten(privateKey),
+    /** @type {!webCrypto.RsaHashedImportParams} */({
+      name: "RSASSA-PKCS1-v1_5",
+      hash: "SHA-256"
+    }), false, ["sign"])
+    .then((/** @type {!webCrypto.CryptoKey} */ signKey) => crypto.subtle.sign(
+      "RSASSA-PKCS1-v1_5", signKey, new TextEncoder().encode(personKey)))
+    .then((/** @type {!ArrayBuffer} */ signature) => {
+      /** @const {!bigint} */
+      const g = BigInt("0x" + keccak256Uint32ToHex(new Uint32Array(signature)));
+      const { y, π, l } = evaluate(g, KIMLIKDAO_VERIFIABLE_ID_ITERATIONS);
+      /** @const {!Uint32Array} */
+      const yArr = new Uint32Array(32);
+      uint32ArrayeHexten(yArr, y.toString(16).padStart(256, "0"));
+      return /** @type {!did.VerifiableID} */({
+        id: keccak256Uint32ToHex(yArr),
+        x: base64(new Uint8Array(signature)),
+        wesolowskiP: sayıdanBase64e(π),
+        wesolowskiL: sayıdanBase64e(l),
+      });
+    });
 }
 
 /**
  * @param {!did.VerifiableID} verifiableID
  * @param {string} personKey
  * @param {string} publicKey
- * @return {boolean}
+ * @return {!Promise<boolean>}
  */
 const verify = (verifiableID, personKey, publicKey) => {
+  /** @const {!Uint32Array} */
+  const xArray = new Uint32Array(base64ten(verifiableID.x).buffer);
   /** @const {!bigint} */
-  const g = 0n;
+  const g = BigInt("0x" + keccak256Uint32ToHex(xArray));
   /** @const {!bigint} */
   const π = base64tenSayıya(verifiableID.wesolowskiP);
   /** @const {!bigint} */
@@ -93,7 +64,19 @@ const verify = (verifiableID, personKey, publicKey) => {
   /** @const {!bigint} */
   const y = reconstructY(
     KIMLIKDAO_VERIFIABLE_ID_LOG_ITERATIONS, g, π, l);
-  return generateChallenge(g, y) == l;
+  /** @const {!Uint32Array} */
+  const yArr = new Uint32Array(32);
+  uint32ArrayeHexten(yArr, y.toString(16).padStart(256, "0"));
+  if (keccak256Uint32ToHex(yArr) != verifiableID.id) return Promise.resolve(false);
+  if (generateChallenge(g, y) != l) return Promise.resolve(false);
+  return crypto.subtle.importKey("spki", base64ten(publicKey),
+    /** @type {!webCrypto.RsaHashedImportParams} */({
+      name: "RSASSA-PKCS1-v1_5",
+      hash: "SHA-256"
+    }), false, ["verify"])
+    .then((/** @type {!webCrypto.CryptoKey} */ verifyKey) => crypto.subtle.verify(
+      "RSASSA-PKCS1-v1_5", verifyKey, xArray, new TextEncoder().encode(personKey)
+    ))
 }
 
 export { generate, verify };

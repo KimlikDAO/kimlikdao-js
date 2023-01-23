@@ -16,8 +16,9 @@ build/did/test/decryptedSections.compiled-test.js: did/test/decryptedSections.co
                              --entry_point $< \
                              --js $^ \
                              --js_output_file $@
-	yarn uglifyjs testing/nodejs.js $@ -m -o $@
+	yarn uglifyjs testing/nodejs.js $@ -m -c toplevel,unsafe -o $@
 	node $@
+	wc $@
 
 build/did/test/section.compiled-test.js: did/test/section.compiled-test.js \
     did/*.d.js did/section.js \
@@ -37,20 +38,22 @@ build/did/test/section.compiled-test.js: did/test/section.compiled-test.js \
                              --entry_point $< \
                              --js $^ \
                              --js_output_file $@
-	yarn uglifyjs testing/nodejs.js $@ -m -o $@
+	yarn uglifyjs testing/nodejs.js $@ -m -c toplevel,unsafe -o $@
 	node $@
+	wc $@
 
 build/did/test/verifiableID.compiled-test.js: did/test/verifiableID.compiled-test.js \
     crypto/wesolowski.js crypto/sha3.js \
-    crypto/secp256k1.js crypto/modular.js \
+    crypto/modular.js \
     did/*.d.js did/verifiableID.js \
     ethereum/*.d.js ethereum/evm.js \
     node/nvi.d.js \
-    testing/assert.js testing/nodejs.d.js \
+    testing/assert.js testing/nodejs.d.js testing/nodejs.js \
     util/çevir.js
 	mkdir -p $(dir $@)
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
                              --jscomp_error=strictCheckTypes \
+                             --jscomp_error=checkTypes \
                              --jscomp_error=unusedLocalVariables \
                              --module_resolution NODE \
                              --assume_function_wrapper \
@@ -58,8 +61,9 @@ build/did/test/verifiableID.compiled-test.js: did/test/verifiableID.compiled-tes
                              --entry_point $< \
                              --js $^ \
                              --js_output_file $@
-	yarn uglifyjs $@ -m -o $@
+	yarn uglifyjs testing/nodejs.js $@ -m -c toplevel,unsafe -o $@
 	node $@
+	wc $@
 
 .PHONY: did.test
 did.test: $(addprefix build/, $(wildcard did/test/*.compiled-test.js))

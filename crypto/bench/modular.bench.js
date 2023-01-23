@@ -80,7 +80,7 @@ const expRTLBinary = (a, x, M) => {
 }
 
 const testExpLocal = () => {
-  const testExpLocal = expLTRBinary2;
+  const expLocal = expLTRBinary2;
   /** @const {!bigint} */
   const P = BigInt("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F");
   /** @const {!bigint} */
@@ -88,20 +88,20 @@ const testExpLocal = () => {
     + "DAD19B08F618992D3A5367F0E730B97C6DD113B6A2A493C9EDB0B68DBB1AEC02"
     + "0FB2A64C9644397AB016ABA5B40FA22655060824D9F308984D6734E2439BA08F");
 
-  assertEq(testExpLocal(7n, 5n, 11n), 10n);
-  assertEq(testExpLocal(2n, 5n, 3n), 2n);
-  assertEq(testExpLocal(9n, 0n, 5n), 1n);
+  assertEq(expLocal(7n, 5n, 11n), 10n);
+  assertEq(expLocal(2n, 5n, 3n), 2n);
+  assertEq(expLocal(9n, 0n, 5n), 1n);
 
-  assertEq(testExpLocal(5n, Q - 1n, Q), 1n)
-  assertEq(testExpLocal(333n, Q - 1n, Q), 1n)
-  assertEq(testExpLocal(11n, Q - 1n, Q), 1n)
+  assertEq(expLocal(5n, Q - 1n, Q), 1n)
+  assertEq(expLocal(333n, Q - 1n, Q), 1n)
+  assertEq(expLocal(11n, Q - 1n, Q), 1n)
 
-  assertEq(testExpLocal(5n, P - 1n, P), 1n)
-  assertEq(testExpLocal(333n, P - 1n, P), 1n)
-  assertEq(testExpLocal(11n, P - 1n, P), 1n)
+  assertEq(expLocal(5n, P - 1n, P), 1n)
+  assertEq(expLocal(333n, P - 1n, P), 1n)
+  assertEq(expLocal(11n, P - 1n, P), 1n)
 
-  assertEq(testExpLocal(12n, 78n, 131n), 58n);
-  assertEq(testExpLocal(12n, 38n, 133n), 11n);
+  assertEq(expLocal(12n, 78n, 131n), 58n);
+  assertEq(expLocal(12n, 38n, 133n), 11n);
 }
 
 const benchExp = () => {
