@@ -25,4 +25,36 @@ assertEq(evm.signerAddress(
   "0x79883d9acbc4abac6d2d216693f66fcc5a0bcbc1"
 );
 
+assertEq(evm.signerAddress(
+  evm.personalDigest("İmza, KimlikDAO"),
+  evm.compactSignature(
+    "0x6c8b90ce7867d3bab682a8d8ac47293e3b8e733b5c21843d9425da4de1fa4b4d" +
+    "1495991af65b57164b042186c02bac62a292b3247e322aa4d1f9ab7519e87f4d1b")),
+  "0x79883d9acbc4abac6d2d216693f66fcc5a0bcbc1"
+);
+
+assertEq(evm.signerAddress(
+  evm.personalDigest("Signed, KimlikDAO"),
+  evm.compactSignature(
+    "0xf0912fda0d8d456eaa711fa58c3788813fc7a0ebe3906f38a5b57f18dd379b69" +
+    "3a7afde0f05e858af8be9d8c62ca03dac9d52dc9c8cc2c00a4d74cb875988dae1c")),
+  "0x79883d9acbc4abac6d2d216693f66fcc5a0bcbc1"
+);
+
+assertEq(evm.signerAddress(
+  evm.personalDigest("Çekoslovakyalılaştıramadıklarımızdanmışçasına"),
+  evm.compactSignature(
+    "0x8b00f90e6920617f49daad913d8492534d85a7dfc2a2ec0f8de149870fda62a5" +
+    "0f7abf9b7488d8304deb635248e45ba65099d3bfc86ff43711311d4b4b18e1e41b")),
+  "0x79883d9acbc4abac6d2d216693f66fcc5a0bcbc1"
+);
+
+assertEq(evm.signerAddress(
+  evm.personalDigest("Öşür yoğuşturup, aşı kovuşturmak. Iğdır’ın ilk harfi ı’dır."),
+  evm.compactSignature(
+    "0x2a64a7063ca328bee1d612a327757389b73970598f0e964b1ef075de3937c198" +
+    "728c381e23784ae164794f24bee158b569b20d17200315bcfacc7b6c0daae0601c")),
+  "0x79883d9acbc4abac6d2d216693f66fcc5a0bcbc1"
+);
+
 assertStats();

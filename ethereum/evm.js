@@ -4,7 +4,7 @@
  * @author KimlikDAO
  */
 import { recoverSigner } from "../crypto/secp256k1";
-import { keccak256, keccak256Uint32 } from '../crypto/sha3';
+import { keccak256, keccak256Uint32, keccak256Uint8 } from '../crypto/sha3';
 import { hex, hexten } from "../util/çevir";
 
 /**
@@ -101,7 +101,20 @@ const compactSignature = (signature) => {
  * @param {string} msg
  * @return {string} hex encoded hash
  */
-const personalDigest = (msg) => keccak256("\x19Ethereum Signed Message:\n" + msg.length + msg);
+const personalDigest = (msg) => {
+  /** @const {!TextEncoder} */
+  const encoder = new TextEncoder();
+  /** @const {!Uint8Array} */
+  const msgEncoded = encoder.encode(msg);
+  /** @const {!Uint8Array} */
+  const lenEncoded = encoder.encode("" + msgEncoded.length);
+  /** @const {!Uint8Array} */
+  const encoded = new Uint8Array(26 + lenEncoded.length + msgEncoded.length);
+  encoder.encodeInto("\x19Ethereum Signed Message:\n", encoded);
+  encoded.set(lenEncoded, 26);
+  encoded.set(msgEncoded, 26 + lenEncoded.length);
+  return hex(keccak256Uint8(encoded));
+}
 
 /**
  * Given a digest and a signature, recovers the signer address if the signature
@@ -112,15 +125,19 @@ const personalDigest = (msg) => keccak256("\x19Ethereum Signed Message:\n" + msg
  * @return {string} 42 bytes EVM address
  */
 const signerAddress = (digest, signature) => {
+  /** @const {number} */
+  const highNibble = parseInt(signature[64], 16);
   /** @const {boolean} */
-  const yParity = parseInt(signature[64], 16) > 7;
+  const yParity = highNibble >= 8;
   /** @const {!bigint} */
   const r = BigInt("0x" + signature.slice(0, 64));
   /** @const {!bigint} */
-  const yParityAndS = BigInt("0x" + signature.slice(64));
+  const s = BigInt("0x" + (yParity
+    ? (highNibble - 8).toString(16) + signature.slice(65)
+    : signature.slice(64))
+  );
 
-  const Q = recoverSigner(BigInt("0x" + digest), r, yParity
-    ? yParityAndS - (1n << 255n) : yParityAndS, yParity);
+  const Q = recoverSigner(BigInt("0x" + digest), r, s, yParity);
 
   /** @const {!Uint8Array} */
   const buff = hexten(uint256(Q.x) + uint256(Q.y));
