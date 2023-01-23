@@ -77,6 +77,7 @@ build/crypto/test/wesolowski.compiled-test.js: crypto/test/wesolowski.compiled-t
     util/çevir.js
 	mkdir -p $(dir $@)
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
+                             --jscomp_error=checkTypes \
                              --jscomp_error=strictCheckTypes \
                              --jscomp_error=unusedLocalVariables \
                              --emit_use_strict \

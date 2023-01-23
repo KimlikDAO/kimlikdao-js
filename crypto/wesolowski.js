@@ -1,4 +1,4 @@
-import { uint32ArrayeHexten } from "../util/çevir";
+import { hex, uint32ArrayeHexten } from "../util/çevir";
 import { expTimesExp } from "./modular";
 import { keccak256Uint32ToHex } from "./sha3";
 
@@ -29,16 +29,16 @@ const P = [
  * Thanks to the Fiat-Shamir heuristic, the prover generates this from an
  * unpredictable function of the VDF output without any interaction.
  *
- * @param {!bigint} g
- * @param {!bigint} y
+ * @param {!Uint32Array} gArr
+ * @param {!Uint32Array} yArr
  * @return {!bigint}
  */
-const generateChallenge = (g, y) => {
+const generateChallenge = (gArr, yArr) => {
   // (1) Hash g and y to obtain an odd h.
   /** @const {!Uint32Array} */
   const buff = new Uint32Array(40);
-  uint32ArrayeHexten(buff, y.toString(16).padStart(256, "0"));
-  uint32ArrayeHexten(buff.subarray(32), g.toString(16).padStart(64, "0"));
+  buff.set(gArr);
+  buff.set(yArr, 8);
   /** @const {!bigint} */
   const h = BigInt("0x" + keccak256Uint32ToHex(buff)) | 1n;
 
@@ -49,7 +49,7 @@ const generateChallenge = (g, y) => {
    * Bit vector to keep the sieve results.
    *
    * `t[i] > 0` implies that `h + i` is composite.
-   * 
+   *
    * Further, i odd => 2^{t[i]} | h + i, namely for odd residues, we keep
    * power of 2s of h + i, to be used in the Miller-Rabin test.
    *
@@ -69,15 +69,22 @@ const generateChallenge = (g, y) => {
 }
 
 /**
- * @param {!bigint} g
+ * @param {!Uint32Array} gArr
  * @param {number} t
  * @return {{
- *   y: !bigint,
+ *   y: !Uint32Array,
  *   π: !bigint,
  *   l: !bigint
  * }}
  */
-const evaluate = (g, t) => {
+const evaluate = (gArr, t) => {
+  /**
+   * (0) Convert gArr to bigint.
+   *
+   * @const {!bigint}
+   */
+  const g = BigInt("0x" + hex(new Uint8Array(gArr.buffer, 0, 32)));
+
   /**
    * (1) Calculate y = g^{2^t} (mod N)
    *
@@ -86,13 +93,16 @@ const evaluate = (g, t) => {
   let y = g;
   for (let i = 0; i < t; ++i)
     y = y * y % N;
+  /** @const {!Uint32Array} */
+  const yArr = new Uint32Array(32);
+  uint32ArrayeHexten(yArr, y.toString(16).padStart(256, "0"));
 
   /**
    * (2) Generate the challenge y = generateChallenge(g, y).
    *
    * @const {!bigint}
    */
-  const l = generateChallenge(g, y);
+  const l = generateChallenge(gArr, yArr);
 
   /**
    * (2) Construct the proof π = g^{⌊2^t / l⌋}
@@ -107,24 +117,31 @@ const evaluate = (g, t) => {
       r -= l;
     }
   }
-  return { y, π, l }
+  return { y: yArr, π, l }
 }
 
 /**
  * Reconstructs y from the paramters:
  *
  * @param {number} logT the logarithm of the difficulty parameter t
- * @param {!bigint} g the input to the VDF
+ * @param {!Uint32Array} gArr the input to the VDF
  * @param {!bigint} π the Wesolowski proof for the challenge l,
  * @param {!bigint} l the challenge generated from a secure hash of g, y.
- * @return {!bigint} y reconstructred
+ * @return {!Uint32Array} y reconstructred
  */
-const reconstructY = (logT, g, π, l) => {
+const reconstructY = (logT, gArr, π, l) => {
+  /** @const {!bigint} */
+  const g = BigInt("0x" + hex(new Uint8Array(gArr.buffer, 0, 32)));
   /** @type {!bigint} */
   let r = 2n;
   for (let i = 0; i < logT; ++i)
     r = (r * r) % l;
-  return expTimesExp(π, l, g, r, N);
+  /** @const {!bigint} */
+  const y = expTimesExp(π, l, g, r, N);
+  /** @const {!Uint32Array} */
+  const yArr = new Uint32Array(32);
+  uint32ArrayeHexten(yArr, y.toString(16).padStart(256, "0"));
+  return yArr;
 }
 
 export {

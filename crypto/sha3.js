@@ -5,32 +5,12 @@
 import { hex } from '../util/çevir';
 
 /**
- * A keccak256 implementation specialized to byte arrays no longer than 132
- * bytes and byteLen divisible by 4.
- *
- * The data at hand needs to be passed as a `Uint32Array` which enforces
- * the length divisibility requirement.
+ * Computes the keccak256 of an Uint32Array.
  *
  * @param {!Uint32Array} words A typed array of `u32`s to be hashed.
  * @return {!Uint32Array} hash as a Uint32Arrray of length 8.
  */
 const keccak256Uint32 = (words) => {
-  /** @const {!Uint32Array} */
-  const s = new Uint32Array(50);
-  s.set(words);
-  s[words.length] = 1;
-  s[33] ^= 1 << 31;
-  f(s);
-  return s.subarray(0, 8);
-}
-
-/**
- * Outputs the keccak256 of Uint32Array's as a hex string.
- *
- * @param {!Uint32Array} words A typed array of `u32`s to be hashed.
- * @return {string} hash as a hex string.
- */
-const keccak256Uint32ToHex = (words) => {
   /** @const {!Uint32Array} */
   const s = new Uint32Array(50);
   /** @const {number} */
@@ -50,8 +30,17 @@ const keccak256Uint32ToHex = (words) => {
   s[j] ^= 1;
   s[33] ^= 1 << 31;
   f(s);
-  return hex(new Uint8Array(s.buffer, 0, 32));
+  return s.subarray(0, 8);
 }
+
+/**
+ * Outputs the keccak256 of a Uint32Array as a hex string.
+ *
+ * @param {!Uint32Array} words A typed array of `u32`s to be hashed.
+ * @return {string} hash as a hex string.
+ */
+const keccak256Uint32ToHex = (words) => hex(
+  new Uint8Array(keccak256Uint32(words).buffer, 0, 32));
 
 /**
  * @param {string} str A string to be hashed.
