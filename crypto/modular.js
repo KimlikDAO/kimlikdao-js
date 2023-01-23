@@ -40,9 +40,10 @@ const inverse = (b, P) => {
 const exp = (a, x, M) => {
   /** @const {string} */
   const xBits = x.toString(2);
+  if (xBits.charCodeAt(0) == 48) return 1n;
   a %= M;
   /** @type {!bigint} */
-  let r = xBits.charCodeAt(0) == 49 ? a : 1n;
+  let r = a;
   for (let i = 1; i < xBits.length; ++i) {
     r = r * r % M;
     if (xBits.charCodeAt(i) == 49) r = r * a % M;

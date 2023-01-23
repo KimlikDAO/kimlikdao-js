@@ -53,6 +53,10 @@ const testExp = () => {
     + "DAD19B08F618992D3A5367F0E730B97C6DD113B6A2A493C9EDB0B68DBB1AEC02"
     + "0FB2A64C9644397AB016ABA5B40FA22655060824D9F308984D6734E2439BA08F");
 
+  assertEq(exp(0n, 1n, 2n), 0n);
+  assertEq(exp(0n, 0n, 2n), 1n);
+  assertEq(exp(1n, 0n, 2n), 1n);
+  assertEq(exp(1n, 1n, 2n), 1n);
   assertEq(exp(7n, 5n, 11n), 10n);
   assertEq(exp(2n, 5n, 3n), 2n);
   assertEq(exp(9n, 0n, 5n), 1n);
@@ -70,6 +74,8 @@ const testExp = () => {
 }
 
 const testExpTimesExp = () => {
+  assertEq(expTimesExp(0n, 1n, 0n, 1n, 2n), 0n);
+  assertEq(expTimesExp(0n, 0n, 0n, 0n, 2n), 1n);
   assertEq(expTimesExp(2n, 2n, 3n, 1n, 100n), 12n);
   assertEq(expTimesExp(12n, 38n, 9n, 17n, 133n), 16n);
   assertEq(expTimesExp(12n, 38n, 19n, 17n, 133n), 19n);
