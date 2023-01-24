@@ -10,7 +10,7 @@ import { Point, G } from '../secp256k1';
  */
 const derogate = (p) => new Point(p.x, p.y, 1n);
 
-describe('Jacobian <> JacobianPoint equivalence', () => {
+describe('Point <> JacobianPoint equivalence', () => {
   it('should be pointwise equal', () => {
     assert.deepEqual(
       G,

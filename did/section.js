@@ -26,7 +26,7 @@ const hash = (sectionName, section) => {
       /** @const {!did.ExposureReport} */
       const exposureReport = /** @type {!did.ExposureReport} */(section);
       /**
-       * The `exposureReport` is hashed in an EVM friedly way.
+       * The `exposureReport` is hashed in an EVM friendly way.
        * 16 bytes KIMLIKDAO_HASH_PREFIX,
        * 16 bytes signatureTs (big endian),
        * 32 bytes exposureReport.id
@@ -45,7 +45,7 @@ const hash = (sectionName, section) => {
       /** @const {!did.HumanID} */
       const humanID = /** @type {!did.HumanID} */(section);
       /**
-       * The `humanID` is hashed in an EVM friednly way.
+       * The `humanID` is hashed in an EVM friendly way.
        * 16 bytes KIMLIKDAO_HASH_PREFIX,
        * 16 bytes signatureTs (big endian),
        * 32 bytes commitment,
