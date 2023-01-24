@@ -8,6 +8,7 @@
 /**
  * A collection of `did.Sections` keyed by a string name.
  *
+ * @dict
  * @typedef {!Object<string, !did.Section>}
  */
 did.DecryptedSections;

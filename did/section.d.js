@@ -60,6 +60,8 @@ did.Section.prototype.secp256k1;
  * name, date of birth, national id etc.
  *
  * @interface
+ * @struct
+ *
  * @extends {did.Section}
  */
 did.PersonInfo = function () { };
@@ -108,7 +110,9 @@ did.PersonInfo.prototype.exposureReportID;
 /**
  * An info section containing verified contact info for a person / entity.
  *
- * @record
+ * @interface
+ * @struct
+ *
  * @extends {did.Section}
  */
 did.ContactInfo = function () { }
@@ -121,6 +125,8 @@ did.ContactInfo.prototype.phone;
 
 /**
  * @interface
+ * @struct
+ *
  * @extends {did.Section}
  */
 did.AddressInfo = function () { }
@@ -132,6 +138,8 @@ did.AddressInfo.prototype.country;
 
 /**
  * @interface
+ * @struct
+ *
  * @extends {did.Section}
  * @extends {did.VerifiableID}
  */
@@ -139,6 +147,8 @@ did.ExposureReport = function () { }
 
 /**
  * @interface
+ * @struct
+ *
  * @extends {did.Section}
  * @extends {did.VerifiableID}
  */
