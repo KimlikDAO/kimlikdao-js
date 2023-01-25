@@ -4,13 +4,13 @@
  * @author KimlikDAO
  */
 
-import { exp } from "./modular";
+import { exp2 } from "./modular";
 
 /**
  * First 499 odd primes.
  *
  * @const {!Array<number>} */
-const P = [
+const OddPrimes = [
   3, 5, 7, 11, 13, 17, 19, 23, 29,
   31, 37, 41, 43, 47, 53, 59, 61, 67, 71,
   73, 79, 83, 89, 97, 101, 103, 107, 109, 113,
@@ -27,24 +27,22 @@ const P = [
  * @param {!bigint} N
  * @param {!bigint} d It should satisfy d.2^s = N
  * @param {number} s
- * @param {!Array<!bigint>} primes
  * @return {boolean}
  */
-const millerRabin = (N, d, s, primes) => {
-  for (const p of primes) {
-    /** @type {!bigint} */
-    let x = exp(p, d, N);
-    if (x == 1n || x == N - 1n) continue;
+const millerRabinBase2 = (N, d, s) => {
+  if (N == 3n) return true;
+  /** @type {!bigint} */
+  let x = exp2(d, N);
+  if (x == 1n || x == N - 1n) return true;
 
-    /** @type {number} */
-    let r = 1;
-    for (; r < s; ++r) {
-      x = x * x % N;
-      if (x == 1n) return false;
-      if (x == N - 1n) break;
-    }
-    if (r == s) return false;
+  /** @type {number} */
+  let r = 1;
+  for (; r < s; ++r) {
+    x = x * x % N;
+    if (x == 1n) return false;
+    if (x == N - 1n) break;
   }
+  if (r == s) return false;
   return true;
 }
 
@@ -70,10 +68,10 @@ const getNonsmooth = (seed) => {
    * @const {!Uint8Array}
    */
   const t = new Uint8Array(4096);
-  for (const p of P) {
-    /** @const {number} */
-    const r = 8192 * Number(h % BigInt(p)) % p + 1;
-    for (let i = p - r; i < 4096; i += p)
+  for (const p of OddPrimes) {
+    /** @type {number} */
+    let i = (p - Number(h % BigInt(p)) - 1) * ((p + 1) >> 1) % p;
+    for (; i < 4096; i += p)
       t[i] = 1;
   }
 
@@ -89,7 +87,7 @@ const getNonsmooth = (seed) => {
     /** @const {!bigint} */
     const N = h + BigInt(2 * i + 1);
 
-    if (millerRabin(N, d, s, [2n, 3n]))
+    if (millerRabinBase2(N, d, s))
       return N;
   }
   let i = 0;
@@ -97,4 +95,4 @@ const getNonsmooth = (seed) => {
   return h + BigInt(2 * i + 1);
 }
 
-export { getNonsmooth, millerRabin };
+export { getNonsmooth, millerRabinBase2, OddPrimes };

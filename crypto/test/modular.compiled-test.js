@@ -1,4 +1,4 @@
-import { exp, expTimesExp, inverse } from "/crypto/modular";
+import { exp, exp2, expTimesExp, inverse } from "/crypto/modular";
 import { assertEq, assertStats } from "/testing/assert";
 
 /**
@@ -84,8 +84,18 @@ const testExpTimesExp = () => {
   assertEq(expTimesExp(123n, 123n, 456n, 456n, 123456n), 120384n);
 }
 
+const testExp2 = () => {
+  console.time("testExp2()");
+  assertEq(exp2(0n, 3n), exp(2n, 0n, 3n));
+  assertEq(exp2(10n, 2000n), exp(2n, 10n, 2000n));
+  assertEq(exp2(10n, 11n), exp(2n, 10n, 11n));
+  assertEq(exp2(10123n, 1100012n), exp(2n, 10123n, 1100012n));
+  console.timeEnd("testExp2()");
+}
+
 testInverse();
 testExp();
 testExpTimesExp();
+testExp2();
 
 assertStats();

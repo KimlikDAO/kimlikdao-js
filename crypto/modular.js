@@ -51,6 +51,30 @@ const exp = (a, x, M) => {
 }
 
 /**
+ * Calculates 2^x (mod M).
+ *
+ * Provides a modest 5% speedup over the `exp(2, x, M)`. May be deprecated
+ * later since the speedup is miniscule.
+ *
+ * @param {!bigint} x
+ * @param {!bigint} M
+ * @return {!bigint} 2^x (mod M)
+ */
+const exp2 = (x, M) => {
+  /** @const {string} */
+  const xDigits = x.toString(16);
+  /** @type {!bigint} */
+  let r = BigInt(1 << parseInt(xDigits[0], 16)) % M;
+  for (let i = 1; i < xDigits.length; ++i) {
+    r = r * r % M;
+    r = r * r % M;
+    r = r * r % M;
+    r = ((r * r) << BigInt("0x" + xDigits[i])) % M;
+  }
+  return r;
+}
+
+/**
  * @param {!bigint} a
  * @param {!bigint} x
  * @param {!bigint} b
@@ -78,4 +102,4 @@ const expTimesExp = (a, x, b, y, M) => {
   return r;
 }
 
-export { exp, expTimesExp, inverse };
+export { exp, exp2, expTimesExp, inverse };

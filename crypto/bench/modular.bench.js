@@ -1,5 +1,5 @@
 import { assertEq, assertStats } from "../../testing/assert";
-import { exp, expTimesExp } from "../modular";
+import { exp, exp2, expTimesExp } from "../modular";
 
 /**
  * @param {!bigint} a
@@ -237,62 +237,79 @@ const benchExpTimesExp = () => {
   const Q = BigInt("0x"
     + "DAD19B08F618992D3A5367F0E730B97C6DD113B6A2A493C9EDB0B68DBB1AEC02"
     + "0FB2A64C9644397AB016ABA5B40FA22655060824D9F308984D6734E2439BA08F");
+  /** @const {!bigint} */
+  const M = (Q - 1n) >> 1n;
 
   console.time("1k with two exp() round1");
-  {
+
+  for (let i = 0; i < 1000; ++i) {
     /** @const {!bigint} */
-    const M = (Q - 1n) >> 1n;
-    for (let i = 0; i < 1000; ++i) {
-      /** @const {!bigint} */
-      const r1 = exp(123n, Q - 1n, Q);
-      const r2 = exp(15129n, M, Q);
-      assertEq(r1 * r2 % Q, 1n);
-    }
+    const r1 = exp(123n, Q - 1n, Q);
+    const r2 = exp(15129n, M, Q);
+    assertEq(r1 * r2 % Q, 1n);
   }
+
   console.timeEnd("1k with two exp() round1");
 
   console.time("1k with two exp()");
-  {
+  for (let i = 0; i < 1000; ++i) {
     /** @const {!bigint} */
-    const M = (Q - 1n) >> 1n;
-    for (let i = 0; i < 1000; ++i) {
-      /** @const {!bigint} */
-      const r1 = exp(123n, Q - 1n, Q);
-      const r2 = exp(15129n, M, Q);
-      assertEq(r1 * r2 % Q, 1n);
-    }
+    const r1 = exp(123n, Q - 1n, Q);
+    const r2 = exp(15129n, M, Q);
+    assertEq(r1 * r2 % Q, 1n);
   }
+
   console.timeEnd("1k with two exp()");
 
   console.time("1k with expTimesExpViaBigIntMask()");
-  {
-    /** @const {!bigint} */
-    const M = (Q - 1n) >> 1n;
-    for (let i = 0; i < 1000; ++i) {
-      assertEq(expTimesExpViaBigIntMask(123n, Q - 1n, 15129n, M, Q), 1n);
-    }
+  for (let i = 0; i < 1000; ++i) {
+    assertEq(expTimesExpViaBigIntMask(123n, Q - 1n, 15129n, M, Q), 1n);
   }
   console.timeEnd("1k with expTimesExpViaBigIntMask()");
 
   console.time("1k with expTimesExpW()");
-  {
-    /** @const {!bigint} */
-    const M = (Q - 1n) >> 1n;
-    for (let i = 0; i < 1000; ++i) {
-      assertEq(expTimesExpW(123n, Q - 1n, 15129n, M, Q), 1n);
-    }
-  }
+  for (let i = 0; i < 1000; ++i)
+    assertEq(expTimesExpW(123n, Q - 1n, 15129n, M, Q), 1n);
   console.timeEnd("1k with expTimesExpW()");
 
   console.time("1k with expTimesExp()");
-  {
-    /** @const {!bigint} */
-    const M = (Q - 1n) >> 1n;
-    for (let i = 0; i < 1000; ++i) {
-      assertEq(expTimesExp(123n, Q - 1n, 15129n, M, Q), 1n);
-    }
-  }
+  for (let i = 0; i < 1000; ++i)
+    assertEq(expTimesExp(123n, Q - 1n, 15129n, M, Q), 1n);
   console.timeEnd("1k with expTimesExp()");
+}
+
+const benchExp2 = () => {
+  /** @const {!bigint} */
+  const Q = BigInt("0x"
+    + "DAD19B08F618992D3A5367F0E730B97C6DD113B6A2A493C9EDB0B68DBB1AEC02"
+    + "0FB2A64C9644397AB016ABA5B40FA22655060824D9F308984D6734E2439BA08F");
+
+  console.time("1k 512-bit exp()");
+  for (let i = 0; i < 1000; ++i)
+    assertEq(exp(2n, Q - 1n, Q), 1n);
+  console.timeEnd("1k 512-bit exp()");
+
+  console.time("1k 512-bit exp2()");
+  for (let i = 0; i < 1000; ++i)
+    assertEq(exp2(Q - 1n, Q), 1n);
+  console.timeEnd("1k 512-bit exp2()");
+
+  /** @const {!bigint} */
+  const QQ = BigInt("0x"
+    + "E43EFFD0D073B6876F71618F0F3BDB81A73A64DD2291F563263EEEABA7121CA3"
+    + "81F222ADCCC3C8C674AB74BD4B5DB36AB6D92A15E3D797B97BCB82A85AAC09E2"
+    + "2DB7C7FE0373AEC07A38BB27FE46CB05F17DA98BFB3CF3DF932F985156B3A77D"
+    + "189456BC78D0FC5CD6A331A3F2D20EF1B73B98B97396CDBFE747FB95E53C4067");
+
+  console.time("1k 1024-bit exp()");
+  for (let i = 0; i < 1000; ++i)
+    assertEq(exp(2n, QQ - 1n, QQ), 1n);
+  console.timeEnd("1k 1024-bit exp()");
+
+  console.time("1k 1024-bit exp2()");
+  for (let i = 0; i < 1000; ++i)
+    assertEq(exp2(QQ - 1n, QQ), 1n);
+  console.timeEnd("1k 1024-bit exp2()");
 }
 
 testExpLocal();
@@ -300,5 +317,7 @@ benchExp();
 
 testExpTimesExpLocal();
 benchExpTimesExp();
+
+benchExp2();
 
 assertStats();
