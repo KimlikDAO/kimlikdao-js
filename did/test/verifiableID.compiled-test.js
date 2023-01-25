@@ -16,7 +16,7 @@ const generateKeyPair = () => crypto.subtle.generateKey({
 });
 
 /**
- * @return {!Promise<void>}
+ * @return {!Promise<boolean>}
  */
 const testGenerateVerify1 = () => {
   /** @const {string} */
@@ -33,12 +33,11 @@ const testGenerateVerify1 = () => {
   return generate("TR22345678902", gizliAnahtar)
     .then((/** @type {!did.VerifiableID} */ verifiableID) =>
       verify(verifiableID, "TR22345678902", publicKey))
-    .then(assert)
-    .then((_) => { });
+    .then(assert);
 }
 
 /**
- * @return {!Promise<void>}
+ * @return {!Promise<boolean>}
  */
 const testGenerateVerify2 = () => {
   /** @const {string} */
@@ -55,8 +54,7 @@ const testGenerateVerify2 = () => {
   return generate("PERSONID", gizliAnahtar)
     .then((/** @type {!did.VerifiableID} */ verifiableID) =>
       verify(verifiableID, "PERSONID", publicKey))
-    .then(assert)
-    .then((_) => { });
+    .then(assert);
 }
 
 Promise.all([
