@@ -148,13 +148,17 @@ const fromUnlockableNFT = async (nft, sectionNames, provider, address) => {
  *
  * @param {!did.DecryptedSections} decryptedSections
  * @param {string} commitment
+ * @param {string} commitmentAnon
  * @param {number} signatureTs
  * @param {!bigint} privateKey
  * @return {!did.DecryptedSections}
  */
-const sign = (decryptedSections, commitment, signatureTs, privateKey) => {
+const sign = (decryptedSections, commitment, commitmentAnon, signatureTs, privateKey) => {
   for (const key in decryptedSections)
-    signSection(key, decryptedSections[key], commitment, signatureTs, privateKey);
+    signSection(key, decryptedSections[key],
+      key == "humanID" ? commitmentAnon : commitment,
+      signatureTs, privateKey
+    );
   return decryptedSections;
 }
 
