@@ -43,8 +43,8 @@ build/did/test/section.compiled-test.js: did/test/section.compiled-test.js \
 	wc $@
 
 build/did/test/verifiableID.compiled-test.js: did/test/verifiableID.compiled-test.js \
-    crypto/wesolowski.js crypto/sha3.js \
-    crypto/modular.js \
+    crypto/wesolowski.js crypto/primes.js crypto/modular.js \
+    crypto/sha3.js \
     did/*.d.js did/verifiableID.js \
     ethereum/*.d.js ethereum/evm.js \
     node/nvi.d.js \
