@@ -25,7 +25,7 @@ const generateChallenge = (gArr, yArr) => {
   const buff = new Uint32Array(40);
   buff.set(gArr);
   buff.set(yArr, 8);
-  return getNonsmooth(keccak256Uint32ToHex(buff));
+  return getNonsmooth(keccak256Uint32ToHex(buff).slice(3));
 }
 
 /**

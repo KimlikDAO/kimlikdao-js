@@ -10,6 +10,12 @@ const testMillerRabin = () => {
   assertEq(millerRabin(15n, 7n, 1, [2n]), false);
 }
 
+const testGetNonsmooth = () => {
+  assertEq(getNonsmooth("14c0657979dc9e9ee4efc484d3ebd0e1b9bac788baa47108d976c0a2c48e7"),
+    BigInt("0x14c0657979dc9e9ee4efc484d3ebd0e1b9bac788baa47108d976c0a2c48e720f"));
+}
+
 testMillerRabin();
+testGetNonsmooth();
 
 assertStats();

@@ -25,7 +25,7 @@ const P = [
 
 /**
  * @param {!bigint} N
- * @param {!bigint} d
+ * @param {!bigint} d It should satisfy d.2^s = N
  * @param {number} s
  * @param {!Array<!bigint>} primes
  * @return {boolean}
@@ -60,7 +60,7 @@ const getNonsmooth = (seed) => {
    *
    * @const {!bigint}
    */
-  const h = BigInt("0x" + seed.slice(3) + "000");
+  const h = BigInt(`0x${seed}000`);
 
   /**
    * Bit vector to keep the sieve results.
@@ -84,9 +84,8 @@ const getNonsmooth = (seed) => {
     /** @type {number} */
     let j = i;
     for (; (j & 1) == 0; j >>= 1) ++s;
-
     /** @const {!bigint} */
-    const d = h >> BigInt(s) + BigInt(j);
+    const d = (h >> BigInt(s)) + BigInt(j);
     /** @const {!bigint} */
     const N = h + BigInt(2 * i + 1);
 
