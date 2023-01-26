@@ -17,7 +17,8 @@ const call = (url, method, params) => fetch(url, {
     params
   }))
 }).then((res) => res.ok ? res.json() : Promise.reject(res.statusText))
-  .then((/** @type {!jsonrpc.Response} */ res) => res.result || Promise.reject());
+  .then((/** @type {!jsonrpc.Response} */ res) =>
+    res.result || Promise.reject(res.error));
 
 /**
  * @param {string} url
