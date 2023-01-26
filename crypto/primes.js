@@ -24,6 +24,8 @@ const OddPrimes = [
 ];
 
 /**
+ * Performs a single round of Miller-Rabin test to the base 2.
+ *
  * @param {!bigint} N
  * @param {!bigint} d It should satisfy d.2^s = N
  * @param {number} s
@@ -35,15 +37,12 @@ const millerRabinBase2 = (N, d, s) => {
   let x = exp2(d, N);
   if (x == 1n || x == N - 1n) return true;
 
-  /** @type {number} */
-  let r = 1;
-  for (; r < s; ++r) {
+  for (let r = 1; r < s; ++r) {
     x = x * x % N;
     if (x == 1n) return false;
-    if (x == N - 1n) break;
+    if (x == N - 1n) return true;
   }
-  if (r == s) return false;
-  return true;
+  return false;
 }
 
 /**
