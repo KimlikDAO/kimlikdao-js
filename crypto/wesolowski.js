@@ -16,14 +16,19 @@ const N = BigInt("0x"
  * Thanks to the Fiat-Shamir heuristic, the prover generates this from an
  * unpredictable function of the VDF output without any interaction.
  *
- * @param {!Uint32Array} gArr
+ * @param {!Uint32Array} gArr A Uint32Array of length 8 with a buffer of length
+ *                            at least 40 words (160 bytes).
  * @param {!Uint32Array} yArr
  * @return {!bigint}
  */
 const generateChallenge = (gArr, yArr) => {
-  /** @const {!Uint32Array} */
-  const buff = new Uint32Array(40);
-  buff.set(gArr);
+  /**
+   * We use the fact that gArr comes with a buffer of >= 40 uint32's of which
+   * only the first 8 are used.
+   *
+   * @const {!Uint32Array}
+   */
+  const buff = new Uint32Array(gArr.buffer, 0, 40);
   buff.set(yArr, 8);
   return getNonsmooth(keccak256Uint32ToHex(buff).slice(3));
 }

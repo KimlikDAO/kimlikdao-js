@@ -26,6 +26,7 @@ cloudflare.Request.prototype.cf;
 /**
  * The Cloudflare Response object contains this convenience method.
  *
+ * @nosideeffects
  * @param {!Object} jsonObj
  * @param {!Object=} options
  * @return {!Response}
@@ -37,6 +38,7 @@ Response.json = function(jsonObj, options) {}
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/API/FormData/values
  *
+ * @nosideeffects
  * @return {Iterator<Blob>}
  */
 FormData.prototype.values = function() {}

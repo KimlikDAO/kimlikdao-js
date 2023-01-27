@@ -38,6 +38,7 @@ build/crypto/bench/modular.bench.js: crypto/bench/modular.bench.js \
 build/crypto/bench/wesolowski.bench.js: crypto/bench/wesolowski.bench.js \
     crypto/wesolowski.js crypto/primes.js crypto/modular.js \
     crypto/sha3.js \
+    testing/assert.js testing/nodejs.d.js \
     util/çevir.js
 	mkdir -p $(dir $@)
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
@@ -50,7 +51,7 @@ build/crypto/bench/wesolowski.bench.js: crypto/bench/wesolowski.bench.js \
                              --entry_point $< \
                              --js $^ \
                              --js_output_file $@
-	yarn uglifyjs testing/nodejs.js $@ -m -c toplevel,unsafe -o $@
+	yarn uglifyjs $@ -m -c toplevel,unsafe -o $@
 	node $@
 	wc $@
 
