@@ -122,7 +122,7 @@ const personalDigest = (msg) => {
  *
  * @param {string} digest as a length 64 hex string
  * @param {string} signature as a length 128 compact signature
- * @return {string} 42 bytes EVM address
+ * @return {string} 42 characters long EVM address
  */
 const signerAddress = (digest, signature) => {
   /** @const {number} */

@@ -8,7 +8,7 @@ import { sign } from "../crypto/secp256k1";
 import { keccak256, keccak256Uint32, keccak256Uint32ToHex } from "../crypto/sha3";
 import evm from "../ethereum/evm";
 import {
-  base64, hex, hexten,
+  base64, hexten,
   uint8ArrayeBase64ten, uint8ArrayeHexten
 } from "../util/çevir";
 
@@ -76,9 +76,10 @@ const hash = (sectionName, section) => {
  * @return {string} commitment
  */
 const commit = (ownerAddress, commitmentR) => {
-  const buff = new Uint8Array(20, 32);
-  uint8ArrayeHexten(buff, ownerAddress.slice(2));
-  uint8ArrayeBase64ten(buff.subarray(20), commitmentR);
+  const buff = new Uint8Array(32 + 20);
+  uint8ArrayeBase64ten(buff, commitmentR);
+  for (let /** number */ i = 1; i <= 20; ++i)
+    buff[i + 31] = parseInt(ownerAddress.substring(2 * i, 2 * i + 2), 16);
   return base64(new Uint8Array(
     keccak256Uint32(new Uint32Array(buff.buffer)).buffer, 0, 32));
 }

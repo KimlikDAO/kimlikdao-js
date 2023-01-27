@@ -4,21 +4,7 @@ import { commit, hash, recoverSectionSigners, signSection } from "/did/section";
 import evm from "/ethereum/evm.js";
 import { assertElemEq, assertEq, assertStats } from "/testing/assert";
 import { base64, hex, hexten } from "/util/çevir";
-
-/** @const */
-const vm = {};
-
-/**
- * @param {!bigint} privKey
- * @return {string}
- */
-vm.addr = (privKey) => {
-  const Q = G.copy().multiply(privKey).project();
-  /** @const {!Uint8Array} */
-  const buff = hexten(evm.uint256(Q.x) + evm.uint256(Q.y));
-  return "0x" + hex(new Uint8Array(
-    keccak256Uint32(new Uint32Array(buff.buffer)).buffer, 12, 20));
-}
+import vm from "/testing/vm";
 
 const testHash = () => {
   {

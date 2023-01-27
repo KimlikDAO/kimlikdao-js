@@ -1,5 +1,8 @@
-import { selectEncryptedSections } from "/did/decryptedSections";
-import { assertElemEq, assertStats } from "/testing/assert";
+import { keccak256 } from "/crypto/sha3";
+import { combineMultiple, selectEncryptedSections, sign } from "/did/decryptedSections";
+import { commit, recoverSectionSigners } from "/did/section";
+import { assertElemEq, assertEq, assertStats } from "/testing/assert";
+import vm from "/testing/vm";
 
 const testSelectEncryptedSections = () => {
   /** @const {!Array<string>} */
@@ -55,6 +58,62 @@ const testSelectEncryptedSections = () => {
   testGreedy();
 }
 
+const testCombineMultiple = () => {
+  /** @const {string} */
+  const ownerAddress = vm.addr(1n);
+
+  /** @const {string} */
+  const commitmentR = keccak256("commitmentR");
+  /** @const {string} */
+  const commitmentAnonR = keccak256("commitmentAnonR");
+
+  /** @const {string} */
+  const commitment = commit(ownerAddress, commitmentR);
+  /** @const {string} */
+  const commitmentAnon = commit(ownerAddress, commitmentAnonR);
+
+  /** @const {!did.DecryptedSections} */
+  const tckt = {
+    "humanID": /** @type {!did.HumanID} */({
+      id: "9e10e195f5c4fb987af3077fe241ff7108d39ed7a3b2908da6a37778ad75ee39",
+    }),
+    "personInfo": /** @type {!did.PersonInfo} */({
+      first: "Kaan",
+      last: "Ankara",
+    })
+  };
+
+  /** @const {!Array<did.DecryptedSections>} */
+  const tckts = Array(5).fill({});
+
+  for (let i = 0; i < tckts.length; ++i) {
+    tckts[i] = /** @type {!did.DecryptedSections} */(structuredClone(tckt));
+    sign(tckts[i], commitment, commitmentAnon, 1337, BigInt(i + 10));
+  }
+
+  /** @const {!did.DecryptedSections} */
+  const combined = combineMultiple(tckts, commitmentR, commitmentAnonR, 5);
+
+  assertEq(Object.keys(combined).length, Object.keys(tckt).length);
+
+  assertEq(combined["humanID"].secp256k1.length, 5);
+  assertEq(combined["personInfo"].secp256k1.length, 5);
+  assertEq(combined["humanID"].commitmentR, commitmentAnonR);
+  assertEq(combined["personInfo"].commitmentR, commitmentR);
+
+  /** @const {!Array<!bigint>} */
+  const signers = [vm.addr(10n), vm.addr(11n), vm.addr(12n), vm.addr(13n), vm.addr(14n)];
+  assertElemEq(
+    recoverSectionSigners("humanID", combined["humanID"], ownerAddress),
+    signers
+  );
+  assertElemEq(
+    recoverSectionSigners("personInfo", combined["personInfo"], ownerAddress),
+    signers
+  );
+}
+
 testSelectEncryptedSections();
+testCombineMultiple();
 
 assertStats();

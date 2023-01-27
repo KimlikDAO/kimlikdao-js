@@ -1,31 +1,5 @@
-import { nth, sign } from "/crypto/secp256k1";
-import { keccak256Uint32 } from "/crypto/sha3";
-import evm from "/ethereum/evm";
 import { assertEq, assertStats } from "/testing/assert";
-import { hex, hexten } from "/util/çevir";
-
-const vm = {};
-
-/**
- * @param {!bigint} privKey
- * @return {string}
- */
-vm.addr = (privKey) => {
-  const { /** !bigint */ x, /** !bigint */ y } = nth(privKey);
-  /** @const {!Uint8Array} */
-  const buff = hexten(evm.uint256(x) + evm.uint256(y));
-  return "0x" + hex(new Uint8Array(
-    keccak256Uint32(new Uint32Array(buff.buffer)).buffer, 12, 20));
-}
-
-/**
- * @param {!bigint} digest as bigint
- * @param {!bigint} privKey as bigint
- */
-vm.sign = (digest, privKey) => {
-  const { r, s, yParity } = sign(digest, privKey);
-  return evm.uint256(r) + evm.uint256(s) + (27 + +yParity).toString(16);
-}
+import vm from "/testing/vm";
 
 const testAddr = () => {
   assertEq(vm.addr(1n), "0x7e5f4552091a69125d5dfcb7b8c2659029395bdf");

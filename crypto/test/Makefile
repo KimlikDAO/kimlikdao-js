@@ -21,6 +21,7 @@ build/crypto/test/integration.compiled-test.js: crypto/test/integration.compiled
                                                 crypto/secp256k1.js crypto/sha3.js crypto/modular.js \
                                                 ethereum/evm.js \
                                                 testing/assert.js testing/nodejs.js testing/nodejs.d.js \
+                                                testing/vm.js \
                                                 util/çevir.js
 	mkdir -p $(dir $@)
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \

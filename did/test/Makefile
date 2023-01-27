@@ -5,6 +5,7 @@ build/did/test/decryptedSections.compiled-test.js: did/test/decryptedSections.co
     ethereum/unlockable.js \
     node/nvi.d.js \
     testing/assert.js testing/nodejs.js testing/nodejs.d.js \
+    testing/vm.js \
     util/çevir.js
 	mkdir -p $(dir $@)
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
@@ -27,6 +28,7 @@ build/did/test/section.compiled-test.js: did/test/section.compiled-test.js \
     ethereum/unlockable.js \
     node/nvi.d.js \
     testing/assert.js testing/nodejs.js testing/nodejs.d.js \
+    testing/vm.js \
     util/çevir.js
 	mkdir -p $(dir $@)
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \

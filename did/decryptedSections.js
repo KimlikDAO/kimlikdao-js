@@ -1,5 +1,5 @@
 import { decrypt } from "../ethereum/unlockable";
-import { recoverSectionSigners, signSection } from "./section";
+import { hash, recoverSectionSigners, signSection } from "./section";
 
 /**
  * Given an array of `did.EncryptedSections` keys, determines a minimal set of
@@ -179,7 +179,65 @@ const recoverSigners = (decryptedSections, ownerAddress) => {
   return signerPerSection;
 }
 
+/**
+ * @param {!Array<!did.DecryptedSections>} decryptedSectionsList
+ * @param {string} commitmentR
+ * @param {string} commitmentAnonR
+ * @param {number} signerCountNeeded
+ * @return {!did.DecryptedSections}
+ */
+const combineMultiple = (
+  decryptedSectionsList,
+  commitmentR,
+  commitmentAnonR,
+  signerCountNeeded
+) => {
+  /** @const {!did.DecryptedSections} */
+  const combined = {};
+  if (decryptedSectionsList.length < signerCountNeeded)
+    return combined;
+
+  /** @const {!Set<string>} */
+  const sectionNames = new Set();
+
+  for (const decryptedSections of decryptedSectionsList)
+    for (const key in decryptedSections)
+      sectionNames.add(key);
+
+  for (const key of sectionNames) {
+    /** @const {!Object<string, !Array<!did.Section>>} */
+    const hashToSections = {};
+    for (const decryptedSections of decryptedSectionsList)
+      if (key in decryptedSections
+        && decryptedSections[key].secp256k1
+        && decryptedSections[key].secp256k1.length) {
+        const h = hash(key, decryptedSections[key]);
+        (hashToSections[h] ||= []).push(decryptedSections[key]);
+      }
+    /**
+     * Find the most frequent hash group.
+     *
+     * @type {!Array<!did.Section>}
+     */
+    let mostFreq = []
+    for (const h in hashToSections)
+      if (hashToSections[h].length > mostFreq.length)
+        mostFreq = hashToSections[h];
+    if (mostFreq.length >= signerCountNeeded) {
+      combined[key] = mostFreq[0];
+      combined[key].commitmentR = key == "humanID"
+        ? commitmentAnonR : commitmentR;
+      delete combined[key].commitment;
+      for (let i = 1; i < mostFreq.length; ++i)
+        combined[key].secp256k1.push(
+          .../** @type {!Array<string>} */(mostFreq[i].secp256k1));
+    }
+  }
+  return combined;
+}
+
 export {
+  combineMultiple,
   fromUnlockableNFT,
   recoverSigners,
   selectEncryptedSections,
