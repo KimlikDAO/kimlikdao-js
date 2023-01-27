@@ -1,8 +1,9 @@
-import { keccak256 } from "/crypto/sha3";
+import { keccak256Uint8 } from "/crypto/sha3";
 import { combineMultiple, selectEncryptedSections, sign } from "/did/decryptedSections";
 import { commit, recoverSectionSigners } from "/did/section";
 import { assertElemEq, assertEq, assertStats } from "/testing/assert";
 import vm from "/testing/vm";
+import { base64 } from "/util/çevir";
 
 const testSelectEncryptedSections = () => {
   /** @const {!Array<string>} */
@@ -59,13 +60,15 @@ const testSelectEncryptedSections = () => {
 }
 
 const testCombineMultiple = () => {
+  /** @const {!TextEncoder} */
+  const encoder = new TextEncoder();
   /** @const {string} */
   const ownerAddress = vm.addr(1n);
 
   /** @const {string} */
-  const commitmentR = keccak256("commitmentR");
+  const commitmentR = base64(keccak256Uint8(encoder.encode("commitmentR")));
   /** @const {string} */
-  const commitmentAnonR = keccak256("commitmentAnonR");
+  const commitmentAnonR = base64(keccak256Uint8(encoder.encode("commitmentAnonR")));
 
   /** @const {string} */
   const commitment = commit(ownerAddress, commitmentR);
@@ -84,7 +87,7 @@ const testCombineMultiple = () => {
   };
 
   /** @const {!Array<did.DecryptedSections>} */
-  const tckts = Array(5).fill({});
+  const tckts = Array(5);
 
   for (let i = 0; i < tckts.length; ++i) {
     tckts[i] = /** @type {!did.DecryptedSections} */(structuredClone(tckt));
@@ -111,9 +114,74 @@ const testCombineMultiple = () => {
     recoverSectionSigners("personInfo", combined["personInfo"], ownerAddress),
     signers
   );
+  assertEq(combined["humanID"].commitment, commitmentAnon);
+  assertEq(combined["personInfo"].commitment, commitment);
+}
+
+const testCombineMultipleConflicting = () => {
+  /** @const {!TextEncoder} */
+  const encoder = new TextEncoder();
+  /** @const {string} */
+  const ownerAddress = vm.addr(1n);
+
+  /** @const {string} */
+  const commitmentR = base64(keccak256Uint8(encoder.encode("commitmentR")));
+  /** @const {string} */
+  const commitmentAnonR = base64(keccak256Uint8(encoder.encode("commitmentAnonR")));
+
+  /** @const {string} */
+  const commitment = commit(ownerAddress, commitmentR);
+  /** @const {string} */
+  const commitmentAnon = commit(ownerAddress, commitmentAnonR);
+
+  /** @const {!did.DecryptedSections} */
+  const tckt1 = {
+    "humanID": /** @type {!did.HumanID} */({
+      id: "9e10e195f5c4fb987af3077fe241ff7108d39ed7a3b2908da6a37778ad75ee39",
+    }),
+    "personInfo": /** @type {!did.PersonInfo} */({
+      first: "Kaan",
+      last: "Ankara",
+    })
+  };
+
+  /** @const {!did.DecryptedSections} */
+  const tckt2 = {
+    "humanID": /** @type {!did.HumanID} */({
+      id: "793ae065c561c060048762a8a9112f0645574f76a9179169cf446147564ff373",
+    }),
+    "personInfo": /** @type {!did.PersonInfo} */({
+      first: "Kaan",
+      last: "Ankara",
+    })
+  };
+
+  /** @const {!Array<did.DecryptedSections>} */
+  const tckts = Array(5);
+
+  for (let i = 0; i < tckts.length; ++i) {
+    tckts[i] = /** @type {!did.DecryptedSections} */(i < 2
+      ? structuredClone(tckt1) : structuredClone(tckt2));
+    sign(tckts[i], commitment, commitmentAnon, 1337, BigInt(i + 10));
+  }
+
+  /** @const {!did.DecryptedSections} */
+  const combined = combineMultiple(tckts, commitmentR, commitmentAnonR, 3);
+  assertEq(combined["personInfo"].secp256k1.length, 5);
+  assertEq(combined["humanID"].secp256k1.length, 3);
+
+  assertElemEq(
+    recoverSectionSigners("humanID", combined["humanID"], ownerAddress),
+    [vm.addr(12n), vm.addr(13n), vm.addr(14n)]
+  );
+  assertElemEq(
+    recoverSectionSigners("personInfo", combined["personInfo"], ownerAddress),
+    [vm.addr(10n), vm.addr(11n), vm.addr(12n), vm.addr(13n), vm.addr(14n)]
+  );
 }
 
 testSelectEncryptedSections();
 testCombineMultiple();
+testCombineMultipleConflicting();
 
 assertStats();
