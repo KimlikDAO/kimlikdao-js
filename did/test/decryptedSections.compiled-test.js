@@ -180,8 +180,72 @@ const testCombineMultipleConflicting = () => {
   );
 }
 
+const testCombineMultipleInsufficient = () => {
+  /** @const {!TextEncoder} */
+  const encoder = new TextEncoder();
+  /** @const {string} */
+  const ownerAddress = vm.addr(1n);
+
+  /** @const {string} */
+  const commitmentR = base64(keccak256Uint8(encoder.encode("commitmentR")));
+  /** @const {string} */
+  const commitmentAnonR = base64(keccak256Uint8(encoder.encode("commitmentAnonR")));
+
+  /** @const {string} */
+  const commitment = commit(ownerAddress, commitmentR);
+  /** @const {string} */
+  const commitmentAnon = commit(ownerAddress, commitmentAnonR);
+
+  /** @const {!Array<!did.DecryptedSections>} */
+  const tckt = [{
+    "humanID": /** @type {!did.HumanID} */({
+      id: "9e10e195f5c4fb987af3077fe241ff7108d39ed7a3b2908da6a37778ad75ee39",
+    }),
+    "personInfo": /** @type {!did.PersonInfo} */({
+      first: "Kaan",
+      last: "Ankara",
+    })
+  }, {
+    "humanID": /** @type {!did.HumanID} */({
+      id: "793ae065c561c060048762a8a9112f0645574f76a9179169cf446147564ff373",
+    }),
+    "personInfo": /** @type {!did.PersonInfo} */({
+      first: "Kaan",
+      last: "Ankara",
+    })
+  }, {
+    "humanID": /** @type {!did.HumanID} */({
+      id: "9d370663d573b5c6ada65204a460c4464c0a390d7b1310a92be773731a07e821",
+    }),
+    "personInfo": /** @type {!did.PersonInfo} */({
+      first: "Kaan",
+      last: "Ankara",
+    })
+  }];
+
+  /** @const {!Array<did.DecryptedSections>} */
+  const tckts = Array(5);
+
+  for (let i = 0; i < tckts.length; ++i) {
+    tckts[i] = /** @type {!did.DecryptedSections} */(
+      structuredClone(tckt[i % 3]));
+    sign(tckts[i], commitment, commitmentAnon, 1337, BigInt(i + 10));
+  }
+
+  /** @const {!did.DecryptedSections} */
+  const combined = combineMultiple(tckts, commitmentR, commitmentAnonR, 3);
+  assertEq(combined["personInfo"].secp256k1.length, 5);
+  assertEq(Object.keys(combined).length, 1);
+
+  assertElemEq(
+    recoverSectionSigners("personInfo", combined["personInfo"], ownerAddress),
+    [vm.addr(10n), vm.addr(11n), vm.addr(12n), vm.addr(13n), vm.addr(14n)]
+  );
+}
+
 testSelectEncryptedSections();
 testCombineMultiple();
 testCombineMultipleConflicting();
+testCombineMultipleInsufficient();
 
 assertStats();
