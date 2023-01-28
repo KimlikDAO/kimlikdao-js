@@ -7,7 +7,7 @@ kimlikdao-js, KimlikDAO projeleri için gerekli olan javascript modüllerinin tu
 
 `cloudflare`: Cloudflare Workers platformu ile ilgili tanımlar
 
-`crypto`: Kriptografik fonksiyonlar ve kütüphaneler
+`crypto`: Kriptografik fonksiyonlar ve kitaplıklar
 
 `did`: KimlikDAO'nun DID ve TCKT tanımları
 
@@ -23,15 +23,16 @@ kimlikdao-js, KimlikDAO projeleri için gerekli olan javascript modüllerinin tu
 
 ```shell 
 git clone https://github.com/KimlikDAO/kimlikdao-js
+cd kimlikdao-js
 yarn
 ``` 
-komutları ile repoyu yerel geliştirme ortamına klonladıktan sonra reponun çalışması için gerekli olan paketler indirilmelidir.
+komutları ile repoyu yerel geliştirme ortamına klonlanıp sonra reponun çalışması için gerekli olan paketler indirilir.
 
-# Testleri
+# Testler
 
-Bu repoda iki tür test çeşidi vardır. Bunlar aşağıdaki gibidir:
-* `compiled-test`: Makefile üzerinden GCC (Google Closure Compiler) ile derlenip node veya tarayıcı ortamında çalıştırılan testler.
-* `vitest`: Vitest framework'ü kullanılarak node ortamında çalıştırılan tester.
+Bu repoda iki tür test var:
+* `compiled-test`: Makefile kullanarak GCC (Google Closure Compiler) ile derlenip node veya tarayıcı ortamında çalıştırılan testler.
+* `vitest`: Vitest kullanılarak node / vite ortamında çalıştırılan testler.
 
 ### compiled-test'ler nasıl çalıştırılır?
 
@@ -47,4 +48,4 @@ Vitest'leri çalıştırmak için `yarn vitest` komutunu çalıştırmak yeterli
 
 # Yeni modüller
 
-Yeni bir modül eklenmesi durumunda eğer modül [dizin yapısı](#Dizin-yapısı) kısmında bahsedilen dizin içeriklerden birisine uygun ise o dizinin içine koyulabilir; değil ise, yeni bir dizin oluşturulmalı ve modül yeni dizine eklenmelidir. Yeni oluşturulan dizinde, yazılacak testler için ```test``` klasörü oluşturulmalıdır.
+Yeni bir modül eklenmesi durumunda eğer modül [dizin yapısı](#Dizin-yapısı) kısmında bahsedilen dizin içeriklerden birisine uygun ise o dizinin içine koyulabilir; değil ise, yeni bir dizin oluşturulmalı ve modül yeni dizine eklenmelidir.
