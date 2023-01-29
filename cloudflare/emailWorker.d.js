@@ -37,3 +37,16 @@ cloudflare.EmailMessage.prototype.forward = function (rcptTo, headers) { };
  * @param {string} reason
  */
 cloudflare.EmailMessage.prototype.setReject = function (reason) { };
+
+/**
+ * @interface
+ */
+cloudflare.EmailWorker = function () { };
+
+/**
+ * @param {!cloudflare.EmailMessage} message
+ * @param {!cloudflare.Environment=} env
+ * @param {!cloudflare.Context=} ctx
+ * @return {!Promise<!Response>|!Response}
+ */
+cloudflare.EmailWorker.prototype.email = function (req, env, ctx) { }

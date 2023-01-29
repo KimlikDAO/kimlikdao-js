@@ -79,10 +79,33 @@ cloudflare.DurableObjectBinding.prototype.idFromName = function (name) { }
 
 /**
  * @nosideeffects
+ * @param {string} hexId
+ * @return {!cloudflare.DurableObjectId}
+ */
+cloudflare.DurableObjectBinding.prototype.idFromString = function (hexId) { }
+
+/**
+ * @nosideeffects
+ * @return {!cloudflare.DurableObjectId}
+ */
+cloudflare.DurableObjectBinding.prototype.newUniqueId = function () { }
+
+/**
+ * @interface
+ * @struct
+ */
+cloudflare.StubOptions = function () { }
+
+/** @const {string} */
+cloudflare.StubOptions.prototype.locationHint;
+
+/**
+ * @nosideeffects
  * @param {!cloudflare.DurableObjectId} durableObjectId
+ * @param {!cloudflare.StubOptions=} options
  * @return {!cloudflare.DurableObjectStub}
  */
-cloudflare.DurableObjectBinding.prototype.get = function (durableObjectId) { }
+cloudflare.DurableObjectBinding.prototype.get = function (durableObjectId, options) { }
 
 /**
  * @interface
