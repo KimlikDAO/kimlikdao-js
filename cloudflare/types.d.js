@@ -27,11 +27,11 @@ cloudflare.Request.prototype.cf;
  * The Cloudflare Response object contains this convenience method.
  *
  * @nosideeffects
- * @param {!Object} jsonObj
+ * @param {!Object|!Array|number} jsonObj
  * @param {!Object=} options
  * @return {!Response}
  */
-Response.json = function(jsonObj, options) {}
+Response.json = function (jsonObj, options) { }
 
 /**
  * This method is only available in web workers so we define it here.
@@ -39,9 +39,9 @@ Response.json = function(jsonObj, options) {}
  * @see https://developer.mozilla.org/en-US/docs/Web/API/FormData/values
  *
  * @nosideeffects
- * @return {Iterator<Blob>}
+ * @return {!Iterator<!Blob>}
  */
-FormData.prototype.values = function() {}
+FormData.prototype.values = function () { }
 
 /**
  * @interface
@@ -54,15 +54,15 @@ cloudflare.KeyValue = function () { }
  * @param {string} type
  * @return {!Promise<ArrayBuffer>}
  */
-cloudflare.KeyValue.prototype.get = function (key, type) { };
+cloudflare.KeyValue.prototype.get = function (key, type) { }
 
 /**
  * @nosideeffects
  * @param {string} key
- * @param {string|ArrayBuffer} value
+ * @param {string|!ArrayBuffer} value
  * @return {!Promise<*>}
  */
-cloudflare.KeyValue.prototype.put = function (key, value) { };
+cloudflare.KeyValue.prototype.put = function (key, value) { }
 
 /**
  * @const

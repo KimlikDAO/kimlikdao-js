@@ -8,22 +8,22 @@
 /**
  * @interface
  */
-cloudflare.Context = function () { };
+cloudflare.Context = function () { }
 
 /**
  * @param {Promise<*>} promise
  */
-cloudflare.Context.prototype.waitUntil = function (promise) { };
+cloudflare.Context.prototype.waitUntil = function (promise) { }
 
 /**
  * @interface
  */
-cloudflare.Environment = function () { };
+cloudflare.Environment = function () { }
 
 /**
  * @interface
  */
-cloudflare.ModuleWorker = function () { };
+cloudflare.ModuleWorker = function () { }
 
 /**
  * @param {!cloudflare.Request} req
@@ -32,3 +32,19 @@ cloudflare.ModuleWorker = function () { };
  * @return {!Promise<!Response>|!Response}
  */
 cloudflare.ModuleWorker.prototype.fetch = function (req, env, ctx) { }
+
+/**
+ * @interface
+ */
+cloudflare.ModuleWorkerStub = function () { }
+
+/**
+ * A module worker stub has the same fetch interface as the web api fetch.
+ *
+ * @param {!RequestInfo} input
+ * @param {!RequestInit=} init
+ * @return {!Promise<!Response>}
+ * @see https://fetch.spec.whatwg.org/#fetch-method
+ * @see https://developers.cloudflare.com/workers/runtime-apis/fetch/
+ */
+cloudflare.ModuleWorkerStub.prototype.fetch = function (input, init) { }

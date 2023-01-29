@@ -49,4 +49,4 @@ cloudflare.EmailWorker = function () { };
  * @param {!cloudflare.Context=} ctx
  * @return {!Promise<!Response>|!Response}
  */
-cloudflare.EmailWorker.prototype.email = function (req, env, ctx) { }
+cloudflare.EmailWorker.prototype.email = function (message, env, ctx) { }

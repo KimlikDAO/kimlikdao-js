@@ -7,8 +7,11 @@
 
 /**
  * @interface
+ *
+ * @param {!cloudflare.DurableObject.State} state
+ * @param {!cloudflare.Environment} env
  */
-cloudflare.DurableObject = function () { }
+cloudflare.DurableObject = function (state, env) { }
 
 /**
  * A state of the DurableObject.
@@ -91,13 +94,11 @@ cloudflare.DurableObjectBinding.prototype.idFromString = function (hexId) { }
 cloudflare.DurableObjectBinding.prototype.newUniqueId = function () { }
 
 /**
- * @interface
- * @struct
+ * @typedef {{
+ *   locationHint: string
+ * }}
  */
-cloudflare.StubOptions = function () { }
-
-/** @const {string} */
-cloudflare.StubOptions.prototype.locationHint;
+cloudflare.StubOptions;
 
 /**
  * @nosideeffects

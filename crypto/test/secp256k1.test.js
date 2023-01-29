@@ -1,6 +1,6 @@
 import { Point as NoblePoint } from '@noble/secp256k1';
 import { assert, describe, it } from 'vitest';
-import { Point, G } from '../secp256k1';
+import { G, Point } from '/crypto/secp256k1';
 
 /**
  * Remove the nobility of the point :/
