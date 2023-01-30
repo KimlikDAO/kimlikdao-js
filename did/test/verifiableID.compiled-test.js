@@ -1,4 +1,4 @@
-import { generate, verify } from "/did/verifiableID";
+import { generate, prepareGenerateKey, verify } from "/did/verifiableID";
 import { assert, assertStats } from "/testing/assert";
 import { base64 } from "/util/çevir";
 
@@ -30,7 +30,9 @@ const testGenerateVerify1 = () => {
   const publicKey = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAOYFiwx7XxbYaArR8UUxTwovcktd5MkmZ5R4X8IRX"
     + "YScBeaWRaWUfatSFCuldmuk56c+MHoikIfF1mmmY3BQYEECAwEAAQ==";
 
-  return generate("TR22345678902", gizliAnahtar)
+  return prepareGenerateKey(gizliAnahtar)
+    .then((/** @type {!webCrypto.CryptoKey} */ generateKey) =>
+      generate("TR22345678902", generateKey))
     .then((/** @type {!did.VerifiableID} */ verifiableID) =>
       verify(verifiableID, "TR22345678902", publicKey))
     .then(assert);
@@ -51,7 +53,9 @@ const testGenerateVerify2 = () => {
   const publicKey = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMcYbeqzjD13Vbr4Qbzy7jwh4ueEGEzs1PMn7+rbG"
     + "e9sdUsStZHe8rWPLOy9i5HzxWMQmhz8lQ6oYGCPel93MecCAwEAAQ==";
 
-  return generate("PERSONID", gizliAnahtar)
+  return prepareGenerateKey(gizliAnahtar)
+    .then((/** @type {!webCrypto.CryptoKey} */ generateKey) =>
+      generate("PERSONID", generateKey))
     .then((/** @type {!did.VerifiableID} */ verifiableID) =>
       verify(verifiableID, "PERSONID", publicKey))
     .then(assert);

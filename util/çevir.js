@@ -61,7 +61,7 @@ const base64 = (bytes) => {
   let binary = "";
   /** @const {number} */
   const len = bytes.length;
-  for (let i = 0; i < len; i++)
+  for (let i = 0; i < len; ++i)
     binary += String.fromCharCode(bytes[i]);
   return btoa(binary);
 }
