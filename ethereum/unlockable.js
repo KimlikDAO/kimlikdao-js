@@ -32,7 +32,7 @@ const decrypt = (unlockable, provider, address) => {
         method: "personal_sign",
         params: [unlockable.userPrompt, address]
       }))
-        .then((signature) => crypto.subtle.digest("SHA-256", hexten(signature.slice(2, -2))))
+        .then((signature) => crypto.subtle.digest("SHA-256", hexten(signature.slice(2))))
         .then((hash) => crypto.subtle.importKey("raw", hash, "AES-CTR", false, ["decrypt"]))
         .then((key) => crypto.subtle.decrypt({
           name: "AES-CTR",
@@ -42,7 +42,10 @@ const decrypt = (unlockable, provider, address) => {
           key,
           base64ten(unlockable.ciphertext)
         ))
-        .then((decrypted) => new TextDecoder().decode(decrypted));
+        .then((decrypted) => {
+          const decoded = new TextDecoder().decode(decrypted);
+          return decoded.slice(0, decoded.indexOf("\0"));
+        });
     }
   }
   return Promise.reject();
@@ -59,6 +62,13 @@ const decrypt = (unlockable, provider, address) => {
 const encrypt = (text, userPrompt, version, provider, address) => {
   switch (version) {
     case "promptsign-sha256-aes-ctr": {
+      /** @const {!TextEncoder} */
+      const encoder = new TextEncoder();
+      /** @const {!Uint8Array} */
+      const encoded = encoder.encode(text);
+      /** @const {!Uint8Array} */
+      const padded = new Uint8Array(encoded.length + 256 - (encoded.length & 255));
+      padded.set(encoded);
       /** @const {!Uint8Array} */
       const counter = /** @type {!Uint8Array} */(
         crypto.getRandomValues(new Uint8Array(16)));
@@ -66,7 +76,7 @@ const encrypt = (text, userPrompt, version, provider, address) => {
         method: "personal_sign",
         params: [userPrompt, address]
       }))
-        .then((signature) => crypto.subtle.digest("SHA-256", hexten(signature.slice(2, -2))))
+        .then((signature) => crypto.subtle.digest("SHA-256", hexten(signature.slice(2))))
         .then((hash) => crypto.subtle.importKey("raw", hash, "AES-CTR", false, ["encrypt"]))
         .then((key) => crypto.subtle.encrypt({
           name: "AES-CTR",
@@ -74,7 +84,7 @@ const encrypt = (text, userPrompt, version, provider, address) => {
           length: 64
         },
           key,
-          new TextEncoder().encode(text)
+          padded
         ))
         .then((/** @type {!ArrayBuffer} */ encrypted) => /** @type {!eth.Unlockable} */({
           version: "promptsign-sha256-aes-ctr",
