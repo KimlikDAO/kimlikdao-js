@@ -257,13 +257,12 @@ Point.prototype.multiply = function (n) {
 }
 
 /**
- * @param {!Point} P
  * @param {!bigint} a
- * @param {!Point} Q
  * @param {!bigint} b
- * @return {!Point} a.P + b.Q
+ * @param {!Point} H
+ * @return {!Point} a.G + b.H
  */
-const timesPlusTimes = (P, a, Q, b) => P.multiply(a).increment(Q.multiply(b));
+const aGbH = (a, b, H) => G.copy().multiply(a).increment(H.multiply(b));
 
 /**
  * @param {!Point} p
@@ -322,7 +321,7 @@ const verify = (digest, r, s, pubKey) => {
   /** @const {!bigint} */
   const is = inverse(s, N);
   /** @const {!Point} */
-  const U = timesPlusTimes(G.copy(), digest * is % N, pubKey.copy(), r * is % N);
+  const U = aGbH(digest * is % N, r * is % N, pubKey.copy());
   /** @const {!bigint} */
   const z2 = (U.z * U.z) % P;
   if (!z2) return false;
@@ -349,7 +348,7 @@ const recoverSigner = (digest, r, s, yParity) => {
   /** @const {Point} */
   const K = Point.from(r, yParity);
   if (!K) return O;
-  return timesPlusTimes(K, s * ir % N, G.copy().negate(), digest * ir % N).project();
+  return aGbH(N - (digest * ir % N), s * ir % N, K).project();
 }
 
 export {
