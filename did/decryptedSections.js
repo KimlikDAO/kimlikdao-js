@@ -1,5 +1,5 @@
-import { decrypt } from "../ethereum/unlockable";
-import { hash, recoverSectionSigners, signSection } from "./section";
+import { decrypt, encrypt } from "../ethereum/unlockable";
+import { hash, signSection } from "./section";
 
 /**
  * Given an array of `did.EncryptedSections` keys, determines a minimal set of
@@ -144,6 +144,49 @@ const fromUnlockableNFT = async (nft, sectionNames, provider, address) => {
 }
 
 /**
+ * @typedef {{
+ *   userPrompt: string,
+ *   sectionNames: !Array<string>
+ * }}
+ */
+const SectionGroup = {};
+
+/**
+ * @param {!eth.ERC721Metadata} metadata
+ * @param {!did.DecryptedSections} decryptedSections
+ * @param {!Array<!SectionGroup>} sectionGroups
+ * @param {!eth.Provider} provider
+ * @param {string} address
+ * @return {!Promise<!eth.ERC721Unlockable>}
+ */
+const toUnlockableNFT = async (metadata, decryptedSections, sectionGroups, provider, address) => {
+  /** @const {!Object<string, !eth.Unlockable>} */
+  const unlockables = {};
+  for (let i = 0; i < sectionGroups.length; ++i) {
+    if (i > 0)
+      await new Promise((resolve) => setTimeout(() => resolve(), 100));
+
+    /** @const {!did.DecryptedSections} */
+    const sections = {};
+    for (const name in sectionGroups[i].sectionNames)
+      sections[name] = decryptedSections[name]
+
+    /** @const {string} */
+    const unlockableKey = sectionGroups[i].sectionNames.sort().join(",");
+    unlockables[unlockableKey] = await encrypt(JSON.stringify(sections),
+      sectionGroups[i].userPrompt,
+      "promptsign-sha256-aes-ctr",
+      provider,
+      address
+    );
+  }
+  return /** @type {!eth.ERC721Unlockable} */({
+    ...metadata,
+    unlockables
+  });
+}
+
+/**
  * Signs a given `did.DecryptedSections` in-place.
  *
  * @param {!did.DecryptedSections} decryptedSections
@@ -160,23 +203,6 @@ const sign = (decryptedSections, commitment, commitmentAnon, signatureTs, privat
       signatureTs, privateKey
     );
   return decryptedSections;
-}
-
-/**
- * Given a `did.DecryptedSections` outputs a map from section name to list of
- * signers.
- *
- * @param {!did.DecryptedSections} decryptedSections containing commitmentR
- *                                                   values.
- * @param {string} ownerAddress starting with 0x.
- * @return {!did.SignersPerSection} signers per section.
- */
-const recoverSigners = (decryptedSections, ownerAddress) => {
-  /** @const {!did.SignersPerSection} */
-  const signerPerSection = {};
-  for (const key in decryptedSections)
-    signerPerSection[key] = recoverSectionSigners(key, decryptedSections[key], ownerAddress);
-  return signerPerSection;
 }
 
 /**
@@ -239,7 +265,8 @@ const combineMultiple = (
 export {
   combineMultiple,
   fromUnlockableNFT,
-  recoverSigners,
+  SectionGroup,
   selectEncryptedSections,
   sign,
+  toUnlockableNFT,
 };

@@ -19,7 +19,7 @@ build/crypto/test/secp256k1.compiled-test.js: crypto/test/secp256k1.compiled-tes
 
 build/crypto/test/integration.compiled-test.js: crypto/test/integration.compiled-test.js \
                                                 crypto/secp256k1.js crypto/sha3.js crypto/modular.js \
-                                                ethereum/evm.js \
+                                                ethereum/evm.js ethereum/*.d.js \
                                                 testing/assert.js testing/nodejs.js testing/nodejs.d.js \
                                                 testing/vm.js \
                                                 util/çevir.js

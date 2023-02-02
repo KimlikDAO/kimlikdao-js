@@ -1,3 +1,4 @@
+import evm from "/ethereum/evm";
 import { assertEq, assertStats } from "/testing/assert";
 import vm from "/testing/vm";
 
@@ -10,5 +11,35 @@ const testAddr = () => {
   assertEq(vm.addr(6n), "0xe57bfe9f44b819898f47bf37e5af72a0783e1141");
 }
 
+const testToCompactSignature = () => {
+  /** @const {!bigint} */
+  const d = 123123n;
+  /** @const {!bigint} */
+  const pk = 456456n;
+
+  assertEq(
+    evm.compactSignature("0x" + vm.signWide(d, pk)),
+    vm.signCompact(d, pk)
+  );
+}
+
+const testSignRecover = () => {
+  /** @const {!bigint} */
+  const digest = 103n;
+
+  assertEq(
+    evm.signerAddress(evm.uint256(digest), vm.signCompact(digest, 101n)),
+    vm.addr(101n)
+  );
+
+  assertEq(
+    evm.signerAddress(digest.toString(16), vm.signCompact(digest, 1337n)),
+    vm.addr(1337n)
+  );
+}
+
 testAddr();
+testToCompactSignature();
+testSignRecover();
+
 assertStats();

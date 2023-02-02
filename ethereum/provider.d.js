@@ -11,23 +11,39 @@
 eth.Provider = function () { }
 
 /**
- * @param {eth.Request} params
+ * @param {!eth.Request} params
  * @return {!Promise<string>|!Promise<!Array<string>>}
  **/
 eth.Provider.prototype.request = function (params) { };
 
-/** @const {!eth.Provider} */
-var ethereum;
+/**
+ * @interface
+ * @extends {eth.Provider}
+ */
+eth.UiProvider = function() {}
 
 /**
  * @return {boolean}
  */
-ethereum.isConnected = function () { };
+eth.UiProvider.isConnected = function () { };
 
 /**
  * @param {string} eventName
+ * @param {function(*)} handler
  */
-ethereum.on = function (eventName, handler) { };
+eth.UiProvider.on = function (eventName, handler) { };
+
+/**
+ * @typedef {{
+ *   message: string,
+ *   code: number,
+ *   data: *
+ * }}
+ */
+eth.ProviderError;
+
+/** @const {!eth.UiProvider} */
+var ethereum;
 
 /**
  * The container object that is passed to the provider.
@@ -71,7 +87,7 @@ eth.WatchAsset.prototype.options.decimals;
  * An encrypted data blob. Can be unencrypted with an `eth_decrypt` provider
  * call.
  *
- * @record
+ * @interface
  * @struct
  */
 eth.EncryptedData = function () { }
