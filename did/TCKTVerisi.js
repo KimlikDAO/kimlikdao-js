@@ -3,7 +3,10 @@
  *
  * @author KimlikDAO
  */
-import { TCKT_ADDR } from '../ethereum/TCKT';
+
+import { TCKT_ADDR } from "../ethereum/TCKT";
+import dom from "../util/dom";
+import { SectionGroup } from "./decryptedSections";
 
 /**
  * @const {string}
@@ -11,104 +14,63 @@ import { TCKT_ADDR } from '../ethereum/TCKT';
  */
 const KIMLIKDAO_URL = "https://kimlikdao.org";
 
+/** @const {string} */
 const İmzaİsteğiTR = `TCKT Erişim İsteği:
 -------------------------------------------------
-Bu mesajı imzaladığınızda, bağlı uygulama TCKT’nizin
+(TR)Bu mesajı imzaladığınızda, bağlı uygulama TCKT’nizin
 
-{}
+  {}
 
 bölümlerine erişebilecek. Bu mesajı sadece bu bilgileri paylaşmak istiyorsanız imzalayın.
 `
+/** @const {string} */
 const İmzaİsteğiEN = `TCKT Access Request:
 -------------------------------------------------
-When you sign this message, the connected app will have access to
+(EN)When you sign this message, the connected app will have access to
 
-{}
+  {}
 
 sections of your TCKT. Only sign this message if you would like to share this information.`
 
 /**
- * @typedef {{
- *   sections: !Array<string>,
- *   userPrompt: !Object<string, !Array<string>>,
- *   signPrompt: string
- * }}
+ * @param {!Array<string>} bölümler
+ * @param {string=} girişTr
+ * @param {string=} girişEn
+ * @return {!SectionGroup}
  */
-var InfoGroup;
-
-[{
-  sections: ["personInfo", "contactInfo", "addressInfo", "kütükBilgileri"],
-  userPrompt: {
-    "en-US": ["{1} wants to view your TCKT.", "Provide", "Reject"],
-    "tr-TR": ["{1} TCKT’nize erişmek istiyor. İzin veriyor musunuz?", "Evet", "Hayır"]
-  },
-  signPrompt: "",
-}, {
-  sections: ["contactInfo", "humanID"],
-  userPrompt: {
-    "en-US": ["{1} wants to view your KimlikDAO HumanID, email and phone number.", "Provide", "Reject"],
-    "tr-TR": ["{1} KimlikDAO HumanID, email ve telefon numaranıza erişmek istiyor. İzin veriyor musunuz?", "Evet", "Hayır"]
-  },
-  signPrompt: "",
-}, {
-  sections: ["humanID"],
-  userPrompt: {
-    "en-US": ["{1} wants to view your KimlikDAO HumanID.", "Provide", "Reject"],
-    "tr-TR": ["{1} KimlikDAO HumanID’nize erişmek istiyor. İzin veriyor musunuz?", "Evet", "Hayır"]
-  },
-  signPrompt: ""
-}, {
-  sections: ["exposureReportID"],
-}
-]
+const bölüm = (bölümler) => /** @type {!SectionGroup} */({
+  sectionNames: bölümler,
+  userPrompt: (dom.TR ? İmzaİsteğiTR + İmzaİsteğiEN : İmzaİsteğiEN.İmzaİsteğiTR)
+    .replace(/{}/g, bölümler.join(",\n  "))
+    .replace("(TR)", girişTr || "")
+    .replace("(EN)", girişEn || "")
+    + "\nNonce: " + hex(crypto.getRandomValues(new Uint8Array(8)))
+    + "\nNFT Contract: " + TCKT_ADDR
+});
 
 /**
- * Verilen AçıkTCKT'yi `bölümler`'e ayırıp her bölümü ayrı bir unlockable
- * içinde şifreler ve bir `eth.ERC721Unlockable` oluşturur.
- *
- * @param {!did.DecryptedSections} açıkTckt
- * @param {!eth.Provider} provider
- * @param {!Array<!InfoGroup>} kümeler
- * @return {!eth.ERC721Unlockable}
+ * @return {{
+ *   metadata: !eth.ERC721Unlockable,
+ *   sectionGroups: !Array<SectionGroup>
+ * }}
  */
-const hazırla = (açıkTckt, kümeler) => {
-  const encoder = new TextEncoder();
-
-  /**
-   * @param {!Array<string>} bölümAdları
-   * @return {!eth.EncryptedData}
-   */
-  const unlockableHazırla = (bölümAdları) => {
-    /** @const {!did.DecryptedSections} */
-    const bölümler = {};
-    for (const bölüm of bölümAdları)
-      if (bölüm in açıkTckt) bölümler[bölüm] = açıkTckt[bölüm];
-    /** @const {!Uint8Array} */
-    const encoded = encoder.encode(JSON.stringify(bölümler, null, 2));
-    const boy = encoded.length + 43;
-    const dolgulu = new Uint8Array(boy + 128 - (boy & 127));
-    encoder.encodeInto(TCKT_ADDR, dolgulu)
-    dolgulu[42] = 10;
-    dolgulu.set(encoded, 43);
-    return {};
-  }
-
-  /** @const {!Object<string, !eth.Unlockable>} */
-  const unlockables = {};
-  for (const küme of kümeler)
-    unlockables[küme.sections.join(",")] = /** @type {!eth.Unlockable} */({
-      userPrompt: küme.userPrompt,
-      ...unlockableHazırla(küme.sections)
-    })
-
-  return /** @type {!eth.ERC721Unlockable} */({
+const metadataVeBölümler = () => ({
+  metadata: /** @type {!eth.ERC721Metadata} */({
     name: "TCKT",
     description: "KimlikDAO Kimlik Tokeni",
     image: KIMLIKDAO_URL + "/TCKT.svg",
     external_url: KIMLIKDAO_URL,
     animation_url: KIMLIKDAO_URL + "/TCKT.mp4",
-    unlockables,
-  });
-}
+  }),
+  sectionGroups: [
+    bölüm(["personInfo", "contactInfo", "addressInfo", "kütükBilgileri"]),
+    bölüm(["contactInfo", "humanID"]),
+    bölüm(["humanID"]),
+    bölüm(["exposureReport"],
+      "https://kimlikdao.org adresinde olduğunuzdan emin olun! Bu adreste değilseniz bu metni imzalamayın.",
+      "Ensure that you're on https://kimlikdao.org. If not, don't sign this message!"
+    )
+  ]
+});
 
-export { hazırla };
+export { metadataVeBölümler };
