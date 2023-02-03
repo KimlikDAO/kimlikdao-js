@@ -167,9 +167,8 @@ const toUnlockableNFT = async (metadata, decryptedSections, sectionGroups, provi
     const duraklatıcı = new Promise((resolve) => setTimeout(resolve, 2000));
     /** @const {!did.DecryptedSections} */
     const sections = {};
-    for (const name in sectionGroups[i].sectionNames)
-      sections[name] = decryptedSections[name]
-
+    for (const /** @type {string} */ name of sectionGroups[i].sectionNames)
+      sections[name] = decryptedSections[name];
     /** @const {string} */
     const unlockableKey = sectionGroups[i].sectionNames.sort().join(",");
     unlockables[unlockableKey] = await encrypt(JSON.stringify(sections),

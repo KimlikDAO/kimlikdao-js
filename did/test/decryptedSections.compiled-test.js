@@ -1,8 +1,12 @@
 import { keccak256Uint8 } from "/crypto/sha3";
-import { combineMultiple, selectEncryptedSections, sign } from "/did/decryptedSections";
+import {
+  combineMultiple, fromUnlockableNFT, SectionGroup, selectEncryptedSections,
+  sign,
+  toUnlockableNFT
+} from "/did/decryptedSections";
 import { commit, recoverSectionSigners } from "/did/section";
-import { assertElemEq, assertEq, assertStats } from "/testing/assert";
-import vm from "/testing/vm";
+import { assert, assertElemEq, assertEq, assertStats } from "/testing/assert";
+import vm, { FakeProvider } from "/testing/vm";
 import { base64 } from "/util/çevir";
 
 const testSelectEncryptedSections = () => {
@@ -243,9 +247,79 @@ const testCombineMultipleInsufficient = () => {
   );
 }
 
-testSelectEncryptedSections();
-testCombineMultiple();
-testCombineMultipleConflicting();
-testCombineMultipleInsufficient();
+const testToNFTfromNFT = () => {
+  const provider = new FakeProvider(1337n);
 
-assertStats();
+  return toUnlockableNFT(/** @type {!eth.ERC721Metadata} */({
+    name: "Halıcıoğlu NFT",
+    description: "10.000 birbirinden özel NFT halı"
+  }), /** @type {!did.DecryptedSections} */({
+    "contactInfo": /** @type {!did.ContactInfo} */({
+      email: "halı@halıcıoğlu.com",
+      phone: "123456789"
+    })
+  }), [/** @type {!SectionGroup} */({
+    userPrompt: "Halınızı açın",
+    sectionNames: ["contactInfo"]
+  })],
+    provider,
+    vm.addr(1337n)
+  ).then((/** @type {!eth.ERC721Unlockable} */ nft) => fromUnlockableNFT(
+    nft, ["contactInfo"], provider, vm.addr(1337n))
+  ).then((/** @type {!did.DecryptedSections} */ decryptedSections) => {
+    assert("contactInfo" in decryptedSections);
+    /** @const {!did.ContactInfo} */
+    const contactInfo = /** @type {!did.ContactInfo} */(
+      decryptedSections["contactInfo"]);
+    assertEq(contactInfo.email, "halı@halıcıoğlu.com");
+    assertEq(contactInfo.phone, "123456789");
+  });
+}
+
+const testToNFTfromNFTMultiple = () => {
+  const provider = new FakeProvider(1338n);
+
+  return toUnlockableNFT(/** @type {!eth.ERC721Metadata} */({
+    name: "Halıcıoğlu NFT",
+    description: "10.000 birbirinden özel NFT halı"
+  }), /** @type {!did.DecryptedSections} */({
+    "contactInfo": /** @type {!did.ContactInfo} */({
+      email: "halı@halıcıoğlu.com",
+      phone: "123456789"
+    }),
+    "personInfo": /** @type {!did.PersonInfo} */({
+      first: "Halıcı",
+      last: "Halıcıoğlu"
+    }),
+  }), [/** @type {!SectionGroup} */({
+    userPrompt: "Halınızı açın",
+    sectionNames: ["contactInfo", "personInfo"]
+  })],
+    provider,
+    vm.addr(1338n)
+  ).then((/** @type {!eth.ERC721Unlockable} */ nft) => fromUnlockableNFT(
+    nft, ["contactInfo", "personInfo"], provider, vm.addr(1338n))
+  ).then((/** @type {!did.DecryptedSections} */ decryptedSections) => {
+    assertElemEq(Object.keys(decryptedSections), ["contactInfo", "personInfo"]);
+    /** @const {!did.ContactInfo} */
+    const contactInfo = /** @type {!did.ContactInfo} */(decryptedSections["contactInfo"]);
+    /** @const {!did.PersonInfo} */
+    const personInfo = /** @type {!did.PersonInfo} */(decryptedSections["personInfo"]);
+    assertEq(contactInfo.email, "halı@halıcıoğlu.com");
+    assertEq(contactInfo.phone, "123456789");
+    assertEq(personInfo.first, "Halıcı");
+    assertEq(personInfo.last, "Halıcıoğlu");
+  });
+}
+
+Promise.all([
+  testToNFTfromNFT(),
+  testToNFTfromNFTMultiple(),
+]).then(() => {
+  testSelectEncryptedSections();
+  testCombineMultiple();
+  testCombineMultipleConflicting();
+  testCombineMultipleInsufficient();
+
+  assertStats();
+});
