@@ -36,14 +36,25 @@ sections of your TCKT. Only sign this message if you would like to share this in
  * @param {!Array<string>} bölümler
  * @param {string=} girişTr
  * @param {string=} girişEn
+ * @return {string}
+ */
+const imzaMetni = (bölümler, girişTr, girişEn) => (dom.TR
+  ? İmzaİsteğiTR + İmzaİsteğiEN
+  : İmzaİsteğiEN + İmzaİsteğiTR)
+  .replace(/{}/g, bölümler.join(",\n  "))
+  .replace("(TR)", girişTr || "")
+  .replace("(EN)", girişEn || "");
+
+/**
+ * @param {!Array<string>} bölümler
+ * @param {string} ağ
+ * @param {string=} girişTr
+ * @param {string=} girişEn
  * @return {!SectionGroup}
  */
 const bölüm = (bölümler, ağ, girişTr, girişEn) => /** @type {!SectionGroup} */({
   sectionNames: bölümler,
-  userPrompt: (dom.TR ? İmzaİsteğiTR + İmzaİsteğiEN : İmzaİsteğiEN + İmzaİsteğiTR)
-    .replace(/{}/g, bölümler.join(",\n  "))
-    .replace("(TR)", girişTr || "")
-    .replace("(EN)", girişEn || "")
+  userPrompt: imzaMetni(bölümler, girişTr, girişEn)
     + "Nonce: " + hex(/** @type {!Uint8Array} */(crypto.getRandomValues(new Uint8Array(8))))
     + "\nChainId: " + ağ
     + "\nNFT: " + TCKT_ADDR
@@ -75,4 +86,4 @@ const metadataVeBölümler = (ağ) => ({
   ]
 });
 
-export { metadataVeBölümler };
+export { imzaMetni, metadataVeBölümler };
