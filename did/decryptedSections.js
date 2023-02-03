@@ -163,9 +163,8 @@ const toUnlockableNFT = async (metadata, decryptedSections, sectionGroups, provi
   /** @const {!Object<string, !eth.Unlockable>} */
   const unlockables = {};
   for (let i = 0; i < sectionGroups.length; ++i) {
-    if (i > 0)
-      await new Promise((resolve) => setTimeout(() => resolve(), 100));
-
+    /** @const {!Promise<void>} */
+    const duraklatıcı = new Promise((resolve) => setTimeout(resolve, 2000));
     /** @const {!did.DecryptedSections} */
     const sections = {};
     for (const name in sectionGroups[i].sectionNames)
@@ -179,6 +178,8 @@ const toUnlockableNFT = async (metadata, decryptedSections, sectionGroups, provi
       provider,
       address
     );
+    if (i < sectionGroups.length - 1)
+      await duraklatıcı;
   }
   return /** @type {!eth.ERC721Unlockable} */({
     ...metadata,

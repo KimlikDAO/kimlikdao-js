@@ -14,7 +14,10 @@
  */
 const getNodes = (numNodes) => Promise.resolve([
   "node.kimlikdao.org",
-  "kdao-node.kopru3.com"
+  "kdao-node.kopru3.com",
+  "kdao-node.yenibank.org",
+  "kdao-node.sstg.io",
+  "kdao-node.lstcm.co"
 ]);
 
 /**

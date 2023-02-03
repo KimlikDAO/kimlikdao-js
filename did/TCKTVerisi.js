@@ -6,6 +6,7 @@
 
 import { TCKT_ADDR } from "../ethereum/TCKT";
 import dom from "../util/dom";
+import { hex } from "../util/çevir";
 import { SectionGroup } from "./decryptedSections";
 
 /**
@@ -21,8 +22,7 @@ const İmzaİsteğiTR = `TCKT Erişim İsteği:
 
   {}
 
-bölümlerine erişebilecek. Bu mesajı sadece bu bilgileri paylaşmak istiyorsanız imzalayın.
-`
+bölümlerine erişebilecek. Bu mesajı sadece bu bilgileri paylaşmak istiyorsanız imzalayın.\n\n\n`
 /** @const {string} */
 const İmzaİsteğiEN = `TCKT Access Request:
 -------------------------------------------------
@@ -30,7 +30,7 @@ const İmzaİsteğiEN = `TCKT Access Request:
 
   {}
 
-sections of your TCKT. Only sign this message if you would like to share this information.`
+sections of your TCKT. Only sign this message if you would like to share this information.\n\n\n`
 
 /**
  * @param {!Array<string>} bölümler
@@ -38,23 +38,25 @@ sections of your TCKT. Only sign this message if you would like to share this in
  * @param {string=} girişEn
  * @return {!SectionGroup}
  */
-const bölüm = (bölümler) => /** @type {!SectionGroup} */({
+const bölüm = (bölümler, ağ, girişTr, girişEn) => /** @type {!SectionGroup} */({
   sectionNames: bölümler,
-  userPrompt: (dom.TR ? İmzaİsteğiTR + İmzaİsteğiEN : İmzaİsteğiEN.İmzaİsteğiTR)
+  userPrompt: (dom.TR ? İmzaİsteğiTR + İmzaİsteğiEN : İmzaİsteğiEN + İmzaİsteğiTR)
     .replace(/{}/g, bölümler.join(",\n  "))
     .replace("(TR)", girişTr || "")
     .replace("(EN)", girişEn || "")
-    + "\nNonce: " + hex(crypto.getRandomValues(new Uint8Array(8)))
-    + "\nNFT Contract: " + TCKT_ADDR
+    + "Nonce: " + hex(/** @type {!Uint8Array} */(crypto.getRandomValues(new Uint8Array(8))))
+    + "\nChainId: " + ağ
+    + "\nNFT: " + TCKT_ADDR
 });
 
 /**
+ * @param {string} ağ
  * @return {{
- *   metadata: !eth.ERC721Unlockable,
- *   sectionGroups: !Array<SectionGroup>
+ *   metadata: !eth.ERC721Metadata,
+ *   bölümler: !Array<SectionGroup>
  * }}
  */
-const metadataVeBölümler = () => ({
+const metadataVeBölümler = (ağ) => ({
   metadata: /** @type {!eth.ERC721Metadata} */({
     name: "TCKT",
     description: "KimlikDAO Kimlik Tokeni",
@@ -62,13 +64,13 @@ const metadataVeBölümler = () => ({
     external_url: KIMLIKDAO_URL,
     animation_url: KIMLIKDAO_URL + "/TCKT.mp4",
   }),
-  sectionGroups: [
-    bölüm(["personInfo", "contactInfo", "addressInfo", "kütükBilgileri"]),
-    bölüm(["contactInfo", "humanID"]),
-    bölüm(["humanID"]),
-    bölüm(["exposureReport"],
-      "https://kimlikdao.org adresinde olduğunuzdan emin olun! Bu adreste değilseniz bu metni imzalamayın.",
-      "Ensure that you're on https://kimlikdao.org. If not, don't sign this message!"
+  bölümler: [
+    bölüm(["personInfo", "contactInfo", "addressInfo", "kütükBilgileri"], ağ),
+    bölüm(["contactInfo", "humanID"], ağ),
+    bölüm(["humanID"], ağ),
+    bölüm(["exposureReport"], ağ,
+      "https://kimlikdao.org adresinde olduğunuzdan emin olun! Bu adreste değilseniz bu metni imzalamayın.\n\n",
+      "Ensure that you're on https://kimlikdao.org. If not, don't sign this message!\n\n"
     )
   ]
 });

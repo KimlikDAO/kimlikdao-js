@@ -25,13 +25,13 @@ eth.UiProvider = function() {}
 /**
  * @return {boolean}
  */
-eth.UiProvider.isConnected = function () { };
+eth.UiProvider.prototype.isConnected = function () { };
 
 /**
  * @param {string} eventName
- * @param {function(*)} handler
+ * @param {function(?)} handler
  */
-eth.UiProvider.on = function (eventName, handler) { };
+eth.UiProvider.prototype.on = function (eventName, handler) { };
 
 /**
  * @typedef {{
