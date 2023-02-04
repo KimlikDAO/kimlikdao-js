@@ -62,6 +62,28 @@ const decrypt = (unlockable, provider, address) => {
 const encrypt = (text, userPrompt, version, provider, address) => {
   switch (version) {
     case "promptsign-sha256-aes-ctr": {
+      /**
+       * @param {string} signature
+       * @return {!Promise<!eth.Unlockable>}
+       */
+      const encryptWithSignature = (signature) =>
+        crypto.subtle.digest("SHA-256", hexten(signature.slice(2)))
+          .then((hash) => crypto.subtle.importKey("raw", hash, "AES-CTR", false, ["encrypt"]))
+          .then((key) => crypto.subtle.encrypt({
+            name: "AES-CTR",
+            counter,
+            length: 64
+          },
+            key,
+            padded
+          ))
+          .then((/** @type {!ArrayBuffer} */ encrypted) => /** @type {!eth.Unlockable} */({
+            version: "promptsign-sha256-aes-ctr",
+            nonce: base64(counter),
+            ciphertext: base64(new Uint8Array(encrypted)),
+            userPrompt
+          }));
+
       /** @const {!TextEncoder} */
       const encoder = new TextEncoder();
       /** @const {!Uint8Array} */
@@ -70,28 +92,21 @@ const encrypt = (text, userPrompt, version, provider, address) => {
       const padded = new Uint8Array(encoded.length + 256 - (encoded.length & 255));
       padded.set(encoded);
       /** @const {!Uint8Array} */
-      const counter = /** @type {!Uint8Array} */(
-        crypto.getRandomValues(new Uint8Array(16)));
-      return provider.request(/** @type {!eth.Request} */({
+      const counter = /** @type {!Uint8Array} */(crypto.getRandomValues(new Uint8Array(16)));
+
+      /** @return {!Promise<string>} */
+      const requestSignature = () => provider.request(/** @type {!eth.Request} */({
         method: "personal_sign",
         params: [userPrompt, address]
-      }))
-        .then((signature) => crypto.subtle.digest("SHA-256", hexten(signature.slice(2))))
-        .then((hash) => crypto.subtle.importKey("raw", hash, "AES-CTR", false, ["encrypt"]))
-        .then((key) => crypto.subtle.encrypt({
-          name: "AES-CTR",
-          counter,
-          length: 64
-        },
-          key,
-          padded
-        ))
-        .then((/** @type {!ArrayBuffer} */ encrypted) => /** @type {!eth.Unlockable} */({
-          version: "promptsign-sha256-aes-ctr",
-          nonce: base64(counter),
-          ciphertext: base64(new Uint8Array(encrypted)),
-          userPrompt
-        }));
+      }));
+
+      return requestSignature()
+        .then(encryptWithSignature)
+        .catch((error) => /** @type {!eth.ProviderError} */(error).code == 4001
+          ? requestSignature().then((signature) => new Promise(
+            (resolve) => setTimeout(() => resolve(encryptWithSignature(signature)), 200)))
+          : Promise.reject(error)
+        );
     }
   }
   return Promise.reject();
