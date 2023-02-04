@@ -1,6 +1,8 @@
 build/did/test/decryptedSections.compiled-test.js: did/test/decryptedSections.compiled-test.js \
     did/*.d.js did/section.js did/decryptedSections.js \
+    did/verifiableID.js \
     crypto/sha3.js crypto/modular.js crypto/secp256k1.js \
+    crypto/primes.js crypto/wesolowski.js \
     ethereum/*.d.js ethereum/evm.js \
     ethereum/unlockable.js \
     node/nvi.d.js \

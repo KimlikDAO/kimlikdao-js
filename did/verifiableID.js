@@ -80,4 +80,8 @@ const verify = (verifiableID, personKey, publicKey) => {
     ))
 }
 
-export { generate, prepareGenerateKey, verify };
+export {
+  generate,
+  prepareGenerateKey,
+  verify,
+};
