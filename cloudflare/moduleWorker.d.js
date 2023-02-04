@@ -11,7 +11,7 @@
 cloudflare.Context = function () { }
 
 /**
- * @param {Promise<*>} promise
+ * @param {!Promise<*>} promise
  */
 cloudflare.Context.prototype.waitUntil = function (promise) { }
 
