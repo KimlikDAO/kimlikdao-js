@@ -126,7 +126,8 @@ const fromUnlockableNFT = async (nft, sectionNames, provider, address) => {
 
   for (let i = 0; i < encryptedSectionsKeys.length; ++i) {
     if (i > 0)
-      await new Promise((resolve) => setTimeout(() => resolve(), 100));
+      await new Promise((/** @type {function():void} */ resolve) =>
+        setTimeout(() => resolve(), 100));
     /** @type {!did.EncryptedSections} */
     const encryptedSections = /** @type {!did.EncryptedSections} */(
       nft.unlockables[encryptedSectionsKeys[i]]);
@@ -275,6 +276,11 @@ const verifyProofs = (decryptedSections, verifyKeys) => {
   /** @const {string} */
   const localIdNumber = /** @type {!did.PersonInfo} */(
     decryptedSections["personInfo"]).localIdNumber;
+
+  /**
+   * @param {string} name
+   * @return {!Promise<void>}
+   */
   const verifySingle = (name) => {
     /** @const {did.VerifiableID} */
     const verifiableID = /** @type {did.VerifiableID} */(decryptedSections[name]);

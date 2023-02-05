@@ -28,6 +28,10 @@ const testSelectEncryptedSections = () => {
     "1,4,u,v,s",
   ];
 
+  /**
+   * @param {!Array<string>} sections
+   * @param {!Array<string>} expected
+   */
   const check = (sections, expected) =>
     assertElemEq(
       selectEncryptedSections(encryptedSectionsKeys, sections),
@@ -247,6 +251,9 @@ const testCombineMultipleInsufficient = () => {
   );
 }
 
+/**
+ * @return {!Promise<void>}
+ */
 const testToNFTfromNFT = () => {
   const provider = new FakeProvider(1337n);
 
@@ -276,6 +283,9 @@ const testToNFTfromNFT = () => {
   });
 }
 
+/**
+ * @return {!Promise<void>}
+ */
 const testToNFTfromNFTMultiple = () => {
   const provider = new FakeProvider(1338n);
 

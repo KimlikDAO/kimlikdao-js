@@ -22,116 +22,116 @@ const TRILLION = 1_000_000n * 1_000_000n;
 
 /**
  * @typedef {{
- *   address: string,
- *   name: string,
- *   decimals: number,
- *   version: number
+ *   adres: string,
+ *   uzunAd: string,
+ *   basamak: number,
+ *   sürüm: number
  * }}
  */
-let TokenInfo;
+const TokenInfo = {};
 
-/** @const {Object<string, !Array<TokenInfo>>} */
+/** @const {!Object<string, !Array<TokenInfo>>} */
 const TokenData = {
   "0x1": [
-    null, {
-      address: "dAC17F958D2ee523a2206206994597C13D831ec7",
-      name: "Tether USD",
-      decimals: 6,
-      version: 0
-    }, {
-      address: "A0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-      name: "USD Coin",
-      decimals: 6,
-      version: 2
-    }, {
-      address: "2C537E5624e4af88A7ae4060C022609376C8D0EB",
-      name: "BiLira",
-      decimals: 6,
-      version: 0
-    }, {
-      address: "4Fabb145d64652a948d72533023f6E7A623C7C53",
-      name: "Binance USD",
-      decimals: 18,
-      version: 0
-    }
+    null, /** @type {!TokenInfo} */({
+      adres: "dAC17F958D2ee523a2206206994597C13D831ec7".toLowerCase(),
+      uzunAd: "Tether USD",
+      basamak: 6,
+      sürüm: 0
+    }), /** @type {!TokenInfo} */({
+      adres: "A0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48".toLowerCase(),
+      uzunAd: "USD Coin",
+      basamak: 6,
+      sürüm: 2
+    }), /** @type {!TokenInfo} */({
+      adres: "2C537E5624e4af88A7ae4060C022609376C8D0EB".toLowerCase(),
+      uzunAd: "BiLira",
+      basamak: 6,
+      sürüm: 0
+    }), /** @type {!TokenInfo} */({
+      adres: "4Fabb145d64652a948d72533023f6E7A623C7C53".toLowerCase(),
+      uzunAd: "Binance USD",
+      basamak: 18,
+      sürüm: 0
+    })
   ],
   "0xa86a": [
-    null, {
-      address: "9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7",
-      name: "TetherToken",
-      decimals: 6,
-      version: 1
-    }, {
-      address: "B97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-      name: "USD Coin",
-      decimals: 6,
-      version: 2
-    }, {
-      address: "564A341Df6C126f90cf3ECB92120FD7190ACb401",
-      name: "BiLira",
-      decimals: 6,
-      version: 2
-    }, {
-      address: "9C9e5fD8bbc25984B178FdCE6117Defa39d2db39",
-      name: "BUSD Token",
-      decimals: 18,
-      version: 1
-    }
+    null, /** @type {!TokenInfo} */({
+      adres: "9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7".toLowerCase(),
+      uzunAd: "TetherToken",
+      basamak: 6,
+      sürüm: 1
+    }), /** @type {!TokenInfo} */({
+      adres: "B97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E".toLowerCase(),
+      uzunAd: "USD Coin",
+      basamak: 6,
+      sürüm: 2
+    }), /** @type {!TokenInfo} */({
+      adres: "564A341Df6C126f90cf3ECB92120FD7190ACb401".toLowerCase(),
+      uzunAd: "BiLira",
+      basamak: 6,
+      sürüm: 2
+    }), /** @type {!TokenInfo} */({
+      adres: "9C9e5fD8bbc25984B178FdCE6117Defa39d2db39".toLowerCase(),
+      uzunAd: "BUSD Token",
+      basamak: 18,
+      sürüm: 1
+    })
   ],
   "0x89": [
-    null, {
-      address: "c2132D05D31c914a87C6611C10748AEb04B58e8F",
-      name: "(PoS) Tether USD",
-      decimals: 6,
-      version: 0
-    }, {
-      address: "2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
-      name: "USD Coin (PoS)",
-      decimals: 6,
-      version: 1
-    }, {
-      address: "4Fb71290Ac171E1d144F7221D882BECAc7196EB5",
-      name: "BiLira",
-      decimals: 6,
-      version: 0
-    }, {
-      address: "9C9e5fD8bbc25984B178FdCE6117Defa39d2db39",
-      name: "BUSD Token",
-      decimals: 18,
-      version: 1
-    }
+    null, /** @type {!TokenInfo} */({
+      adres: "c2132D05D31c914a87C6611C10748AEb04B58e8F".toLowerCase(),
+      uzunAd: "(PoS) Tether USD",
+      basamak: 6,
+      sürüm: 0
+    }), /** @type {!TokenInfo} */({
+      adres: "2791Bca1f2de4661ED88A30C99A7a9449Aa84174".toLowerCase(),
+      uzunAd: "USD Coin (PoS)",
+      basamak: 6,
+      sürüm: 1
+    }), /** @type {!TokenInfo} */({
+      adres: "4Fb71290Ac171E1d144F7221D882BECAc7196EB5".toLowerCase(),
+      uzunAd: "BiLira",
+      basamak: 6,
+      sürüm: 0
+    }), /** @type {!TokenInfo} */({
+      adres: "9C9e5fD8bbc25984B178FdCE6117Defa39d2db39".toLowerCase(),
+      uzunAd: "BUSD Token",
+      basamak: 18,
+      sürüm: 1
+    })
   ],
   "0xa4b1": [
-    null, {
-      address: "Fd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
-      name: "Tether USD",
-      decimals: 6,
-      version: 1
-    }, {
-      address: "FF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
-      name: "USD Coin (Arb1)",
-      decimals: 6,
-      version: 1
-    }, null, null
+    null, /** @type {!TokenInfo} */({
+      adres: "Fd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9".toLowerCase(),
+      uzunAd: "Tether USD",
+      basamak: 6,
+      sürüm: 1
+    }), /** @type {!TokenInfo} */({
+      adres: "FF970A61A04b1cA14834A43f5dE4533eBDDB5CC8".toLowerCase(),
+      uzunAd: "USD Coin (Arb1)",
+      basamak: 6,
+      sürüm: 1
+    }), null, null
   ],
   "0x38": [
-    null, null, null, null, {
-      address: "e9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
-      name: "BUSD Token",
-      decimals: 18,
-      version: 0
-    },
+    null, null, null, null, /** @type {!TokenInfo} */({
+      adres: "e9e7CEA3DedcA5984780Bafc599bD69ADd087D56".toLowerCase(),
+      uzunAd: "BUSD Token",
+      basamak: 18,
+      sürüm: 0
+    }),
   ],
   "0x406": [
     null, null, null, null, null
   ],
   "0xfa": [
-    null, null, {
-      address: "04068DA6C83AFCFA0e13ba15A6696662335D5B75",
-      name: "USD Coin",
-      decimals: 6,
-      version: 1
-    }, null, null
+    null, null, /** @type {!TokenInfo} */({
+      adres: "04068DA6C83AFCFA0e13ba15A6696662335D5B75".toLowerCase(),
+      uzunAd: "USD Coin",
+      basamak: 6,
+      sürüm: 1
+    }), null, null
   ],
 };
 
@@ -208,7 +208,7 @@ const getNonce = (chainId, address, token) => {
   const cached = NonceCache[chainId + address + token];
   return cached
     ? Promise.resolve(cached) : callMethod(
-      "0x" + TokenData[chainId][token].address, "0x7ecebe00" + evm.address(address)
+      "0x" + TokenData[chainId][token].adres, "0x7ecebe00" + evm.address(address)
     ).then((nonce) => {
       NonceCache[chainId + address + token] = nonce;
       return nonce;
@@ -348,7 +348,7 @@ const createWithRevokersWithTokenPermit = (address, cid, revokeThreshold, revoke
  * @return {!Promise<*>}
  */
 const createWithRevokersWithTokenPayment = (chainId, address, cid, revokeThreshold, revokers, token) => {
-  const tokenSerialized = evm.uint96(0) + TokenData[chainId][token].address;
+  const tokenSerialized = evm.uint96(0) + TokenData[chainId][token].adres;
   return revokeThreshold == 0
     ? sendTransaction(address, "0", "0xdaca45f7" + cid + tokenSerialized)
     : sendTransaction(address, "0", "0x3e36b2f7" + cid +
@@ -404,10 +404,11 @@ const getDeadline = () => 20 * 60 + (Date.now() / 1000 | 0);
  * @param {string} chainId
  * @param {string} address     Address of the message sender (asset owner also).
  * @param {number} token       A ERC20 token address to get the approval from.
+ * @return {!Promise<*>}
  */
 const getApprovalFor = (chainId, address, token) => sendTransactionTo(
   address,
-  "0x" + TokenData[chainId][token][0],
+  "0x" + TokenData[chainId][token].adres,
   "0", "0x095ea7b3" + evm.address(TCKT_ADDR) + evm.Uint256Max);
 
 /**
@@ -444,10 +445,10 @@ const getPermitFor = (chainId, owner, token, withRevokers) =>
           ]
         },
         "domain": {
-          "name": tokenData.name,
-          "version": "" + tokenData.version,
+          "name": tokenData.uzunAd,
+          "version": "" + tokenData.sürüm,
           "chainId": chainId,
-          "verifyingContract": "0x" + tokenData.address
+          "verifyingContract": "0x" + tokenData.adres
         },
         "primaryType": "Permit",
         "message": {
@@ -462,7 +463,7 @@ const getPermitFor = (chainId, owner, token, withRevokers) =>
         method: "eth_signTypedData_v4",
         params: [owner, typedSignData]
       })).then((/** @type {string} */ signature) =>
-        deadline + tokenData.address.toLowerCase() + evm.compactSignature(signature)
+        deadline + tokenData.adres + evm.compactSignature(signature)
       );
     });
 
@@ -479,7 +480,7 @@ const isTokenAvailable = (chainId, token) => !!TokenData[chainId][token];
  * @return {boolean}
  */
 const isTokenERC20Permit = (chainId, token) =>
-  !!(TokenData[chainId][token] && TokenData[chainId][token].version)
+  !!(TokenData[chainId][token] && TokenData[chainId][token].sürüm)
 
 export default {
   addRevoker,

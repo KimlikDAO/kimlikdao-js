@@ -84,12 +84,14 @@ const toCompactSignature = (sig) => evm.uint256(sig.r) +
 /**
  * @param {!bigint} digest as bigint
  * @param {!bigint} privKey as bigint
+ * @return {string}
  */
 const signWide = (digest, privKey) => toWideSignature(sign(digest, privKey));
 
 /**
  * @param {!bigint} digest as bigint
  * @param {!bigint} privKey as bigint
+ * @return {string}
  */
 const signCompact = (digest, privKey) => toCompactSignature(sign(digest, privKey));
 

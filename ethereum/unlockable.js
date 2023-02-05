@@ -25,24 +25,28 @@ const decrypt = (unlockable, provider, address) => {
         method: "eth_decrypt",
         params: [hexEncoded, address]
       }))
-        .then((decrypted) => decrypted.slice(43, decrypted.indexOf("\0")));
+        .then((/** @type {string} */ decrypted) =>
+          decrypted.slice(43, decrypted.indexOf("\0")));
     }
     case "promptsign-sha256-aes-ctr": {
       return provider.request(/** @type {!eth.Request} */({
         method: "personal_sign",
         params: [unlockable.userPrompt, address]
       }))
-        .then((signature) => crypto.subtle.digest("SHA-256", hexten(signature.slice(2))))
-        .then((hash) => crypto.subtle.importKey("raw", hash, "AES-CTR", false, ["decrypt"]))
-        .then((key) => crypto.subtle.decrypt({
-          name: "AES-CTR",
-          counter: base64ten(unlockable.nonce),
-          length: 64
-        },
-          key,
-          base64ten(unlockable.ciphertext)
-        ))
-        .then((decrypted) => {
+        .then((/** @type {string} */ signature) =>
+          crypto.subtle.digest("SHA-256", hexten(signature.slice(2))))
+        .then((/** @type {!ArrayBuffer} */ hash) =>
+          crypto.subtle.importKey("raw", hash, "AES-CTR", false, ["decrypt"]))
+        .then((/** @type {!webCrypto.CryptoKey}*/ key) =>
+          crypto.subtle.decrypt({
+            name: "AES-CTR",
+            counter: base64ten(unlockable.nonce),
+            length: 64
+          },
+            key,
+            base64ten(unlockable.ciphertext)
+          ))
+        .then((/** @type {!ArrayBuffer} */ decrypted) => {
           const decoded = new TextDecoder().decode(decrypted);
           return decoded.slice(0, decoded.indexOf("\0"));
         });
@@ -68,15 +72,17 @@ const encrypt = (text, userPrompt, version, provider, address) => {
        */
       const encryptWithSignature = (signature) =>
         crypto.subtle.digest("SHA-256", hexten(signature.slice(2)))
-          .then((hash) => crypto.subtle.importKey("raw", hash, "AES-CTR", false, ["encrypt"]))
-          .then((key) => crypto.subtle.encrypt({
-            name: "AES-CTR",
-            counter,
-            length: 64
-          },
-            key,
-            padded
-          ))
+          .then((/** @type {!ArrayBuffer} */ hash) =>
+            crypto.subtle.importKey("raw", hash, "AES-CTR", false, ["encrypt"]))
+          .then((/** @type {!webCrypto.CryptoKey} */ key) =>
+            crypto.subtle.encrypt({
+              name: "AES-CTR",
+              counter,
+              length: 64
+            },
+              key,
+              padded
+            ))
           .then((/** @type {!ArrayBuffer} */ encrypted) => /** @type {!eth.Unlockable} */({
             version: "promptsign-sha256-aes-ctr",
             nonce: base64(counter),
@@ -104,7 +110,8 @@ const encrypt = (text, userPrompt, version, provider, address) => {
         .then(encryptWithSignature)
         .catch((error) => /** @type {!eth.ProviderError} */(error).code == 4001
           ? requestSignature().then((signature) => new Promise(
-            (resolve) => setTimeout(() => resolve(encryptWithSignature(signature)), 200)))
+            (/** @type {function(!Promise<!eth.Unlockable>):void} */ resolve) =>
+              setTimeout(() => resolve(encryptWithSignature(signature)), 200)))
           : Promise.reject(error)
         );
     }
