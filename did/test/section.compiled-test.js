@@ -1,10 +1,7 @@
-import { G } from "/crypto/secp256k1";
-import { keccak256Uint32 } from "/crypto/sha3";
 import { commit, hash, recoverSectionSigners, signSection } from "/did/section";
-import evm from "/ethereum/evm.js";
 import { assertElemEq, assertEq, assertStats } from "/testing/assert";
-import { base64, hex, hexten } from "/util/çevir";
 import vm from "/testing/vm";
+import { base64, hex } from "/util/çevir";
 
 const testHash = () => {
   {
@@ -49,7 +46,7 @@ const testSignSection = () => {
   /** @const {string} */
   const commitmentR = base64([1, 2, 3]);
   /** @const {number} */
-  const timestamp = ~~(Date.now() / 1000);
+  const timestamp = Date.now() / 1000 | 0;
   signSection(
     "humanID", humanID1, commit(vm.addr(1n), commitmentR), timestamp, 11n);
   signSection(

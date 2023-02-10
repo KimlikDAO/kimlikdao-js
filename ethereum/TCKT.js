@@ -7,7 +7,7 @@ import evm from './evm';
  * @const {string}
  * @noinline
  */
-export const TCKT_ADDR = "0xcCc0F938A2C94b0fFBa49F257902Be7F56E62cCc";
+export const TCKT_ADDR = "0xcCc0a9b023177549fcf26c947edb5bfD9B230cCc";
 
 /**
  * @const {string}
@@ -18,9 +18,14 @@ const REVOKER_ASSIGNMENT = "0x4e686c76ade52af6305355f15cc098a1ca686d24a8c183f148
 const MILLION = 1000_000;
 
 /** @const {!bigint} */
-const TRILLION = 1_000_000n * 1_000_000n;
+const TRILLION = 10n ** 12n;
 
 /**
+ * Information pertaining to a token which we take as payment.
+ *
+ * We use these names so that GCC can easily prove that these names can be
+ * mangled.
+ *
  * @typedef {{
  *   adres: string,
  *   uzunAd: string,
@@ -83,7 +88,7 @@ const TokenData = {
       adres: "c2132D05D31c914a87C6611C10748AEb04B58e8F".toLowerCase(),
       uzunAd: "(PoS) Tether USD",
       basamak: 6,
-      sürüm: 0
+      sürüm: 1
     }), /** @type {!TokenInfo} */({
       adres: "2791Bca1f2de4661ED88A30C99A7a9449Aa84174".toLowerCase(),
       uzunAd: "USD Coin (PoS)",
@@ -93,7 +98,7 @@ const TokenData = {
       adres: "4Fb71290Ac171E1d144F7221D882BECAc7196EB5".toLowerCase(),
       uzunAd: "BiLira",
       basamak: 6,
-      sürüm: 0
+      sürüm: 1
     }), /** @type {!TokenInfo} */({
       adres: "9C9e5fD8bbc25984B178FdCE6117Defa39d2db39".toLowerCase(),
       uzunAd: "BUSD Token",
@@ -115,7 +120,17 @@ const TokenData = {
     }), null, null
   ],
   "0x38": [
-    null, null, null, null, /** @type {!TokenInfo} */({
+    null, null, /** @type {!TokenInfo} */({
+      adres: "8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d".toLowerCase(),
+      uzunAd: "USD Coin",
+      basamak: 18,
+      sürüm: 0
+    }), /** @type {!TokenInfo} */({
+      adres: "C1fdbed7Dac39caE2CcC0748f7a80dC446F6a594".toLowerCase(),
+      uzunAd: "BiLira",
+      basamak: 6,
+      sürüm: 0
+    }), /** @type {!TokenInfo} */({
       adres: "e9e7CEA3DedcA5984780Bafc599bD69ADd087D56".toLowerCase(),
       uzunAd: "BUSD Token",
       basamak: 18,
@@ -222,15 +237,13 @@ const getNonce = (chainId, address, token) => {
  * @return {!Promise<string>}
  */
 const handleOf = (address) =>
-  callMethod(TCKT_ADDR, "0x8a591c8a" + evm.address(address));
+  callMethod(TCKT_ADDR, "0xc50a1514" + evm.address(address));
 
 /**
- * @param {string} address
  * @return {!Promise<number>}
  */
-const revokesRemaining = (address) =>
-  callMethod(TCKT_ADDR, "0x11ac4634" + evm.address(address))
-    .then((revokes) => parseInt(revokes.slice(-6), 16));
+const revokesRemaining = () => callMethod(TCKT_ADDR, "0x165c44f3")
+  .then((revokes) => parseInt(revokes.slice(-6), 16));
 
 /**
  * @param {string} address
@@ -334,8 +347,8 @@ const serializeRevokers = (revokeThreshold, revokers) => {
  */
 const createWithRevokersWithTokenPermit = (address, cid, revokeThreshold, revokers, signature) =>
   revokeThreshold == 0
-    ? sendTransaction(address, "0", "0xb744aef4" + cid + signature)
-    : sendTransaction(address, "0", "0xa6c98d44" + cid +
+    ? sendTransaction(address, "0", "0xe0adf95b" + cid + signature)
+    : sendTransaction(address, "0", "0x0633ddcb" + cid +
       serializeRevokers(revokeThreshold, revokers) + signature);
 
 /**
@@ -361,18 +374,18 @@ const createWithRevokersWithTokenPayment = (chainId, address, cid, revokeThresho
  * @return {!Promise<!Array<number>>} price of TCKT in the given currency
  */
 const priceIn = (chainId, token) => {
-  const chain = chainId;
+  if (chainId == "0x38" && token == 0)
+    return Promise.resolve([5000, 3400]);
   const fiyat = {
-    "0x1": [0, 1 * MILLION, 1 * MILLION, 19 * MILLION, 0],
-    "0xa86a": [0, 1 * MILLION, 1 * MILLION, 19 * MILLION, 0],
-    "0x89": [0, 1 * MILLION, 1 * MILLION, 19 * MILLION, 0],
-    "0xa4b1": [0, 1 * MILLION, 1 * MILLION, 19 * MILLION, 0],
-    "0x38": [0, 1 * MILLION, 1 * MILLION, 19 * MILLION, 0],
-    "0x406": [0, 0, 0, 0, 0],
-    "0xfa": [0, 1 * MILLION, 1 * MILLION, 19 * MILLION, 0],
+    "0x1": [600, 1 * MILLION, 1 * MILLION, 19 * MILLION, 1 * MILLION],
+    "0xa86a": [50_000, 1 * MILLION, 1 * MILLION, 19 * MILLION, 1 * MILLION],
+    "0x89": [800_000, 1 * MILLION, 1 * MILLION, 19 * MILLION, 1 * MILLION],
+    "0xa4b1": [600, 1 * MILLION, 1 * MILLION, 19 * MILLION, 0],
+    "0x38": [3400, 1 * MILLION, 1 * MILLION, 19 * MILLION, 1 * MILLION],
+    "0xfa": [2_300_000, 1 * MILLION, 1 * MILLION, 19 * MILLION, 0],
   }
   return Promise.resolve([
-    fiyat[chain][token] * 1.5, fiyat[chain][token]
+    fiyat[chainId][token] * 1.5, fiyat[chainId][token]
   ]);
 }
 
@@ -381,7 +394,7 @@ const priceIn = (chainId, token) => {
  * @return {!Promise<number>}
  */
 const estimateNetworkFee = (chainId) => {
-  const hack = {
+  const placeholder = {
     "0x1": 600,
     "0xa86a": 800,
     "0x89": 400,
@@ -390,7 +403,7 @@ const estimateNetworkFee = (chainId) => {
     "0x406": 100,
     "0xfa": 200,
   }
-  return Promise.resolve(hack[chainId]);
+  return Promise.resolve(placeholder[chainId]);
 }
 
 /**
