@@ -7,7 +7,7 @@ import evm from './evm';
  * @const {string}
  * @noinline
  */
-export const TCKT_ADDR = "0xcCc0a9b023177549fcf26c947edb5bfD9B230cCc";
+const TCKT_ADDR = "0xcCc0a9b023177549fcf26c947edb5bfD9B230cCc";
 
 /**
  * @const {string}
@@ -15,7 +15,7 @@ export const TCKT_ADDR = "0xcCc0a9b023177549fcf26c947edb5bfD9B230cCc";
 const REVOKER_ASSIGNMENT = "0x4e686c76ade52af6305355f15cc098a1ca686d24a8c183f14896632bc8b27c5f";
 
 /** @const {number} */
-const MILLION = 1000_000;
+const MILLION = 1_000_000;
 
 /** @const {!bigint} */
 const TRILLION = 10n ** 12n;
@@ -494,6 +494,8 @@ const isTokenAvailable = (chainId, token) => !!TokenData[chainId][token];
  */
 const isTokenERC20Permit = (chainId, token) =>
   !!(TokenData[chainId][token] && TokenData[chainId][token].sürüm)
+
+export { TokenData, TCKT_ADDR };
 
 export default {
   addRevoker,
