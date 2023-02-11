@@ -79,7 +79,6 @@ const metadataVeBölümler = (ağ) => ({
     description: "KimlikDAO Kimlik Tokeni",
     image: KIMLIKDAO_URL + "/TCKT.svg",
     external_url: KIMLIKDAO_URL,
-    animation_url: KIMLIKDAO_URL + "/TCKT.mp4",
   }),
   bölümler: [
     bölüm(["personInfo", "contactInfo", "addressInfo", "kütükBilgileri"], ağ),

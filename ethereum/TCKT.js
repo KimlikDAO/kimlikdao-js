@@ -83,27 +83,34 @@ const TokenData = {
       sürüm: 1
     })
   ],
+  // TODO(KimlikDAO-bot): Polygon default bridge contract computes domain
+  // separator in the wrong order.
+  // See https://eips.ethereum.org/EIPS/eip-712
+  // "The EIP712Domain fields should be the order as above, skipping any absent
+  // fields. Future field additions must be in alphabetical order and come
+  // after the above fields. User-agents should accept fields in any order as
+  // specified by the EIPT712Domain type."
   "0x89": [
     null, /** @type {!TokenInfo} */({
       adres: "c2132D05D31c914a87C6611C10748AEb04B58e8F".toLowerCase(),
       uzunAd: "(PoS) Tether USD",
       basamak: 6,
-      sürüm: 1
+      sürüm: 0
     }), /** @type {!TokenInfo} */({
       adres: "2791Bca1f2de4661ED88A30C99A7a9449Aa84174".toLowerCase(),
       uzunAd: "USD Coin (PoS)",
       basamak: 6,
-      sürüm: 1
+      sürüm: 0
     }), /** @type {!TokenInfo} */({
       adres: "4Fb71290Ac171E1d144F7221D882BECAc7196EB5".toLowerCase(),
       uzunAd: "BiLira",
       basamak: 6,
-      sürüm: 1
+      sürüm: 0
     }), /** @type {!TokenInfo} */({
       adres: "9C9e5fD8bbc25984B178FdCE6117Defa39d2db39".toLowerCase(),
       uzunAd: "BUSD Token",
       basamak: 18,
-      sürüm: 1
+      sürüm: 0
     })
   ],
   "0xa4b1": [
