@@ -20,7 +20,7 @@ eth.Provider.prototype.request = function (params) { };
  * @interface
  * @extends {eth.Provider}
  */
-eth.UiProvider = function() {}
+eth.UiProvider = function () { }
 
 /**
  * @return {boolean}
@@ -60,28 +60,64 @@ eth.Request.prototype.method;
 eth.Request.prototype.params;
 
 /**
+ * @interface
+ * @struct
+ */
+eth.SwitchChainParam = function () { }
+
+/** @const {string} */
+eth.SwitchChainParam.prototype.chainId;
+
+/**
+ * @interface
+ * @struct
+ */
+eth.AddChainParam = function () { }
+
+/** @const {string} */
+eth.AddChainParam.prototype.chainId;
+
+/** @const {string} */
+eth.AddChainParam.prototype.chainName;
+
+/**
+ * @const {{
+ *   name: string,
+ *   symbol: string,
+ *   decimals: number
+ * }}
+ */
+eth.AddChainParam.prototype.nativeCurrency;
+
+/** @const {!Array<string>} */
+eth.AddChainParam.prototype.rpcUrls;
+
+/** @const {!Array<string>} */
+eth.AddChainParam.prototype.blockExplorerUrls;
+
+/**
  * The struct that is passed to the wallet to add an asset.
  * Currently most wallets support only ERC20 assets.
  *
  * @interface
  * @struct
  */
-eth.WatchAsset = function () { }
+eth.WatchAssetParam = function () { }
 
 /** @type {string} */
-eth.WatchAsset.prototype.type;
+eth.WatchAssetParam.prototype.type;
 
 /** @struct */
-eth.WatchAsset.prototype.options;
+eth.WatchAssetParam.prototype.options;
 
 /** @type {string} */
-eth.WatchAsset.prototype.options.address;
+eth.WatchAssetParam.prototype.options.address;
 
 /** @type {string} */
-eth.WatchAsset.prototype.options.symbol;
+eth.WatchAssetParam.prototype.options.symbol;
 
 /** @type {string} */
-eth.WatchAsset.prototype.options.decimals;
+eth.WatchAssetParam.prototype.options.decimals;
 
 /**
  * An encrypted data blob. Can be unencrypted with an `eth_decrypt` provider

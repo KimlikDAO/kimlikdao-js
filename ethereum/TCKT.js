@@ -166,7 +166,7 @@ const TokenData = {
 const addToWallet = () =>
   ethereum.request(/** @type {!eth.Request} */({
     method: 'wallet_watchAsset',
-    params: /** @type {!eth.WatchAsset} */({
+    params: /** @type {!eth.WatchAssetParam} */({
       type: 'ERC721',
       options: {
         address: TCKT_ADDR,
