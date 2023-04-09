@@ -121,9 +121,12 @@ FakeProvider.prototype.request = function (req) {
           code: -32602,
           message: "from should be same as current address"
         }));
+      /** @const {!TextDecoder} */
+      const decoder = new TextDecoder();
+      /** @const {string} */
+      const message = decoder.decode(hexten(/** @type {string} */(req.params[0]).slice(2)));
       /** @const {!bigint} */
-      const digest = BigInt("0x" + evm.personalDigest(
-        /** @type {string} */(req.params[0])));
+      const digest = BigInt("0x" + evm.personalDigest(message));
       return Promise.resolve("0x" + signWide(digest, this.privKey));
   }
   return Promise.reject();

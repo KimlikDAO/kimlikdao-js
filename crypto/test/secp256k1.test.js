@@ -1,4 +1,4 @@
-import { Point as NoblePoint } from '@noble/secp256k1';
+import { ProjectivePoint as NoblePoint } from '@noble/secp256k1';
 import { assert, describe, it } from 'vitest';
 import { G, Point } from '/crypto/secp256k1';
 
@@ -8,7 +8,10 @@ import { G, Point } from '/crypto/secp256k1';
  * @param {NoblePoint} p
  * @return {Point}
  */
-const derogate = (p) => new Point(p.x, p.y, 1n);
+const derogate = (p) => {
+  let q = p.toAffine();
+  return new Point(q.x, q.y, 1n)
+};
 
 describe('Point <> JacobianPoint equivalence', () => {
   it('should be pointwise equal', () => {

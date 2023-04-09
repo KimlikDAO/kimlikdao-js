@@ -10,10 +10,10 @@
     "test": "vitest"
   },
   "devDependencies": {
-    "@noble/secp256k1": "^1.7.1",
-    "ethers": "^6.0.2",
-    "google-closure-compiler": "^20230103.0.0",
+    "@noble/secp256k1": "^2.0.0",
+    "ethers": "^6.3.0",
+    "google-closure-compiler": "^20230228.0.0",
     "uglify-js": "^3.17.4",
-    "vitest": "^0.28.1"
+    "vitest": "^0.30.0"
   }
 }

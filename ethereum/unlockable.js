@@ -13,10 +13,10 @@ import { base64, base64ten, hex, hexten } from "../util/çevir";
  * @return {!Promise<string>}
  */
 const decrypt = (unlockable, provider, address) => {
+  /** @const {!TextEncoder} */
+  const encoder = new TextEncoder();
   switch (unlockable.version) {
     case "x25519-xsalsa20-poly1305": {
-      /** @const {!TextEncoder} */
-      const encoder = new TextEncoder();
       delete unlockable.userPrompt;
       /** @const {string} */
       const hexEncoded = "0x" +
@@ -29,9 +29,12 @@ const decrypt = (unlockable, provider, address) => {
           decrypted.slice(43, decrypted.indexOf("\0")));
     }
     case "promptsign-sha256-aes-ctr": {
+      /** @const {string} */
+      const hexPrompt = "0x" + hex(encoder.encode(
+        /** @type {string} */(unlockable.userPrompt)));
       return provider.request(/** @type {!eth.Request} */({
         method: "personal_sign",
-        params: [unlockable.userPrompt, address]
+        params: [hexPrompt, address]
       }))
         .then((/** @type {string} */ signature) =>
           crypto.subtle.digest("SHA-256", hexten(signature.slice(2))))
@@ -99,11 +102,17 @@ const encrypt = (text, userPrompt, version, provider, address) => {
       padded.set(encoded);
       /** @const {!Uint8Array} */
       const counter = /** @type {!Uint8Array} */(crypto.getRandomValues(new Uint8Array(16)));
+      /**
+       * We hex encode the user prompt as the spec requires it.
+       * https://docs.metamask.io/guide/signing-data.html#personal-sign
+       * @const {string}
+       */
+      const hexPrompt = "0x" + hex(encoder.encode(userPrompt));
 
       /** @return {!Promise<string>} */
       const requestSignature = () => provider.request(/** @type {!eth.Request} */({
         method: "personal_sign",
-        params: [userPrompt, address]
+        params: [hexPrompt, address]
       }));
 
       return requestSignature()
