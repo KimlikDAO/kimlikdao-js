@@ -31,6 +31,9 @@ eth.Transaction.prototype.data;
 /** @type {string} */
 eth.Transaction.prototype.chainId;
 
+/** @type {string} */
+eth.Transaction.prototype.gas;
+
 /**
  * Represents a `eth_getLogs` request parameters.
  *

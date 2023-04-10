@@ -180,28 +180,31 @@ const addToWallet = () =>
  * @param {string} from
  * @param {string} to
  * @param {string} value value in native token, encoded as a hex string.
+ * @param {number} gas
  * @param {string} calldata hex encoded calldata.
  * @return {!Promise<*>}
  */
-const sendTransactionTo = (from, to, value, calldata) =>
+const sendTransactionTo = (from, to, value, gas, calldata) =>
   ethereum.request(/** @type {!eth.Request} */({
     method: "eth_sendTransaction",
     params: [/** @type {!eth.Transaction} */({
       from,
       to,
       value: "0x" + value,
+      gas: "0x" + gas.toString(16),
       data: calldata
     })]
-  }))
+  }));
 
 /**
  * @param {string} address
  * @param {string} value value in native tokens, encoded as a hex string.
+ * @param {number} gas
  * @param {string} calldata hex encoded calldata.
  * @return {!Promise<*>}
  */
-const sendTransaction = (address, value, calldata) =>
-  sendTransactionTo(address, TCKT_ADDR, value, calldata);
+const sendTransaction = (address, value, gas, calldata) =>
+  sendTransactionTo(address, TCKT_ADDR, value, gas, calldata);
 
 /**
  * @param {string} contract Contract adddress given with the 0x prefix
@@ -258,7 +261,7 @@ const revokesRemaining = () => callMethod(TCKT_ADDR, "0x165c44f3")
  * @return {!Promise<*>}
  */
 const reduceRevokeThreshold = (address, deltaWeight) =>
-  sendTransaction(address, "0", "0xab505b1c" + evm.uint256(deltaWeight));
+  sendTransaction(address, "0", 22_000, "0xab505b1c" + evm.uint256(deltaWeight));
 
 /**
  * @param {string} address
@@ -267,7 +270,7 @@ const reduceRevokeThreshold = (address, deltaWeight) =>
  * @return {!Promise<*>}
  */
 const addRevoker = (address, deltaWeight, revokerAddress) =>
-  sendTransaction(address, "0", "0xf02b3297" +
+  sendTransaction(address, "0", 49_000, "0xf02b3297" +
     evm.uint96(deltaWeight) + revokerAddress.slice(2).toLowerCase());
 
 /**
@@ -275,7 +278,7 @@ const addRevoker = (address, deltaWeight, revokerAddress) =>
  * @return {!Promise<*>}
  */
 const revoke = (address) =>
-  sendTransaction(address, "0", "0xb6549f75");
+  sendTransaction(address, "0", 41_000, "0xb6549f75");
 
 /**
  * @param {string} address
@@ -283,7 +286,7 @@ const revoke = (address) =>
  * @return {!Promise<*>}
  */
 const revokeFriend = (address, friend) =>
-  sendTransaction(address, "0", "0x3a2c82c7" + evm.address(friend));
+  sendTransaction(address, "0", 52_000, "0x3a2c82c7" + evm.address(friend));
 
 /**
  * Returns the list of addresses that can be revoked by `revoker`.
@@ -318,9 +321,10 @@ const createWithRevokers = (chainId, address, cid, revokeThreshold, revokers) =>
   priceIn(chainId, 0).then(([high, low]) => {
     const price = (TRILLION * BigInt(revokeThreshold == 0 ? high : low)).toString(16);
     return revokeThreshold == 0
-      ? sendTransaction(address, price, "0x780900dc" + cid)
-      : sendTransaction(address, price, "0xd3cfebc1" + cid +
-        serializeRevokers(revokeThreshold, revokers));
+      ? sendTransaction(address, price, 49_000,
+        "0x780900dc" + cid)
+      : sendTransaction(address, price, 70_000 + 25_000 * Object.keys(revokers).length,
+        "0xd3cfebc1" + cid + serializeRevokers(revokeThreshold, revokers));
   });
 
 /**
@@ -354,9 +358,10 @@ const serializeRevokers = (revokeThreshold, revokers) => {
  */
 const createWithRevokersWithTokenPermit = (address, cid, revokeThreshold, revokers, signature) =>
   revokeThreshold == 0
-    ? sendTransaction(address, "0", "0xe0adf95b" + cid + signature)
-    : sendTransaction(address, "0", "0x0633ddcb" + cid +
-      serializeRevokers(revokeThreshold, revokers) + signature);
+    ? sendTransaction(address, "0", 160_000,
+      "0xe0adf95b" + cid + signature)
+    : sendTransaction(address, "0", 180_000 + 25_000 * Object.keys(revokers).length,
+      "0x0633ddcb" + cid + serializeRevokers(revokeThreshold, revokers) + signature);
 
 /**
  * @param {string} chainId
@@ -370,9 +375,10 @@ const createWithRevokersWithTokenPermit = (address, cid, revokeThreshold, revoke
 const createWithRevokersWithTokenPayment = (chainId, address, cid, revokeThreshold, revokers, token) => {
   const tokenSerialized = evm.uint96(0) + TokenData[chainId][token].adres;
   return revokeThreshold == 0
-    ? sendTransaction(address, "0", "0xdaca45f7" + cid + tokenSerialized)
-    : sendTransaction(address, "0", "0x3e36b2f7" + cid +
-      serializeRevokers(revokeThreshold, revokers) + tokenSerialized);
+    ? sendTransaction(address, "0", 140_000,
+      "0xdaca45f7" + cid + tokenSerialized)
+    : sendTransaction(address, "0", 160_000 + 25_000 * Object.keys(revokers).length,
+      "0x3e36b2f7" + cid + serializeRevokers(revokeThreshold, revokers) + tokenSerialized);
 }
 
 /**
@@ -429,7 +435,9 @@ const getDeadline = () => 20 * 60 + (Date.now() / 1000 | 0);
 const getApprovalFor = (chainId, address, token) => sendTransactionTo(
   address,
   "0x" + TokenData[chainId][token].adres,
-  "0", "0x095ea7b3" + evm.address(TCKT_ADDR) + evm.Uint256Max);
+  "0",
+  80_000,
+  "0x095ea7b3" + evm.address(TCKT_ADDR) + evm.Uint256Max);
 
 /**
  * @param {string} chainId       chainId for the chain we want the permit for
