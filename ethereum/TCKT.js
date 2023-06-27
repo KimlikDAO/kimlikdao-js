@@ -241,8 +241,6 @@ const getNonce = (chainId, address, token) => {
 }
 
 /**
- * TODO(KimlikDAO-bot): Update to the new method signature
- *
  * @param {string} address
  * @return {!Promise<string>}
  */
