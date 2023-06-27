@@ -276,7 +276,7 @@ const addRevoker = (address, deltaWeight, revokerAddress) =>
  * @return {!Promise<*>}
  */
 const revoke = (address) =>
-  sendTransaction(address, "0", 41_000, "0xb6549f75");
+  sendTransaction(address, "0", 53_000, "0xb6549f75");
 
 /**
  * @param {string} address
