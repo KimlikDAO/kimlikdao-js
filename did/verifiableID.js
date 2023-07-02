@@ -83,5 +83,5 @@ const verify = (verifiableID, personKey, publicKey) => {
 export {
   generate,
   prepareGenerateKey,
-  verify,
+  verify
 };

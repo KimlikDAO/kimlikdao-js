@@ -29,7 +29,10 @@ const handleOf = (address) =>
  * @param {string} address
  * @return {!Promise<boolean>}
  */
-const hasDID = (address) => handleOf(address).then((hexCid) => hexCid.replaceAll("0", "") != "x")
+const hasDID = (address) =>
+  handleOf(address).then((hexCid) => hexCid.replaceAll("0", "") != "x");
+
+export { TCKT_ADDR };
 
 export default {
   handleOf,
