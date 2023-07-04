@@ -113,7 +113,7 @@ const CID = (hash) => {
  */
 const cidBytetanOku = (nodeUrl, cidByte) => {
   const yerelCID = CID(cidByte);
-  return fetch(nodeUrl + "ipfs/" + yerelCID)
+  return fetch(nodeUrl + "/ipfs/" + yerelCID)
     .then((res) => res.arrayBuffer())
     .then((/** @type {!ArrayBuffer} */ buf) => hash(new Uint8Array(buf))
       .then((gelenByte) => CID(gelenByte) === yerelCID

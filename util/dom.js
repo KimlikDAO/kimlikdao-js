@@ -37,7 +37,7 @@ const adlaGöster = (ad) => adla(ad).style.display = "";
 /**
  * @param {Element} buton Durdurulacak düğme.
  */
-const butonDurdur = (buton) => {
+const düğmeDurdur = (buton) => {
   buton.onclick = null;
   buton.disabled = true;
   buton.classList.add("dis");
@@ -83,7 +83,7 @@ export default {
   adla,
   adlaGizle,
   adlaGöster,
-  butonDurdur,
+  düğmeDurdur,
   gizle,
   göster,
   menüYarat,
