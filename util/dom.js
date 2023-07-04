@@ -35,6 +35,12 @@ const adlaGizle = (ad) => adla(ad).style.display = "none";
 const adlaGöster = (ad) => adla(ad).style.display = "";
 
 /**
+ * @param {string} ad
+ * @param {boolean} göster
+ */
+const adlaGösterGizle = (ad, göster) => adla(ad).style.display = göster ? "" : "none";
+
+/**
  * @param {Element} buton Durdurulacak düğme.
  */
 const düğmeDurdur = (buton) => {
@@ -83,6 +89,7 @@ export default {
   adla,
   adlaGizle,
   adlaGöster,
+  adlaGösterGizle,
   düğmeDurdur,
   gizle,
   göster,

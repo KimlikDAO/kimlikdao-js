@@ -26,7 +26,7 @@ const testCID = () => {
 }
 
 /** @const {string} */
-const IPFS_URL = "https://ipfs.kimlikdao.org/";
+const IPFS_URL = "https://ipfs.kimlikdao.org";
 
 /**
  * @return {!Promise<void>}

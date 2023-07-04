@@ -134,7 +134,7 @@ const yaz = (nodeUrl, veri) => {
   const formData = new FormData()
   formData.set("blob", new Blob([encoded]));
   /** @const {!Promise<string>} */
-  const gelenSöz = fetch(nodeUrl + "api/v0/add", {
+  const gelenSöz = fetch(nodeUrl + "/api/v0/add", {
     method: "POST",
     body: formData
   })
