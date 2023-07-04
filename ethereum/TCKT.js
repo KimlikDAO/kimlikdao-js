@@ -209,14 +209,16 @@ const sendTransaction = (address, value, gas, calldata) =>
 /**
  * @param {string} contract Contract adddress given with the 0x prefix
  * @param {string} calldata Calldata transmitted to the contract verbatim.
+ * @param {string=} from
  * @return {!Promise<string>}
  */
-const callMethod = (contract, calldata) =>
+const callMethod = (contract, calldata, from) =>
   ethereum.request(/** @type {!eth.Request} */({
     method: "eth_call",
     params: [/** @type {!eth.Transaction} */({
       to: contract,
-      data: calldata
+      data: calldata,
+      from,
     }), "latest"]
   }))
 
@@ -248,9 +250,10 @@ const handleOf = (address) =>
   callMethod(TCKT_ADDR, "0xc50a1514" + evm.address(address));
 
 /**
+ * @param {string} sender
  * @return {!Promise<number>}
  */
-const revokesRemaining = () => callMethod(TCKT_ADDR, "0x165c44f3")
+const revokesRemaining = (sender) => callMethod(TCKT_ADDR, "0x165c44f3", sender)
   .then((revokes) => parseInt(revokes.slice(-6), 16));
 
 /**
