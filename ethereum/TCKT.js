@@ -287,7 +287,7 @@ const revoke = (address) =>
  * @return {!Promise<*>}
  */
 const revokeFriend = (address, friend) =>
-  sendTransaction(address, "0", 52_000, "0x3a2c82c7" + evm.address(friend));
+  sendTransaction(address, "0", 80_000, "0x3a2c82c7" + evm.address(friend));
 
 /**
  * Returns the list of addresses that can be revoked by `revoker`.

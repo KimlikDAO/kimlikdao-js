@@ -22,7 +22,7 @@ const addr = (privKey) => {
  * Note that derivation of the `K` point is deterministic but non-standard, so
  * the created signature will not match that of the common ethereum wallets.
  *
- * TODO(KimlikDAO-bot): Implement standard deterministic signaturess.
+ * TODO(KimlikDAO-bot): Implement standard deterministic signatures.
  *
  * @param {!bigint} digest
  * @param {!bigint} privKey
