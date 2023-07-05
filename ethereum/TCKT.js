@@ -182,7 +182,7 @@ const addToWallet = () =>
  * @param {string} value value in native token, encoded as a hex string.
  * @param {number} gas
  * @param {string} calldata hex encoded calldata.
- * @return {!Promise<*>}
+ * @return {!Promise<string>} transaction hash
  */
 const sendTransactionTo = (from, to, value, gas, calldata) =>
   ethereum.request(/** @type {!eth.Request} */({
@@ -201,7 +201,7 @@ const sendTransactionTo = (from, to, value, gas, calldata) =>
  * @param {string} value value in native tokens, encoded as a hex string.
  * @param {number} gas
  * @param {string} calldata hex encoded calldata.
- * @return {!Promise<*>}
+ * @return {!Promise<string>} transaction hash
  */
 const sendTransaction = (address, value, gas, calldata) =>
   sendTransactionTo(address, TCKT_ADDR, value, gas, calldata);
