@@ -5,7 +5,7 @@ const HEADERS = { "content-type": "application/json" };
  * @param {string} url
  * @param {string} method
  * @param {!Array<*>} params
- * @return {!Promise<*>}
+ * @return {!Promise<?>}
  */
 const call = (url, method, params) => fetch(url, {
   method: "POST",

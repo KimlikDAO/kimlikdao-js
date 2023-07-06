@@ -1,7 +1,4 @@
-/**
- * @const {string}
- * @noinline
- */
+/** @const {string} */
 const TCKT_ADDR = "0xcCc0a9b023177549fcf26c947edb5bfD9B230cCc";
 
 /**
