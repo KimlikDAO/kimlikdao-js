@@ -50,6 +50,13 @@ cloudflare.DurableObject.Storage.prototype.get = function (key) { };
 cloudflare.DurableObject.Storage.prototype.put = function (key, value) { };
 
 /**
+ * @nosideeffects
+ * @param {string} key
+ * @return {!Promise<boolean>}
+ */
+cloudflare.DurableObject.Storage.prototype.delete = function (key) { };
+
+/**
  * @interface
  *
  * @param {!Request} req

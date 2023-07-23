@@ -47,6 +47,6 @@ cloudflare.EmailWorker = function () { };
  * @param {!cloudflare.EmailMessage} message
  * @param {!cloudflare.Environment=} env
  * @param {!cloudflare.Context=} ctx
- * @return {!Promise<!Response>|!Response}
+ * @return {!Promise<void>|void}
  */
 cloudflare.EmailWorker.prototype.email = function (message, env, ctx) { }

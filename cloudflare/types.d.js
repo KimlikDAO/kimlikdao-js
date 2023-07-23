@@ -57,12 +57,38 @@ cloudflare.KeyValue = function () { }
 cloudflare.KeyValue.prototype.get = function (key, type) { }
 
 /**
- * @nosideeffects
  * @param {string} key
  * @param {string|!ArrayBuffer} value
+ * @param {{
+ *   metadata: *
+ * }=} options
  * @return {!Promise<void>}
  */
-cloudflare.KeyValue.prototype.put = function (key, value) { }
+cloudflare.KeyValue.prototype.put = function (key, value, options) { }
+
+/**
+ * @param {string} key
+ * @return {!Promise<void>}
+ */
+cloudflare.KeyValue.prototype.delete = function (key) { }
+
+/**
+ * @typedef {{
+ *   keys: !Array<{
+ *     name: string,
+ *     metadata: *
+ *   }>,
+ *   list_complete: boolean,
+ *   cursor: string,
+ * }}
+ */
+cloudflare.KeyValueList = {};
+
+/**
+ * @nosideeffects
+ * @return {!Promise<!cloudflare.KeyValueList>}
+ */
+cloudflare.KeyValue.prototype.list = function () { }
 
 /**
  * @const

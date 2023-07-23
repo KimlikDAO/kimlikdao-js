@@ -112,6 +112,7 @@ const CID = (hash) => {
  * @return {!Promise<string>}
  */
 const cidBytetanOku = (nodeUrl, cidByte) => {
+  /** @const {string} */
   const yerelCID = CID(cidByte);
   return fetch(nodeUrl + "/ipfs/" + yerelCID)
     .then((res) => res.arrayBuffer())
@@ -132,7 +133,9 @@ const yaz = (nodeUrl, veri) => {
   const encoded = new TextEncoder().encode(veri);
   /** @const {!FormData} */
   const formData = new FormData()
-  formData.set("blob", new Blob([encoded]));
+  formData.set("blob", new Blob([encoded], {
+    type: "application/json"
+  }));
   /** @const {!Promise<string>} */
   const gelenSöz = fetch(nodeUrl + "/api/v0/add", {
     method: "POST",
