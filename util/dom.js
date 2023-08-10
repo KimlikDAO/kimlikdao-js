@@ -24,6 +24,13 @@ const göster = (birim) => birim.style.display = "";
 
 /**
  * @noinline
+ * @param {Element} birim
+ * @param {boolean} göster
+ */
+const gösterGizle = (birim, göster) => birim.style.display = göster ? "" : "none";
+
+/**
+ * @noinline
  * @param {string} ad
  */
 const adlaGizle = (ad) => adla(ad).style.display = "none";
@@ -38,7 +45,7 @@ const adlaGöster = (ad) => adla(ad).style.display = "";
  * @param {string} ad
  * @param {boolean} göster
  */
-const adlaGösterGizle = (ad, göster) => adla(ad).style.display = göster ? "" : "none";
+const adlaGösterGizle = (ad, göster) => gösterGizle(adla(ad));
 
 /**
  * @param {Element} buton Durdurulacak düğme.
@@ -93,6 +100,7 @@ export default {
   düğmeDurdur,
   gizle,
   göster,
+  gösterGizle,
   menüYarat,
   paradanMetne,
   telefondanMetne,
