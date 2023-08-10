@@ -34,6 +34,11 @@ eth.UiProvider.prototype.isConnected = function () { };
 eth.UiProvider.prototype.on = function (eventName, handler) { };
 
 /**
+ * @return {!eth.UiProvider}
+ */
+eth.UiProvider.prototype.removeAllListeners = function () { };
+
+/**
  * @typedef {{
  *   message: string,
  *   code: number,
@@ -41,9 +46,6 @@ eth.UiProvider.prototype.on = function (eventName, handler) { };
  * }}
  */
 eth.ProviderError;
-
-/** @const {!eth.UiProvider} */
-var ethereum;
 
 /**
  * The container object that is passed to the provider.

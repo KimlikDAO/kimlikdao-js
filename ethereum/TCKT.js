@@ -23,17 +23,22 @@ const TRILLION = 10n ** 12n;
 /**
  * Information pertaining to a token which we take as payment.
  *
- * We use these names so that GCC can easily prove that these names can be
- * mangled.
- *
- * @typedef {{
- *   adres: string,
- *   uzunAd: string,
- *   basamak: number,
- *   sürüm: number
- * }}
+ * @interface
+ * @struct
  */
-const TokenInfo = {};
+const TokenInfo = function () { };
+
+/** @const {string} */
+TokenInfo.prototype.adres;
+
+/** @const {string} */
+TokenInfo.prototype.uzunAd;
+
+/** @const {number} */
+TokenInfo.prototype.basamak;
+
+/** @const {number} */
+TokenInfo.prototype.sürüm;
 
 /** @const {!Object<string, !Array<TokenInfo>>} */
 const TokenData = {
@@ -157,24 +162,36 @@ const TokenData = {
   ],
 };
 
+/** @type {!eth.Provider} */
+let Provider = /** @type {!eth.Provider} */({
+  request: (req) => {
+    console.log(req)
+    return Promise.resolve("");
+  }
+});
+
+/**
+ * @param {!eth.Provider} provider
+ */
+const setProvider = (provider) => Provider = provider;
+
 /**
  * Asks the connected wallet to track the TCKT contract (as an NFT).
  *
  * Sends a `wallet_watchAsset` request to the connected wallet. Currently, no
  * wallet supports adding an NFT this way, so we disable this.
  */
-const addToWallet = () =>
-  ethereum.request(/** @type {!eth.Request} */({
-    method: 'wallet_watchAsset',
-    params: /** @type {!eth.WatchAssetParam} */({
-      type: 'ERC721',
-      options: {
-        address: TCKT_ADDR,
-        symbol: 'TCKT',
-        decimals: "0",
-      }
-    }),
-  }))
+const addToWallet = () => Provider.request(/** @type {!eth.Request} */({
+  method: 'wallet_watchAsset',
+  params: /** @type {!eth.WatchAssetParam} */({
+    type: 'ERC721',
+    options: {
+      address: TCKT_ADDR,
+      symbol: 'TCKT',
+      tokenId: "0x0",
+    }
+  }),
+}))
 
 /**
  * @param {string} from
@@ -185,7 +202,7 @@ const addToWallet = () =>
  * @return {!Promise<string>} transaction hash
  */
 const sendTransactionTo = (from, to, value, gas, calldata) =>
-  ethereum.request(/** @type {!eth.Request} */({
+  Provider.request(/** @type {!eth.Request} */({
     method: "eth_sendTransaction",
     params: [/** @type {!eth.Transaction} */({
       from,
@@ -213,7 +230,7 @@ const sendTransaction = (address, value, gas, calldata) =>
  * @return {!Promise<string>}
  */
 const callMethod = (contract, calldata, from) =>
-  ethereum.request(/** @type {!eth.Request} */({
+  Provider.request(/** @type {!eth.Request} */({
     method: "eth_call",
     params: [/** @type {!eth.Transaction} */({
       to: contract,
@@ -253,8 +270,9 @@ const handleOf = (address) =>
  * @param {string} sender
  * @return {!Promise<number>}
  */
-const revokesRemaining = (sender) => callMethod(TCKT_ADDR, "0x165c44f3", sender)
-  .then((revokes) => parseInt(revokes.slice(-6), 16));
+const revokesRemaining = (sender) =>
+  callMethod(TCKT_ADDR, "0x165c44f3", sender)
+    .then((revokes) => parseInt(revokes.slice(-6), 16));
 
 /**
  * @param {string} address
@@ -296,7 +314,7 @@ const revokeFriend = (address, friend) =>
  * @return {!Promise<*>}
  */
 const getRevokeeAddresses = (revoker) =>
-  ethereum.request(/** @type {!eth.Request} */({
+  Provider.request(/** @type {!eth.Request} */({
     method: "eth_getLogs",
     params: [/** @type {!eth.GetLogs} */({
       address: TCKT_ADDR,
@@ -455,7 +473,7 @@ const getPermitFor = (chainId, owner, token, withRevokers) =>
       /** @const {string} */
       const deadline = evm.uint96(getDeadline());
       /** @const {!TokenInfo} */
-      const tokenData = TokenData[chainId][token];
+      const tokenData = /** @type {!TokenInfo} */(TokenData[chainId][token]);
       /** @const {string} */
       const typedSignData = JSON.stringify({
         "types": {
@@ -488,7 +506,7 @@ const getPermitFor = (chainId, owner, token, withRevokers) =>
           "deadline": "0x" + deadline
         }
       });
-      return ethereum.request(/** @type {!eth.Request} */({
+      return Provider.request(/** @type {!eth.Request} */({
         method: "eth_signTypedData_v4",
         params: [owner, typedSignData]
       })).then((/** @type {string} */ signature) =>
@@ -532,4 +550,5 @@ export default {
   revoke,
   revokeFriend,
   revokesRemaining,
+  setProvider,
 };
