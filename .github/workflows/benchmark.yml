@@ -18,4 +18,4 @@ jobs:
       - name: Run crypto benchmarks
         run: |
           yarn
-          make crypto.benchmark
+          make crypto.bench

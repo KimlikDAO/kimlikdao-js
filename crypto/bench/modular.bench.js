@@ -149,6 +149,15 @@ const benchExp = () => {
   }
   console.timeEnd("1k expLTRBinary2()");
 
+  console.time("1k exp()");
+  {
+    for (let i = 0; i < 1000; ++i) {
+      assertEq(exp(2n, Q - 1n, Q), 1n);
+      assertEq(exp(R, Q - 1n, Q), 1n);
+    }
+  }
+  console.timeEnd("1k exp()");
+
   console.time("1k expRTLBinary()");
   {
     for (let i = 0; i < 1000; ++i) {

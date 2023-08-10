@@ -74,5 +74,5 @@ build/crypto/bench/primes.bench.js: crypto/bench/primes.bench.js \
 	node $@
 	wc $@
 
-.PHONY: crypto.benchmark
-crypto.benchmark: $(addprefix build/, $(wildcard crypto/bench/*.bench.js))
+.PHONY: crypto.bench
+crypto.bench: $(addprefix build/, $(wildcard crypto/bench/*.bench.js))

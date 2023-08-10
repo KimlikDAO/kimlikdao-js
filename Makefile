@@ -1,8 +1,8 @@
 .PHONY: test
 test: api.test crypto.test did.test ethereum.test node.test util.test
 
-.PHONY: benchmark
-benchmark: crypto.benchmark
+.PHONY: bench
+bench: crypto.bench
 
 include api/test/Makefile
 include crypto/bench/Makefile

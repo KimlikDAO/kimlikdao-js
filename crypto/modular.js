@@ -41,6 +41,7 @@ const exp = (a, x, M) => {
   /** @const {string} */
   const xBits = x.toString(2);
   if (xBits.charCodeAt(0) == 48) return 1n;
+  a %= M;
   /** @type {!bigint} */
   let r = a;
   for (let i = 1; i < xBits.length; ++i) {
