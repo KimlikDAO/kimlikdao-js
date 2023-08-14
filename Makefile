@@ -1,10 +1,11 @@
 .PHONY: test
-test: api.test crypto.test did.test ethereum.test node.test util.test
+test: api.test crosschain.test crypto.test did.test ethereum.test node.test util.test
 
 .PHONY: bench
 bench: crypto.bench
 
 include api/test/Makefile
+include crosschain/test/Makefile
 include crypto/bench/Makefile
 include crypto/test/Makefile
 include did/test/Makefile

@@ -1,4 +1,5 @@
-import { decrypt, encrypt } from "../ethereum/unlockable";
+import { Signer } from "../crosschain/signer";
+import { decrypt, encrypt } from "../crosschain/unlockable";
 import { hash, signSection } from "./section";
 import { verify } from "./verifiableID";
 
@@ -110,11 +111,11 @@ const selectEncryptedSections = (encryptedSectionsKeys, sectionKeys) => {
 /**
  * @param {!eth.ERC721Unlockable} nft
  * @param {!Array<string>} sectionNames
- * @param {!eth.Provider} provider
+ * @param {!Signer} signer
  * @param {string} address
  * @return {!Promise<!did.DecryptedSections>}
  */
-const fromUnlockableNFT = async (nft, sectionNames, provider, address) => {
+const fromUnlockableNFT = async (nft, sectionNames, signer, address) => {
   /** @const {!Array<string>} */
   const encryptedSectionsKeys = selectEncryptedSections(
     Object.keys(nft.unlockables),
@@ -133,7 +134,7 @@ const fromUnlockableNFT = async (nft, sectionNames, provider, address) => {
       nft.unlockables[encryptedSectionsKeys[i]]);
     delete encryptedSections.merkleRoot;
     /** @const {?string} */
-    const decryptedText = await decrypt(encryptedSections, provider, address);
+    const decryptedText = await decrypt(encryptedSections, signer, address);
     if (decryptedText)
       Object.assign(decryptedSections,
           /** @type {!did.DecryptedSections} */(JSON.parse(decryptedText)));
@@ -157,12 +158,12 @@ const SectionGroup = {};
  * @param {!eth.ERC721Metadata} metadata
  * @param {!did.DecryptedSections} decryptedSections
  * @param {!Array<!SectionGroup>} sectionGroups
- * @param {!eth.Provider} provider
+ * @param {!Signer} signer
  * @param {string} address
  * @return {!Promise<!eth.ERC721Unlockable>}
  */
-const toUnlockableNFT = async (metadata, decryptedSections, sectionGroups, provider, address) => {
-  /** @const {!Object<string, !eth.Unlockable>} */
+const toUnlockableNFT = async (metadata, decryptedSections, sectionGroups, signer, address) => {
+  /** @const {!Object<string, !crosschain.Unlockable>} */
   const unlockables = {};
   for (let i = 0; i < sectionGroups.length; ++i) {
     /** @const {!Promise<void>} */
@@ -176,7 +177,7 @@ const toUnlockableNFT = async (metadata, decryptedSections, sectionGroups, provi
     unlockables[unlockableKey] = await encrypt(JSON.stringify(sections),
       sectionGroups[i].userPrompt,
       "promptsign-sha256-aes-ctr",
-      provider,
+      signer,
       address
     );
     if (i < sectionGroups.length - 1)
@@ -301,11 +302,12 @@ const verifyProofs = (decryptedSections, verifyKeys) => {
 }
 
 export {
+  SectionGroup,
   combineMultiple,
   fromUnlockableNFT,
-  SectionGroup,
   selectEncryptedSections,
   sign,
   toUnlockableNFT,
-  verifyProofs,
+  verifyProofs
 };
+

@@ -1,7 +1,7 @@
-build/crypto/test/secp256k1.compiled-test.js: crypto/test/secp256k1.compiled-test.js crypto/secp256k1.js \
-                                              crypto/modular.js \
-                                              testing/assert.js testing/nodejs.js testing/nodejs.d.js \
-                                              util/çevir.js
+build/crypto/test/secp256k1.compiled-test.js: crypto/test/secp256k1.compiled-test.js \
+    crypto/secp256k1.js crypto/modular.js \
+    testing/assert.js testing/nodejs.js testing/nodejs.d.js \
+    util/çevir.js
 	mkdir -p $(dir $@)
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
                              --jscomp_error=strictCheckTypes \
@@ -18,11 +18,11 @@ build/crypto/test/secp256k1.compiled-test.js: crypto/test/secp256k1.compiled-tes
 	wc $@
 
 build/crypto/test/integration.compiled-test.js: crypto/test/integration.compiled-test.js \
-                                                crypto/secp256k1.js crypto/sha3.js crypto/modular.js \
-                                                ethereum/evm.js ethereum/*.d.js \
-                                                testing/assert.js testing/nodejs.js testing/nodejs.d.js \
-                                                testing/vm.js \
-                                                util/çevir.js
+    crypto/secp256k1.js crypto/sha3.js crypto/modular.js \
+    ethereum/evm.js \
+    testing/assert.js testing/nodejs.js testing/nodejs.d.js \
+    testing/vm.js \
+    util/çevir.js
 	mkdir -p $(dir $@)
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
                              --jscomp_error=strictCheckTypes \
@@ -39,9 +39,9 @@ build/crypto/test/integration.compiled-test.js: crypto/test/integration.compiled
 	wc $@
 
 build/crypto/test/modular.compiled-test.js: crypto/test/modular.compiled-test.js \
-                                            crypto/modular.js \
-                                            testing/assert.js testing/nodejs.d.js \
-                                            util/çevir.js
+    crypto/modular.js \
+    testing/assert.js testing/nodejs.d.js \
+    util/çevir.js
 	mkdir -p $(dir $@)
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
                              --jscomp_error=strictCheckTypes \
@@ -58,9 +58,9 @@ build/crypto/test/modular.compiled-test.js: crypto/test/modular.compiled-test.js
 	wc $@
 
 build/crypto/test/sha3.compiled-test.js: crypto/test/sha3.compiled-test.js crypto/test/sha3_*.js \
-                                         crypto/sha3.js \
-                                         testing/assert.js testing/nodejs.d.js \
-                                         util/çevir.js
+    crypto/sha3.js \
+    testing/assert.js testing/nodejs.d.js \
+    util/çevir.js
 	mkdir -p $(dir $@)
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
                              --jscomp_error=strictCheckTypes \

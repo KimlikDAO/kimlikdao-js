@@ -20,7 +20,7 @@ did.DecryptedSections;
  *
  * @struct
  * @interface
- * @extends {eth.Unlockable}
+ * @extends {crosschain.Unlockable}
  */
 did.EncryptedSections = function () { }
 

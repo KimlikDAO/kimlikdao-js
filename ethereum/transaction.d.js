@@ -5,9 +5,6 @@
  * @externs
  */
 
-/** @const */
-var eth;
-
 /**
  * Represents an ethereum transaction, to be sent to a provider.
  *

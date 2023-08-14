@@ -1,10 +1,11 @@
 /**
+ * @param {!eth.Provider} provider
  * @param {string} txHash
  * @param {function()} then
  */
-const whenMined = (txHash, then) => {
+const whenMined = (provider, txHash, then) => {
   const interval = setInterval(() =>
-    ethereum.request(/** @type {!eth.Request} */({
+    provider.request(/** @type {!eth.Request} */({
       method: "eth_getTransactionReceipt",
       params: [txHash]
     }))

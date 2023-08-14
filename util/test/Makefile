@@ -16,4 +16,4 @@ build/util/test/çevir.compiled-test.js: util/test/çevir.compiled-test.js \
 	wc $@
 
 .PHONY: util.test
-did.test: $(addprefix build/, $(wildcard util/test/*.compiled-test.js))
+util.test: $(addprefix build/, $(wildcard util/test/*.compiled-test.js))

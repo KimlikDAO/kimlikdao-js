@@ -1,6 +1,6 @@
-import { decrypt, encrypt } from "/ethereum/unlockable";
+import { decrypt, encrypt } from "/crosschain/unlockable";
 import { assertEq, assertStats } from "/testing/assert";
-import vm, { FakeProvider } from "/testing/vm";
+import { FakeSigner } from "/testing/crosschain";
 
 /**
  * @return {!Promise<boolean>}
@@ -8,19 +8,19 @@ import vm, { FakeProvider } from "/testing/vm";
 const testEncryptDecryptSmall = () => {
   /** @const {!bigint} */
   const privKey = 0x1337ACCn;
-  /** @const {!FakeProvider} */
-  const provider = new FakeProvider(privKey);
+  /** @const {!FakeSigner} */
+  const signer = new FakeSigner(privKey);
   /** @const {string} */
   const text = "Text to encrypt";
   return encrypt(
     text,
     "Sign to encrypt this text",
     "promptsign-sha256-aes-ctr",
-    provider,
-    vm.addr(privKey)
+    signer,
+    signer.getAddress()
   )
     .then((unlockable) =>
-      decrypt(unlockable, provider, provider.getAddress()))
+      decrypt(unlockable, signer, signer.getAddress()))
     .then((/** @type {string} */ decrypted) => assertEq(decrypted, text));
 }
 
@@ -30,19 +30,19 @@ const testEncryptDecryptSmall = () => {
 const testEncryptDecryptLarge = () => {
   /** @const {!bigint} */
   const privKey = 0x1337ADD3n;
-  /** @const {!FakeProvider} */
-  const provider = new FakeProvider(privKey);
+  /** @const {!FakeSigner} */
+  const signer = new FakeSigner(privKey);
   /** @const {string} */
   const text = "Text to encrypt".repeat(1000);
   return encrypt(
     text,
     "Sign to encrypt this long ah text",
     "promptsign-sha256-aes-ctr",
-    provider,
-    vm.addr(privKey)
+    signer,
+    signer.getAddress()
   )
     .then((unlockable) =>
-      decrypt(unlockable, provider, provider.getAddress()))
+      decrypt(unlockable, signer, signer.getAddress()))
     .then((/** @type {string} */ decrypted) => assertEq(decrypted, text));
 }
 

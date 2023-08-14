@@ -45,7 +45,7 @@ const adlaGöster = (ad) => adla(ad).style.display = "";
  * @param {string} ad
  * @param {boolean} göster
  */
-const adlaGösterGizle = (ad, göster) => gösterGizle(adla(ad));
+const adlaGösterGizle = (ad, göster) => gösterGizle(adla(ad), göster);
 
 /**
  * @param {Element} buton Durdurulacak düğme.

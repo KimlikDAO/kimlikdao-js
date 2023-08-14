@@ -4,38 +4,19 @@
  * @author KimlikDAO
  */
 
-import { base64, base64ten, hex, hexten } from "../util/çevir";
+import { base64, base64ten, hexten } from "../util/çevir";
+import { Signer } from "./signer.js";
 
 /**
- * @param {!eth.Unlockable} unlockable
- * @param {!eth.Provider} provider
+ * @param {!crosschain.Unlockable} unlockable
+ * @param {!Signer} signer
  * @param {string} address
  * @return {!Promise<string>}
  */
-const decrypt = (unlockable, provider, address) => {
-  /** @const {!TextEncoder} */
-  const encoder = new TextEncoder();
+const decrypt = (unlockable, signer, address) => {
   switch (unlockable.version) {
-    case "x25519-xsalsa20-poly1305": {
-      delete unlockable.userPrompt;
-      /** @const {string} */
-      const hexEncoded = "0x" +
-        hex(encoder.encode(JSON.stringify(unlockable)));
-      return provider.request(/** @type {!eth.Request} */({
-        method: "eth_decrypt",
-        params: [hexEncoded, address]
-      }))
-        .then((/** @type {string} */ decrypted) =>
-          decrypted.slice(43, decrypted.indexOf("\0")));
-    }
     case "promptsign-sha256-aes-ctr": {
-      /** @const {string} */
-      const hexPrompt = "0x" + hex(encoder.encode(
-        /** @type {string} */(unlockable.userPrompt)));
-      return provider.request(/** @type {!eth.Request} */({
-        method: "personal_sign",
-        params: [hexPrompt, address]
-      }))
+      return signer.signMessage(unlockable.userPrompt, address)
         .then((/** @type {string} */ signature) =>
           crypto.subtle.digest("SHA-256", hexten(signature.slice(2))))
         .then((/** @type {!ArrayBuffer} */ hash) =>
@@ -62,16 +43,16 @@ const decrypt = (unlockable, provider, address) => {
  * @param {string} text
  * @param {string} userPrompt
  * @param {string} version
- * @param {!eth.Provider} provider
+ * @param {!Signer} signer
  * @param {string} address
- * @return {!Promise<!eth.Unlockable>}
+ * @return {!Promise<!crosschain.Unlockable>}
  */
-const encrypt = (text, userPrompt, version, provider, address) => {
+const encrypt = (text, userPrompt, version, signer, address) => {
   switch (version) {
     case "promptsign-sha256-aes-ctr": {
       /**
        * @param {string} signature
-       * @return {!Promise<!eth.Unlockable>}
+       * @return {!Promise<!crosschain.Unlockable>}
        */
       const encryptWithSignature = (signature) =>
         crypto.subtle.digest("SHA-256", hexten(signature.slice(2)))
@@ -86,7 +67,7 @@ const encrypt = (text, userPrompt, version, provider, address) => {
               key,
               padded
             ))
-          .then((/** @type {!ArrayBuffer} */ encrypted) => /** @type {!eth.Unlockable} */({
+          .then((/** @type {!ArrayBuffer} */ encrypted) => /** @type {!crosschain.Unlockable} */({
             version: "promptsign-sha256-aes-ctr",
             nonce: base64(counter),
             ciphertext: base64(new Uint8Array(encrypted)),
@@ -102,26 +83,15 @@ const encrypt = (text, userPrompt, version, provider, address) => {
       padded.set(encoded);
       /** @const {!Uint8Array} */
       const counter = /** @type {!Uint8Array} */(crypto.getRandomValues(new Uint8Array(16)));
-      /**
-       * We hex encode the user prompt as the spec requires it.
-       * https://docs.metamask.io/guide/signing-data.html#personal-sign
-       * @const {string}
-       */
-      const hexPrompt = "0x" + hex(encoder.encode(userPrompt));
 
       /** @return {!Promise<string>} */
-      const requestSignature = () => provider.request(/** @type {!eth.Request} */({
-        method: "personal_sign",
-        params: [hexPrompt, address]
-      }));
+      const requestSignature = () => signer.signMessage(userPrompt, address);
 
       return requestSignature()
         .then(encryptWithSignature)
-        .catch((error) => /** @type {!eth.ProviderError} */(error).code == 4001
-          ? requestSignature().then((signature) => new Promise(
-            (/** @type {function(!Promise<!eth.Unlockable>):void} */ resolve) =>
-              setTimeout(() => resolve(encryptWithSignature(signature)), 200)))
-          : Promise.reject(error)
+        .catch(() => requestSignature().then((signature) => new Promise(
+          (/** @type {function(!Promise<!crosschain.Unlockable>):void} */ resolve) =>
+            setTimeout(() => resolve(encryptWithSignature(signature)), 200)))
         );
     }
   }

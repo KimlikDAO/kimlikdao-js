@@ -6,7 +6,8 @@ import {
 } from "/did/decryptedSections";
 import { commit, recoverSectionSigners } from "/did/section";
 import { assert, assertElemEq, assertEq, assertStats } from "/testing/assert";
-import vm, { FakeProvider } from "/testing/vm";
+import { FakeSigner, Signer } from "/testing/crosschain";
+import vm from "/testing/vm";
 import { base64 } from "/util/çevir";
 
 const testSelectEncryptedSections = () => {
@@ -255,7 +256,8 @@ const testCombineMultipleInsufficient = () => {
  * @return {!Promise<void>}
  */
 const testToNFTfromNFT = () => {
-  const provider = new FakeProvider(1337n);
+  /** @const {!Signer} */
+  const signer = new FakeSigner(1337n);
 
   return toUnlockableNFT(/** @type {!eth.ERC721Metadata} */({
     name: "Halıcıoğlu NFT",
@@ -269,10 +271,10 @@ const testToNFTfromNFT = () => {
     userPrompt: "Halınızı açın",
     sectionNames: ["contactInfo"]
   })],
-    provider,
+    signer,
     vm.addr(1337n)
   ).then((/** @type {!eth.ERC721Unlockable} */ nft) => fromUnlockableNFT(
-    nft, ["contactInfo"], provider, vm.addr(1337n))
+    nft, ["contactInfo"], signer, vm.addr(1337n))
   ).then((/** @type {!did.DecryptedSections} */ decryptedSections) => {
     assert("contactInfo" in decryptedSections);
     /** @const {!did.ContactInfo} */
@@ -287,7 +289,11 @@ const testToNFTfromNFT = () => {
  * @return {!Promise<void>}
  */
 const testToNFTfromNFTMultiple = () => {
-  const provider = new FakeProvider(1338n);
+  /**
+   * @type {!Signer}
+   * @const
+   */
+  const signer = new FakeSigner(1338n);
 
   return toUnlockableNFT(/** @type {!eth.ERC721Metadata} */({
     name: "Halıcıoğlu NFT",
@@ -305,10 +311,10 @@ const testToNFTfromNFTMultiple = () => {
     userPrompt: "Halınızı açın",
     sectionNames: ["contactInfo", "personInfo"]
   })],
-    provider,
+    signer,
     vm.addr(1338n)
   ).then((/** @type {!eth.ERC721Unlockable} */ nft) => fromUnlockableNFT(
-    nft, ["contactInfo", "personInfo"], provider, vm.addr(1338n))
+    nft, ["contactInfo", "personInfo"], signer, vm.addr(1338n))
   ).then((/** @type {!did.DecryptedSections} */ decryptedSections) => {
     assertElemEq(Object.keys(decryptedSections), ["contactInfo", "personInfo"]);
     /** @const {!did.ContactInfo} */
