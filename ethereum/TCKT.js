@@ -178,20 +178,21 @@ const setProvider = (provider) => Provider = provider;
 /**
  * Asks the connected wallet to track the TCKT contract (as an NFT).
  *
- * Sends a `wallet_watchAsset` request to the connected wallet. Currently, no
- * wallet supports adding an NFT this way, so we disable this.
+ * Sends a `wallet_watchAsset` request to the connected wallet.
+ *
+ * @param {string} tokenId
  */
-const addToWallet = () => Provider.request(/** @type {!eth.Request} */({
+const addToWallet = (tokenId) => Provider.request(/** @type {!eth.Request} */({
   method: 'wallet_watchAsset',
   params: /** @type {!eth.WatchAssetParam} */({
     type: 'ERC721',
     options: {
       address: TCKT_ADDR,
-      symbol: 'TCKT',
-      tokenId: "0x0",
+      symbol: "TCKT",
+      tokenId,
     }
   }),
-}))
+}));
 
 /**
  * @param {string} from

@@ -109,14 +109,13 @@ eth.WatchAssetParam = function () { }
 /** @type {string} */
 eth.WatchAssetParam.prototype.type;
 
-/** @struct */
+/**
+ * @type {{
+ *   address: string,
+ *   symbol: string,
+ *   decimals: number,
+ *   image: string,
+ *   tokenId: string
+ * }}
+ */
 eth.WatchAssetParam.prototype.options;
-
-/** @type {string} */
-eth.WatchAssetParam.prototype.options.address;
-
-/** @type {string} */
-eth.WatchAssetParam.prototype.options.symbol;
-
-/** @type {string} */
-eth.WatchAssetParam.prototype.options.decimals;
