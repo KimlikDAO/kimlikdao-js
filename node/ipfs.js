@@ -126,16 +126,15 @@ const cidBytetanOku = (nodeUrl, cidByte) => {
 /**
  * @param {string} nodeUrl
  * @param {string} veri IPFS'e yazılacak veri.
+ * @param {string} veriŞekli Yazılacak verinin şekli, mimetype standardında
  * @return {!Promise<!Uint8Array>} onaylanmış IPFS cidByte.
  */
-const yaz = (nodeUrl, veri) => {
+const yaz = (nodeUrl, veri, veriŞekli) => {
   /** @const {!Uint8Array} */
   const encoded = new TextEncoder().encode(veri);
   /** @const {!FormData} */
   const formData = new FormData()
-  formData.set("blob", new Blob([encoded], {
-    type: "application/json"
-  }));
+  formData.set("blob", new Blob([encoded], { type: veriŞekli }));
   /** @const {!Promise<string>} */
   const gelenSöz = fetch(nodeUrl + "/api/v0/add", {
     method: "POST",
@@ -145,12 +144,10 @@ const yaz = (nodeUrl, veri) => {
     .then((/** @type {!node.ipfs.AddResult} */ res) => res.Hash)
 
   return Promise.all([hash(encoded), gelenSöz])
-    .then(([/** !Uint8Array */ yerel, /** string */ gelen]) => {
-      if (CID(yerel) != gelen)
-        Promise.reject("IPFS'ten farklı sonuç döndü."
-          + ` Yerel: ${CID(yerel)}, Gelen: ${gelen}`);
-      return yerel;
-    })
+    .then(([/** !Uint8Array */ yerel, /** string */ gelen]) => CID(yerel) == gelen
+      ? yerel
+      : Promise.reject(`IPFS'ten farklı sonuç döndü. Yerel: ${CID(yerel)}, Gelen: ${gelen}`)
+    )
 }
 
 export default {
