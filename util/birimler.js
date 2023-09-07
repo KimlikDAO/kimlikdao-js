@@ -214,9 +214,9 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
     recongnizeSelfClosing: true
   });
 
-  parser.end(readFileSync(seçimler.kök + birimAdı, "utf8"));
   if (existsSync(seçimler.kök + birimAdı.slice(0, -4) + "css"))
     cssler.push(birimAdı.slice(0, -4) + "css");
+  parser.end(readFileSync(seçimler.kök + birimAdı, "utf8"));
   return {
     html,
     cssler
@@ -232,7 +232,7 @@ const sayfaOku = (sayfaAdı, seçimler) => {
   const { html, cssler } = birimOku(sayfaAdı, seçimler, {});
   if (seçimler.dev) {
     /** @const {string} */
-    const linkler = cssler
+    const linkler = cssler.slice(1)
       .map((css) => `  <link href="${css}" rel="stylesheet" type="text/css" />\n`)
       .join('');
     return html.replace("</head>", linkler + "</head>");
