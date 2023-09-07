@@ -7,6 +7,8 @@ kimlikdao-js, KimlikDAO projeleri için gerekli olan javascript modüllerinin tu
 
 `cloudflare`: Cloudflare Workers platformu ile ilgili tanımlar
 
+`crosschain`: Tüm blokzincirlerde geçerli tanımlar ve yapılar
+
 `crypto`: Kriptografik fonksiyonlar ve kitaplıklar
 
 `did`: KimlikDAO'nun DID ve TCKT tanımları

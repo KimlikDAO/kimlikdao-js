@@ -1,5 +1,5 @@
-import { assert, describe, it } from 'vitest';
-import { hex, hexten } from '../çevir';
+import { assert, describe, it } from "vitest";
+import { hex, hexten } from "../çevir";
 
 describe('çevir tests', () => {
   it('should convert binary to hex', () => {
