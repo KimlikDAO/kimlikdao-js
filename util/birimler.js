@@ -91,6 +91,8 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
         if (!seçimler.dev) return;
       }
 
+      if (değiştirDerinliği > 0) return;
+
       for (const /** string */ nitelik in nitelikler) {
         if (nitelik.startsWith("data-remove-")) {
           if (!seçimler.dev)

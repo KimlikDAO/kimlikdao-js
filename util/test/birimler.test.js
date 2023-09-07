@@ -52,6 +52,22 @@ describe("sayfaOku tests", () => {
     assert.include(sayfaEN, '<path d="M1,2L1,2"/>');
     assert.notInclude(sayfaEN, "</path>");
   })
+
+
+  it("should perform English substitution", () => {
+    /** @const {string} */
+    const sayfaEN = sayfaOku("ana/sayfa.html", { dil: "en", dev: false, kök: "util/test/" });
+    /** @const {string} */
+    const sayfaTR = sayfaOku("ana/sayfa.html", { dil: "tr", dev: false, kök: "util/test/" })
+
+    assert.include(sayfaEN, "REPLACED_TEXT");
+    assert.notInclude(sayfaEN, "<test1>");
+    assert.notInclude(sayfaEN, "</test1>");
+
+    assert.include(sayfaEN, "REPLACED_2NDTEXT");
+    assert.notInclude(sayfaEN, "<test2>");
+    assert.notInclude(sayfaEN, "</test2>");
+  })
 });
 
 describe("birimOku tests", () => {
