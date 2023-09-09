@@ -4,6 +4,7 @@ for (let /** number */ i = 0; i < 256; ++i)
   Uint8denHexe[i] = i.toString(16).padStart(2, "0");
 
 /**
+ * @noinline
  * @param {!Uint8Array} buff hex'e çevrilecek Uint8Array.
  * @return {string} hex temsil eden dizi.
  */

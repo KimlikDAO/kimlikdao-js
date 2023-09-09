@@ -69,7 +69,7 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
   let sırada;
 
   /** @const {!Object<string, string>} */
-  const değerler = {};
+  const değerler = Object.assign({}, seçimler);
   for (const nitelik in anaNitelikler)
     if (nitelik.startsWith("data-")) {
       değerler[nitelik.slice(5)] = anaNitelikler[nitelik];
@@ -163,6 +163,21 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
           değiştirMetni = nitelikler["data-en"];
         }
         delete nitelikler["data-en"];
+      }
+
+      if ("data-generate" in nitelikler) {
+        if (değiştirDerinliği) {
+          console.error("İç içe değiştirme mümkün değil");
+          process.exit(HataKodu.NESTED_REPLACE);
+        }
+        const üretici = eval(readFileSync(seçimler.kök +
+          birimAdı.slice(0, -10) + nitelikler["data-generate"] + ".js", "utf8"));
+        const metin = üretici(değerler);
+        if (metin) {
+          değiştirDerinliği = derinlik;
+          değiştirMetni = metin;
+        }
+        delete nitelikler["data-generate"];
       }
 
       if ("data-phantom" in nitelikler) {

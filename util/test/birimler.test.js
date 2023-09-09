@@ -83,4 +83,10 @@ describe("birimOku tests", () => {
     assert.notInclude(html, "</stop>");
     assert.notInclude(html, "</path>");
   })
+
+  it("should perform parametric content generation", () => {
+    const { html, _ } = birimOku("birim/cüzdan/birim.html", { dil: "tr", dev: false, kök: "util/test/" }, {});
+
+    assert.include(html, "<div>354224848179261915075</div>");
+  })
 })
