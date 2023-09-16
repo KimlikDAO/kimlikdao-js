@@ -1,5 +1,5 @@
 import { evaluate } from "/crypto/wesolowski";
-import { assertEq, assertStats } from "/testing/assert";
+import { assertEq } from "/testing/assert";
 
 /** @const {!Uint32Array} */
 const buff = Uint32Array.from("00000001".repeat(5));
@@ -18,5 +18,3 @@ const { y, π, l } = evaluate(gArr, 1 << 20);
 console.timeEnd("evaluate()");
 
 assertEq(y.length, 32);
-
-assertStats();

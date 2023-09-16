@@ -21,7 +21,12 @@ const Seçimler = {};
 
 /** @const {!Object<string, boolean>} */
 const KapalıTagler = {
+  circle: true,
+  ellipse: true,
+  feblend: true,
+  fegaussianblur: true,
   path: true,
+  rect: true,
   stop: true,
   use: true,
 };

@@ -1,5 +1,5 @@
 import { commit, hash, recoverSectionSigners, signSection } from "/did/section";
-import { assertElemEq, assertEq, assertStats } from "/testing/assert";
+import { assertElemEq, assertEq } from "/testing/assert";
 import vm from "/testing/vm";
 import { base64, hex } from "/util/çevir";
 
@@ -76,5 +76,3 @@ const testSignSection = () => {
 
 testHash();
 testSignSection();
-
-assertStats();

@@ -1,5 +1,5 @@
 import { exp, exp2, expTimesExp } from "/crypto/modular";
-import { assertEq, assertStats } from "/testing/assert";
+import { assertEq } from "/testing/assert";
 
 /**
  * @param {!bigint} a
@@ -328,5 +328,3 @@ testExpTimesExpLocal();
 benchExpTimesExp();
 
 benchExp2();
-
-assertStats();

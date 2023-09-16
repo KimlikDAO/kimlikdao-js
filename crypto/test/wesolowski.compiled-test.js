@@ -1,6 +1,6 @@
 import { keccak256Uint32 } from "/crypto/sha3";
 import { evaluate, generateChallenge, reconstructY } from "/crypto/wesolowski";
-import { assert, assertArrayEq, assertStats } from "/testing/assert";
+import { assert, assertArrayEq } from "/testing/assert";
 
 const testEvaluateReconstruct = () => {
   /** @const {number} */
@@ -33,5 +33,3 @@ const testGenerateChallenge = () => {
 
 testEvaluateReconstruct();
 testGenerateChallenge();
-
-assertStats();

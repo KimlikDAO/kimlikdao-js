@@ -1,5 +1,5 @@
 import evm from "/ethereum/evm";
-import { assertEq, assertStats } from "/testing/assert";
+import { assertEq } from "/testing/assert";
 import vm from "/testing/vm";
 
 const testAddr = () => {
@@ -41,5 +41,3 @@ const testSignRecover = () => {
 testAddr();
 testToCompactSignature();
 testSignRecover();
-
-assertStats();

@@ -1,7 +1,7 @@
 import { keccak256 as keccak256_orig } from "./sha3_orig";
 import { keccak256 as keccak256_prev } from "./sha3_prev";
 import { keccak256, keccak256Uint32 } from "/crypto/sha3";
-import { assertArrayEq, assertEq, assertStats } from "/testing/assert";
+import { assertArrayEq, assertEq } from "/testing/assert";
 import { hex } from "/util/çevir";
 
 const testKeccak256 = () => {
@@ -137,5 +137,3 @@ testKeccak256();
 compareKeccak256();
 testKeccak256Uint32();
 compareKeccak256Speed();
-
-assertStats();

@@ -1,9 +1,9 @@
 
 import ipfs from "/node/ipfs";
-import { assertEq, assertStats } from "/testing/assert";
+import { assertEq } from "/testing/assert";
 
 /**
- * @return {!Promise<void>}
+ * @return {!Promise<*>}
  */
 const testCID = () => {
   /** @const {!TextEncoder} */
@@ -22,7 +22,7 @@ const testCID = () => {
     ipfs.hash(encoder.encode("a".repeat(31337)))
       .then((/** @type {!Uint8Array} */ hash) =>
         assertEq(ipfs.CID(hash), "Qmbq6rxwg5uKYAEhdFvPnBqzbJWAPfhB4LwF4yGamvzWSR")),
-  ]).then((_) => {});
+  ]);
 }
 
 /** @const {string} */
@@ -39,7 +39,5 @@ const testYazOku = () => {
     .then((/** string */ gelen) => assertEq(gelen, text));
 }
 
-Promise.all([
-  testCID(),
-  testYazOku(),
-]).then(assertStats);
+testCID();
+testYazOku();

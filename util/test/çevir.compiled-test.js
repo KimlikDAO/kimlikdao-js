@@ -1,5 +1,5 @@
 import { hex, hexten, uint8ArrayeHexten } from "/util/çevir";
-import { assertEq, assertArrayEq, assertStats } from "/testing/assert";
+import { assertEq, assertArrayEq } from "/testing/assert";
 import { uint32ArrayeHexten } from "../çevir";
 
 const testHex = () => {
@@ -43,5 +43,3 @@ testHex();
 testHexten();
 testUint8ArrayeHexten();
 testUint32ArrayeHexten();
-
-assertStats();

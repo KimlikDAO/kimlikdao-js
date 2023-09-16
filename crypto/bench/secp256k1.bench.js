@@ -1,5 +1,5 @@
 import { equal, G, N, O, Point } from "/crypto/secp256k1";
-import { assert, assertStats } from "/testing/assert";
+import { assert } from "/testing/assert";
 
 /**
  * @param {!Point} P
@@ -70,5 +70,3 @@ const benchMultiplyMiddle = () => {
 
 benchMultiplyBeginEnd();
 benchMultiplyMiddle();
-
-assertStats();

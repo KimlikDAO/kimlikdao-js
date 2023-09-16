@@ -1,5 +1,5 @@
 import evm from "/ethereum/evm";
-import { assertEq, assertStats } from "/testing/assert";
+import { assertEq } from "/testing/assert";
 
 assertEq(evm.signerAddress(
   evm.personalDigest("140e575468d2a8dcbcc437e0f12e37606491f1621fe71239b99b793cd590b7f4"),
@@ -56,5 +56,3 @@ assertEq(evm.signerAddress(
     "728c381e23784ae164794f24bee158b569b20d17200315bcfacc7b6c0daae0601c")),
   "0x79883d9acbc4abac6d2d216693f66fcc5a0bcbc1"
 );
-
-assertStats();

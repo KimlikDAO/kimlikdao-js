@@ -1,5 +1,5 @@
 import { getNonsmooth, millerRabinBase2, OddPrimes } from "/crypto/primes";
-import { assert, assertEq, assertStats } from "/testing/assert";
+import { assert, assertEq } from "/testing/assert";
 
 const testMillerRabin = () => {
   assertEq(millerRabinBase2(37n, 9n, 2,), true);
@@ -34,5 +34,3 @@ const testSieve = () => {
 testMillerRabin();
 testGetNonsmooth();
 testSieve();
-
-assertStats();

@@ -1,5 +1,5 @@
 import { decrypt, encrypt } from "/crosschain/unlockable";
-import { assertEq, assertStats } from "/testing/assert";
+import { assertEq } from "/testing/assert";
 import { FakeSigner } from "/testing/crosschain";
 
 /**
@@ -46,8 +46,5 @@ const testEncryptDecryptLarge = () => {
     .then((/** @type {string} */ decrypted) => assertEq(decrypted, text));
 }
 
-Promise.all([
-  testEncryptDecryptSmall(),
-  testEncryptDecryptLarge(),
-])
-  .then(assertStats);
+testEncryptDecryptSmall()
+testEncryptDecryptLarge()

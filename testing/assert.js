@@ -92,10 +92,11 @@ const assertStats = () => {
   process.exit(FalseAsserts);
 }
 
+process.on("exit", assertStats);
+
 export {
   assert,
   assertArrayEq,
   assertElemEq,
   assertEq,
-  assertStats,
 };

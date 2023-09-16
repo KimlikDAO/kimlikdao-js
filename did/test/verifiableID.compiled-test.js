@@ -1,5 +1,5 @@
 import { generate, prepareGenerateKey, verify } from "/did/verifiableID";
-import { assert, assertStats } from "/testing/assert";
+import { assert } from "/testing/assert";
 import { base64 } from "/util/çevir";
 
 /**
@@ -64,8 +64,6 @@ const testGenerateVerify2 = () => {
     .then(assert);
 }
 
-Promise.all([
-  generateKeyPair(),
-  testGenerateVerify1(),
-  testGenerateVerify2(),
-]).then(assertStats);
+generateKeyPair();
+testGenerateVerify1();
+testGenerateVerify2();

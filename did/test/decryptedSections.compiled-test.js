@@ -5,7 +5,7 @@ import {
   toUnlockableNFT
 } from "/did/decryptedSections";
 import { commit, recoverSectionSigners } from "/did/section";
-import { assert, assertElemEq, assertEq, assertStats } from "/testing/assert";
+import { assert, assertElemEq, assertEq } from "/testing/assert";
 import { FakeSigner, Signer } from "/testing/crosschain";
 import vm from "/testing/vm";
 import { base64 } from "/util/çevir";
@@ -328,14 +328,9 @@ const testToNFTfromNFTMultiple = () => {
   });
 }
 
-Promise.all([
-  testToNFTfromNFT(),
-  testToNFTfromNFTMultiple(),
-]).then(() => {
-  testSelectEncryptedSections();
-  testCombineMultiple();
-  testCombineMultipleConflicting();
-  testCombineMultipleInsufficient();
-
-  assertStats();
-});
+testToNFTfromNFT();
+testToNFTfromNFTMultiple();
+testSelectEncryptedSections();
+testCombineMultiple();
+testCombineMultipleConflicting();
+testCombineMultipleInsufficient();

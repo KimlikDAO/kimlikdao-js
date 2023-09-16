@@ -1,6 +1,6 @@
 import jsonrpc from "/api/jsonrpc";
 import evm from "/ethereum/evm";
-import { assertEq, assertStats } from "/testing/assert";
+import { assertEq } from "/testing/assert";
 
 /** @const {string} */
 const OLD_TCKO_ADDR = "0xb97bf95b4f3110285727b70da5a7465bfd2098ca";
@@ -28,6 +28,4 @@ jsonrpc.callMulti("https://api.avax.network/ext/bc/C/rpc", "eth_call", [
   assertEq(parseInt(res[1].slice(-12), 16), 100_000_000 * MILLION);
   assertEq(parseInt(res[2].slice(-4), 16), 6);
   assertEq(parseInt(res[3].slice(-12), 16), 20_000_000 * MILLION);
-
-  assertStats();
 });

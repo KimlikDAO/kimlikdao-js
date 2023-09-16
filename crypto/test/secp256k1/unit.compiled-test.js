@@ -1,5 +1,5 @@
 import { equal, G, N, O, recoverSigner, sign, verify } from "/crypto/secp256k1";
-import { assert, assertStats } from "/testing/assert";
+import { assert } from "/testing/assert";
 
 const testCopy = () => {
   const P = G.copy();
@@ -148,4 +148,3 @@ testDouble();
 testMultiply();
 testSignVerify();
 testSignRecover();
-assertStats();
