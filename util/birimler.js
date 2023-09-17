@@ -175,8 +175,10 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
           console.error("İç içe değiştirme mümkün değil");
           process.exit(HataKodu.NESTED_REPLACE);
         }
+        /** @const {number} */
+        const birimSonu = birimAdı.lastIndexOf("/");
         const üretici = eval(readFileSync(seçimler.kök +
-          birimAdı.slice(0, -10) + nitelikler["data-generate"] + ".js", "utf8"));
+          birimAdı.slice(0, birimSonu + 1) + nitelikler["data-generate"] + ".js", "utf8"));
         const metin = üretici(değerler);
         if (metin) {
           değiştirDerinliği = derinlik;
