@@ -24,7 +24,9 @@ const KapalıTagler = {
   circle: true,
   ellipse: true,
   feblend: true,
+  feBlend: true,
   fegaussianblur: true,
+  feGaussianBlur: true,
   path: true,
   rect: true,
   stop: true,
@@ -94,6 +96,11 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
       if ("data-remove" in nitelikler) {
         delete nitelikler["data-remove"];
         if (!seçimler.dev) return;
+      }
+      if ("data-remove-if" in nitelikler) {
+        const remove = değerler[nitelikler["data-remove-if"]]
+        delete nitelikler["data-remove-if"];
+        if (remove) return;
       }
 
       if (değiştirDerinliği > 0) return;
@@ -231,11 +238,12 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
     },
 
     onprocessinginstruction(ad, veri) {
-      if (ad == "!doctype")
+      if (ad.toLowerCase() == "!doctype")
         html += `<${veri}>`;
     }
   }, {
-    recongnizeSelfClosing: true
+    recongnizeSelfClosing: true,
+    lowerCaseTags: false,
   });
 
   if (existsSync(seçimler.kök + birimAdı.slice(0, -4) + "css"))
