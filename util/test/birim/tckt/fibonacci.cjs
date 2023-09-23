@@ -1,4 +1,4 @@
-(values) => {
+exports.üret = (values) => {
   let n = values.n;
   let a = 0n;
   let b = 1n;

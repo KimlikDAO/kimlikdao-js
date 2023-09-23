@@ -1,5 +1,8 @@
 import { existsSync, readFileSync } from "fs";
 import { Parser } from "htmlparser2";
+import { createRequire } from "module";
+
+const require = createRequire(process.cwd() + "/");
 
 /**
  * @enum {number}
@@ -85,6 +88,13 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
       delete anaNitelikler[nitelik];
     }
 
+  if (birimAdı.endsWith(".cjs")) {
+    const üreticiBirim = require("./" + seçimler.kök + birimAdı, "utf8");
+    return {
+      html: üreticiBirim.üret(değerler),
+      cssler: [],
+    };
+  }
   /** @const {!Parser} */
   const parser = new Parser({
     onopentag(ad, nitelikler, kapalı) {
@@ -184,16 +194,22 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
           console.error("İç içe değiştirme mümkün değil");
           process.exit(HataKodu.NESTED_REPLACE);
         }
-        /** @const {number} */
-        const birimSonu = birimAdı.lastIndexOf("/");
-        const üretici = eval(readFileSync(seçimler.kök +
-          birimAdı.slice(0, birimSonu + 1) + nitelikler["data-generate"] + ".js", "utf8"));
-        const metin = üretici(değerler);
-        if (metin) {
-          değiştirDerinliği = derinlik;
-          değiştirMetni = metin;
-        }
+        /** @const {string} */
+        const üreticiAdı =
+          `${birimAdı.slice(0, birimAdı.lastIndexOf("/"))}/${nitelikler["data-generate"]}.cjs`;
         delete nitelikler["data-generate"];
+        const {
+          html: üretilenHtml,
+          _
+        } = birimOku(üreticiAdı, değerler, nitelikler);
+        for (const nitelik in nitelikler)
+          if (nitelik.startsWith("data-"))
+            delete nitelikler[nitelik];
+
+        if (üretilenHtml) {
+          değiştirDerinliği = derinlik;
+          değiştirMetni = üretilenHtml;
+        }
       }
 
       if ("data-phantom" in nitelikler) {

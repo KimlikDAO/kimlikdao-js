@@ -88,5 +88,7 @@ describe("birimOku tests", () => {
     const { html, _ } = birimOku("birim/cüzdan/birim.html", { dil: "tr", dev: false, kök: "util/test/" }, {});
 
     assert.include(html, "<div>354224848179261915075</div>");
+    assert.include(html, "<div>201</div>");
+    assert.include(html, "<div>20003</div");
   })
 })
