@@ -36,6 +36,7 @@ const KapalıTagler = {
   rect: true,
   stop: true,
   use: true,
+  polygon: true,
 };
 
 /**
@@ -194,6 +195,8 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
           console.error("İç içe değiştirme mümkün değil");
           process.exit(HataKodu.NESTED_REPLACE);
         }
+        /** @const {boolean} */
+        const phantom = "data-phantom" in nitelikler;
         /** @const {string} */
         const üreticiAdı =
           `${birimAdı.slice(0, birimAdı.lastIndexOf("/"))}/${nitelikler["data-generate"]}.cjs`;
@@ -202,9 +205,7 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
           html: üretilenHtml,
           _
         } = birimOku(üreticiAdı, değerler, nitelikler);
-        for (const nitelik in nitelikler)
-          if (nitelik.startsWith("data-"))
-            delete nitelikler[nitelik];
+        if (phantom) nitelikler["data-phantom"] = "";
 
         if (üretilenHtml) {
           değiştirDerinliği = derinlik;
@@ -213,8 +214,8 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
       }
 
       if ("data-phantom" in nitelikler) {
-        if (ad != "span") {
-          console.error("Span olmayan phantom!");
+        if (ad != "span" && ad != "g") {
+          console.error("Span veya g olmayan phantom!");
           process.exit(HataKodu.INCORRECT_PHANTOM);
         }
         phantom[derinlik] = true;
@@ -262,6 +263,7 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
   }, {
     recongnizeSelfClosing: true,
     lowerCaseTags: false,
+    lowerCaseAttributeNames: false,
   });
 
   if (existsSync(seçimler.kök + birimAdı.slice(0, -4) + "css"))
