@@ -148,10 +148,16 @@ const signerAddress = (digest, signature) => {
 }
 
 /**
- * @param {string} addr EVM adresi; 0x ile başlayabilir.
+ * @param {string} addr EVM adresi; 0x ile başlamalı.
+ * @return {string} 80 uzunluğunde hex kodlanmış adres
+ */
+const packedAddress = (addr) => addr.slice(2).toLowerCase();
+
+/**
+ * @param {string} addr EVM adresi; 0x ile başlamalı.
  * @return {string} calldata için hazırlanmış adres.
  */
-const address = (addr) => "0".repeat(24) + addr.slice(2).toLowerCase();
+const address = (addr) => "0".repeat(24) + packedAddress(addr)
 
 /**
  * @param {number|!bigint} sayı
@@ -187,6 +193,7 @@ export default {
   adresGeçerli,
   compactSignature,
   isZero,
+  packedAddress,
   personalDigest,
   signerAddress,
   uint160,

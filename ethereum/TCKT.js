@@ -198,26 +198,38 @@ const addToWallet = (tokenId) => Provider.request(/** @type {!eth.Request} */({
  * @param {string} from
  * @param {string} to
  * @param {string} value value in native token, encoded as a hex string.
- * @param {number} gas
+ * @param {number | undefined} gas
  * @param {string} calldata hex encoded calldata.
  * @return {!Promise<string>} transaction hash
  */
-const sendTransactionTo = (from, to, value, gas, calldata) =>
-  Provider.request(/** @type {!eth.Request} */({
+const sendTransactionTo = (from, to, value, gas, calldata) => {
+  /** @type {!eth.Transaction} */
+  let tx = /** @type {!eth.Transaction} */({
+    from,
+    to,
+    value: "0x" + value,
+    data: calldata
+  });
+  if (gas) tx.gas = "0x" + gas.toString(16);
+  return Provider.request(/** @type {!eth.Request} */({
     method: "eth_sendTransaction",
-    params: [/** @type {!eth.Transaction} */({
-      from,
-      to,
-      value: "0x" + value,
-      gas: "0x" + gas.toString(16),
-      data: calldata
-    })]
+    params: [tx]
   }));
+}
+
+/**
+ * @param {string} chainId
+ * @param {number} gasLimit
+ * @return {number | undefined}
+ */
+const maybeGasLimit = (chainId, gasLimit) => chainId == "0xa4b1"
+  ? undefined
+  : gasLimit;
 
 /**
  * @param {string} address
  * @param {string} value value in native tokens, encoded as a hex string.
- * @param {number} gas
+ * @param {number | undefined} gas
  * @param {string} calldata hex encoded calldata.
  * @return {!Promise<string>} transaction hash
  */
@@ -276,37 +288,43 @@ const revokesRemaining = (sender) =>
     .then((revokes) => parseInt(revokes.slice(-6), 16));
 
 /**
+ * @param {string} chainId
  * @param {string} address
  * @param {number} deltaWeight
  * @return {!Promise<*>}
  */
-const reduceRevokeThreshold = (address, deltaWeight) =>
-  sendTransaction(address, "0", 22_000, "0xab505b1c" + evm.uint256(deltaWeight));
+const reduceRevokeThreshold = (chainId, address, deltaWeight) =>
+  sendTransaction(address, "0", maybeGasLimit(chainId, 22_000),
+    "0xab505b1c" + evm.uint256(deltaWeight));
 
 /**
+ * @param {string} chainId
  * @param {string} address
  * @param {number} deltaWeight revoker weight.
  * @param {string} revokerAddress revoker address.
  * @return {!Promise<*>}
  */
-const addRevoker = (address, deltaWeight, revokerAddress) =>
-  sendTransaction(address, "0", 49_000, "0xf02b3297" +
-    evm.uint96(deltaWeight) + revokerAddress.slice(2).toLowerCase());
+const addRevoker = (chainId, address, deltaWeight, revokerAddress) =>
+  sendTransaction(address, "0", maybeGasLimit(chainId, 49_000),
+    "0xf02b3297" + evm.uint96(deltaWeight) + evm.packedAddress(revokerAddress));
 
 /**
+ * @param {string} chainId
  * @param {string} address
  * @return {!Promise<*>}
  */
-const revoke = (address) =>
-  sendTransaction(address, "0", 53_000, "0xb6549f75");
+const revoke = (chainId, address) =>
+  sendTransaction(address, "0", maybeGasLimit(chainId, 53_000), "0xb6549f75");
 
 /**
+ * @param {string} chainId
  * @param {string} address
  * @param {string} friend
  * @return {!Promise<*>}
  */
-const revokeFriend = (address, friend) =>
-  sendTransaction(address, "0", 80_000, "0x3a2c82c7" + evm.address(friend));
+const revokeFriend = (chainId, address, friend) =>
+  sendTransaction(address, "0", maybeGasLimit(chainId, 80_000),
+    "0x3a2c82c7" + evm.address(friend));
 
 /**
  * Returns the list of addresses that can be revoked by `revoker`.
@@ -339,11 +357,12 @@ const getRevokeeAddresses = (revoker) =>
  */
 const createWithRevokers = (chainId, address, cid, revokeThreshold, revokers) =>
   priceIn(chainId, 0).then(([high, low]) => {
+    /** @const {string} */
     const price = (TRILLION * BigInt(revokeThreshold == 0 ? high : low)).toString(16);
     return revokeThreshold == 0
-      ? sendTransaction(address, price, 49_000,
+      ? sendTransaction(address, price, maybeGasLimit(chainId, 49_000),
         "0x780900dc" + cid)
-      : sendTransaction(address, price, 70_000 + 25_000 * Object.keys(revokers).length,
+      : sendTransaction(address, price, maybeGasLimit(chainId, 70_000 + 25_000 * Object.keys(revokers).length),
         "0xd3cfebc1" + cid + serializeRevokers(revokeThreshold, revokers));
   });
 
@@ -369,6 +388,7 @@ const serializeRevokers = (revokeThreshold, revokers) => {
 }
 
 /**
+ * @param {string} chainId
  * @param {string} address
  * @param {string} cid
  * @param {number} revokeThreshold
@@ -376,11 +396,12 @@ const serializeRevokers = (revokeThreshold, revokers) => {
  * @param {string} signature as a length 64 hex string.
  * @return {!Promise<*>}
  */
-const createWithRevokersWithTokenPermit = (address, cid, revokeThreshold, revokers, signature) =>
+const createWithRevokersWithTokenPermit = (chainId, address, cid, revokeThreshold, revokers, signature) =>
   revokeThreshold == 0
-    ? sendTransaction(address, "0", 160_000,
+    ? sendTransaction(address, "0", maybeGasLimit(chainId, 160_000),
       "0xe0adf95b" + cid + signature)
-    : sendTransaction(address, "0", 180_000 + 25_000 * Object.keys(revokers).length,
+    : sendTransaction(address, "0",
+      maybeGasLimit(chainId, 180_000 + 25_000 * Object.keys(revokers).length),
       "0x0633ddcb" + cid + serializeRevokers(revokeThreshold, revokers) + signature);
 
 /**
@@ -393,11 +414,13 @@ const createWithRevokersWithTokenPermit = (address, cid, revokeThreshold, revoke
  * @return {!Promise<*>}
  */
 const createWithRevokersWithTokenPayment = (chainId, address, cid, revokeThreshold, revokers, token) => {
+  /** @const {string} */
   const tokenSerialized = evm.uint96(0) + TokenData[chainId][token].adres;
   return revokeThreshold == 0
-    ? sendTransaction(address, "0", 140_000,
+    ? sendTransaction(address, "0", maybeGasLimit(chainId, 140_000),
       "0xdaca45f7" + cid + tokenSerialized)
-    : sendTransaction(address, "0", 160_000 + 25_000 * Object.keys(revokers).length,
+    : sendTransaction(address, "0",
+      maybeGasLimit(chainId, 160_000 + 25_000 * Object.keys(revokers).length),
       "0x3e36b2f7" + cid + serializeRevokers(revokeThreshold, revokers) + tokenSerialized);
 }
 
@@ -440,11 +463,11 @@ const estimateNetworkFee = (chainId) => {
 }
 
 /**
- * Returns now + 20 mins as a timestamp in seconds.
+ * Returns now + 60 mins as a timestamp in seconds.
  *
  * @return {number}
  */
-const getDeadline = () => 20 * 60 + (Date.now() / 1000 | 0);
+const getDeadline = () => 60 * 60 + (Date.now() / 1000 | 0);
 
 /**
  * @param {string} chainId
@@ -456,7 +479,7 @@ const getApprovalFor = (chainId, address, token) => sendTransactionTo(
   address,
   "0x" + TokenData[chainId][token].adres,
   "0",
-  80_000,
+  maybeGasLimit(chainId, 80_000),
   "0x095ea7b3" + evm.address(TCKT_ADDR) + evm.Uint256Max);
 
 /**
