@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from "fs";
 import { Parser } from "htmlparser2";
 import { createRequire } from "module";
+import { renderParagraph } from "./latex.js";
 
 const require = createRequire(process.cwd() + "/");
 
@@ -80,6 +81,10 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
   let değiştirDerinliği = 0;
   /** @type {string} */
   let sırada;
+  /** @type {boolean} */
+  let latexVar = false;
+  /** @type {number} */
+  let latexDerinliği = 0;
 
   /** @const {!Object<string, string>} */
   const değerler = Object.assign({}, seçimler);
@@ -213,9 +218,15 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
         }
       }
 
+      if ("data-latex" in nitelikler) {
+        latexVar = true;
+        latexDerinliği = derinlik;
+        delete nitelikler["data-latex"];
+      }
+
       if ("data-phantom" in nitelikler) {
-        if (ad != "span" && ad != "g") {
-          console.error("Span veya g olmayan phantom!");
+        if (ad != "span" && ad != "g" && ad != "div") {
+          console.error("Span div, veya g olmayan phantom!");
           process.exit(HataKodu.INCORRECT_PHANTOM);
         }
         phantom[derinlik] = true;
@@ -231,10 +242,14 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
     ontext(metin) {
       if (değiştirDerinliği <= 0) {
         if (sırada) {
-          html += sırada;
+          html += latexDerinliği > 0
+            ? renderParagraph(metin)
+            : sırada;
           sırada = null;
         } else
-          html += metin;
+          html += latexDerinliği > 0
+            ? renderParagraph(metin)
+            : metin;
       }
     },
 
@@ -249,6 +264,8 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
       sırada = null;
       if (derinlik == değiştirDerinliği)
         değiştirDerinliği = 0;
+      if (derinlik == latexDerinliği)
+        latexDerinliği = 0;
       if (değiştirDerinliği == 0 && !phantom[derinlik] && !hayali)
         html += `</${ad}>`;
 
@@ -269,6 +286,9 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
   if (existsSync(seçimler.kök + birimAdı.slice(0, -4) + "css"))
     cssler.push(birimAdı.slice(0, -4) + "css");
   parser.end(readFileSync(seçimler.kök + birimAdı, "utf8"));
+  if (latexVar)
+    cssler.push("/lib/util/latex.css");
+
   return {
     html,
     cssler
