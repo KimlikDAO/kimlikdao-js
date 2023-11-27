@@ -33,6 +33,7 @@ const devSunucu = (port, sayfalar) => createServer({
       })
     }
   });
+  console.log(`Dev sunucu şu adreste çalışıyor: http://localhost:${port}`);
   app.listen(port);
 });
 
