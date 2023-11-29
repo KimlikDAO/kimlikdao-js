@@ -53,6 +53,14 @@ describe("sayfaOku tests", () => {
     assert.notInclude(sayfaEN, "</path>");
   })
 
+  it("should perform innertext substitution", () => {
+    /** @const {string} */
+    const sayfa = sayfaOku("ana/sayfa.html", { dil: "en", dev: false, kök: "util/test/" });
+
+    assert.include(sayfa, '<div>Unvan</div>');
+    assert.notInclude(sayfa, 'titrspan');
+    assert.notInclude
+  })
 
   it("should perform English substitution", () => {
     /** @const {string} */

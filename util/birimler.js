@@ -123,6 +123,9 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
 
       if (değiştirDerinliği > 0) return;
 
+      /** @type {string} */
+      let değiştirMetni = "";
+
       for (const /** string */ nitelik in nitelikler) {
         if (nitelik.startsWith("data-remove-")) {
           if (!seçimler.dev)
@@ -134,7 +137,12 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
         } else if (nitelik.startsWith("data-set-")) {
           /** @const {string} */
           const value = değerler[nitelikler[nitelik]];
-          if (value) nitelikler[nitelik.slice("data-set-".length)] = value;
+          if (value)
+            if (nitelik == "data-set-innertext") {
+              değiştirDerinliği = derinlik;
+              değiştirMetni = value;
+            }
+            else nitelikler[nitelik.slice("data-set-".length)] = value;
           delete nitelikler[nitelik];
         }
       }
@@ -181,8 +189,6 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
         return;
       }
 
-      /** @type {string} */
-      let değiştirMetni = "";
       if ("data-en" in nitelikler) {
         if (değiştirDerinliği) {
           console.error("İç içe dile göre değiştirme mümkün değil");
