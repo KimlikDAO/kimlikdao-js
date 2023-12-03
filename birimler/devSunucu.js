@@ -1,8 +1,8 @@
 import express from "express";
 import { createServer } from "vite";
-import { sayfaOku } from "./birimler.js";
+import { sayfaOku } from "./okuyucu.js";
 
-const devSunucu = (seçenekler) => createServer({
+const çalıştır = (seçenekler) => createServer({
   server: { middlewareMode: true },
   appType: "custom"
 }).then((vite) => {
@@ -58,5 +58,5 @@ const devSunucu = (seçenekler) => createServer({
 });
 
 export {
-  devSunucu
+  çalıştır
 };

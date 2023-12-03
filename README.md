@@ -5,6 +5,8 @@ kimlikdao-js, KimlikDAO projeleri için gerekli olan javascript modüllerinin tu
 
 `api`: Standart protokol tanımları (örneğin: jsonrpc, oauth2)
 
+`birimler`: Birim sistemi ile ilgili araçlar ve tanımlar
+
 `cloudflare`: Cloudflare Workers platformu ile ilgili tanımlar
 
 `crosschain`: Tüm blokzincirlerde geçerli tanımlar ve yapılar

@@ -1,5 +1,5 @@
 import { assert, describe, it } from "vitest";
-import { birimOku, sayfaOku, tagYaz } from "../birimler";
+import { birimOku, sayfaOku, tagYaz } from "../okuyucu";
 
 describe("tagYaz tests", () => {
   it("should serialize empty tag", () => {
@@ -24,7 +24,7 @@ describe("tagYaz tests", () => {
 describe("sayfaOku tests", () => {
   it("should remove in prod mode", () => {
     /** @const {string} */
-    const sayfa = sayfaOku("ana/sayfa.html", { dil: "tr", dev: true, kök: "util/test/" });
+    const sayfa = sayfaOku("ana/sayfa.html", { dil: "tr", dev: true, kök: "birimler/test/" });
     assert.include(sayfa, "ana/sayfa.css");
     assert.include(sayfa, "Cüzdan eklendi");
     assert.include(sayfa, "TCKT eklendi");
@@ -36,16 +36,16 @@ describe("sayfaOku tests", () => {
 
   it("should perform comment substitution", () => {
     /** @const {string} */
-    const sayfaEN = sayfaOku("ana/sayfa.html", { dil: "en", kök: "util/test/" });
+    const sayfaEN = sayfaOku("ana/sayfa.html", { dil: "en", kök: "birimler/test/" });
     /** @const {string} */
-    const sayfaTR = sayfaOku("ana/sayfa.html", { dil: "tr", kök: "util/test/" });
+    const sayfaTR = sayfaOku("ana/sayfa.html", { dil: "tr", kök: "birimler/test/" });
     assert.include(sayfaTR, "Toplam: 1,00");
     assert.include(sayfaEN, "Total: 1.00");
   })
 
   it("should perform inline substitution", () => {
     /** @const {string} */
-    const sayfaEN = sayfaOku("ana/sayfa.html", { dil: "en", dev: true, kök: "util/test/" });
+    const sayfaEN = sayfaOku("ana/sayfa.html", { dil: "en", dev: true, kök: "birimler/test/" });
 
     assert.include(sayfaEN, 'svg width="33" height="33"');
     assert.include(sayfaEN, 'svg" id="ansvg"');
@@ -55,7 +55,7 @@ describe("sayfaOku tests", () => {
 
   it("should perform innertext substitution", () => {
     /** @const {string} */
-    const sayfa = sayfaOku("ana/sayfa.html", { dil: "en", dev: false, kök: "util/test/" });
+    const sayfa = sayfaOku("ana/sayfa.html", { dil: "en", dev: false, kök: "birimler/test/" });
 
     assert.include(sayfa, '<div>Unvan</div>');
     assert.notInclude(sayfa, 'titrspan');
@@ -64,9 +64,9 @@ describe("sayfaOku tests", () => {
 
   it("should perform English substitution", () => {
     /** @const {string} */
-    const sayfaEN = sayfaOku("ana/sayfa.html", { dil: "en", dev: false, kök: "util/test/" });
+    const sayfaEN = sayfaOku("ana/sayfa.html", { dil: "en", dev: false, kök: "birimler/test/" });
     /** @const {string} */
-    const sayfaTR = sayfaOku("ana/sayfa.html", { dil: "tr", dev: false, kök: "util/test/" })
+    const sayfaTR = sayfaOku("ana/sayfa.html", { dil: "tr", dev: false, kök: "birimler/test/" })
 
     assert.include(sayfaEN, "REPLACED_TEXT");
     assert.notInclude(sayfaEN, "<test1>");
@@ -80,20 +80,20 @@ describe("sayfaOku tests", () => {
 
 describe("birimOku tests", () => {
   it("should perform variable substitution", () => {
-    const { html, _ } = birimOku("ana/sayfa.html", { dil: "tr", dev: true, kök: "util/test/" }, {});
+    const { html, _ } = birimOku("ana/sayfa.html", { dil: "tr", dev: true, kök: "birimler/test/" }, {});
 
     assert.include(html, 'id="var1value"');
   })
 
   it("should eliminate self-closing xml tags", () => {
-    const { html, _ } = birimOku("birim/logo.svg", { dil: "tr", dev: false, kök: "util/test/" }, {});
+    const { html, _ } = birimOku("birim/logo.svg", { dil: "tr", dev: false, kök: "birimler/test/" }, {});
 
     assert.notInclude(html, "</stop>");
     assert.notInclude(html, "</path>");
   })
 
   it("should perform parametric content generation", () => {
-    const { html, _ } = birimOku("birim/cüzdan/birim.html", { dil: "tr", dev: false, kök: "util/test/" }, {});
+    const { html, _ } = birimOku("birim/cüzdan/birim.html", { dil: "tr", dev: false, kök: "birimler/test/" }, {});
 
     assert.include(html, "<div>354224848179261915075</div>");
     assert.include(html, "<div>201</div>");
