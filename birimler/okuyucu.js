@@ -120,6 +120,9 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
       cssler: [],
     };
   }
+
+  değerler.piggyback ||= "";
+
   /** @const {!Parser} */
   const parser = new Parser({
     onopentag(ad, nitelikler, kapalı) {
@@ -155,7 +158,7 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
            * @const {string}
            */
           const yeniDeğer = değiştirHaritası[değer.startsWith("/") ? değer : "/" + değer];
-          if (yeniDeğer) nitelikler[nitelik] = yeniDeğer;
+          if (yeniDeğer) nitelikler[nitelik] = değerler.piggyback + yeniDeğer;
         }
 
         if (nitelik.startsWith("data-remove-")) {
@@ -176,6 +179,13 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
             else nitelikler[nitelik.slice("data-set-".length)] = value;
           delete nitelikler[nitelik];
         }
+      }
+
+      if ("data-inherit" in nitelikler) {
+        for (const değişken of nitelikler["data-inherit"].split(/[ ,]+/))
+          if (değerler[değişken])
+            nitelikler["data-" + değişken] = değerler[değişken];
+        delete nitelikler["data-inherit"];
       }
 
       // TODO(KimlikDAO-bot): Birimin içini parse edip birime yolla.
@@ -253,7 +263,8 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
           if (!seçimler.dev)
             üretilenHtml = üretilenHtml.replace(
               new RegExp(Object.keys(değiştirHaritası).join('|'), 'g'),
-              (sol) => değiştirHaritası[sol] || sol
+              (sol) => değiştirHaritası[sol]
+                ? değerler.piggyback + değiştirHaritası[sol] : sol
             );
           değiştirDerinliği = derinlik;
           değiştirMetni = üretilenHtml;
