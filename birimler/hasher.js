@@ -3,21 +3,21 @@ import { copyFile, open, readFile, } from "fs/promises";
 import path from "path";
 import process from "process";
 
-/** @const {!Array<string>} */
-let args = process.argv.slice(2).reverse();
 /** @const {string} */
-const mapFilePath = args.pop();
+const mapFilePath = process.argv[2];
+/** @const {!Array<string>} */
+let args = process.argv.slice(3);
 
 const mapFile = await open(mapFilePath, 'a+');
 /** @type {boolean} */
 let compress = true;
 
-if (args[args.length - 1] === '--nocompress') {
-  compress = false;
-  args.pop();
-}
-
 for (let fileName of args) {
+  if (fileName == "--nocompress") {
+    compress = false;
+    continue;
+  }
+
   const parts = path.parse(fileName);
   const hash = createHash('sha256')
     .update(await readFile(fileName))

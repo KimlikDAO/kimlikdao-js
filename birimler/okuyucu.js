@@ -57,6 +57,23 @@ const tagYaz = (ad, nitelikler, kapalı) => {
 }
 
 /**
+ * Verilen keymap dosyasını okur ve haritaya yerleştirir.
+ *
+ * @param {string} dosyaAdı keymap dosyasının adı
+ * @param {!Object<string, string>} harita değerlerin işleneceği harita
+ */
+const keymapOku = (dosyaAdı, harita) => {
+  try {
+    const dosya = readFileSync(dosyaAdı, "utf8");
+    for (const satır of dosya.split("\n")) {
+      if (!satır) continue;
+      const [key, val] = satır.split(" -> ");
+      harita[key] = val;
+    }
+  } catch (e) { }
+}
+
+/**
  * @param {string} birimAdı
  * @param {!Seçimler} seçimler
  * @param {!Object<string, string>}  anaNitelikler
@@ -71,6 +88,8 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
   const EN = seçimler.dil == "en";
   /** @const {!Array<string>} */
   const cssler = [];
+  /** @const {!Object<string, string>} */
+  const değiştirHaritası = {};
   /** @type {string} */
   let html = "";
   /** @const {!Array<boolean>} */
@@ -97,7 +116,7 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
   if (birimAdı.endsWith(".cjs")) {
     const üreticiBirim = require("./" + seçimler.kök + birimAdı, "utf8");
     return {
-      html: üreticiBirim.üret(değerler),
+      html: "" + üreticiBirim.üret(değerler),
       cssler: [],
     };
   }
@@ -127,6 +146,18 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
       let değiştirMetni = "";
 
       for (const /** string */ nitelik in nitelikler) {
+        if (!seçimler.dev) {
+          /** @const {string} */
+          const değer = nitelikler[nitelik];
+          /**
+           * Niteliğin değeri `değiştirHaritası`nda varsa değerini değiştir.
+           *
+           * @const {string}
+           */
+          const yeniDeğer = değiştirHaritası[değer.startsWith("/") ? değer : "/" + değer];
+          if (yeniDeğer) nitelikler[nitelik] = yeniDeğer;
+        }
+
         if (nitelik.startsWith("data-remove-")) {
           if (!seçimler.dev)
             delete nitelikler[nitelik.slice("data-remove-".length)];
@@ -212,13 +243,18 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
         const üreticiAdı =
           `${birimAdı.slice(0, birimAdı.lastIndexOf("/"))}/${nitelikler["data-generate"]}.cjs`;
         delete nitelikler["data-generate"];
-        const {
+        let {
           html: üretilenHtml,
           _
         } = birimOku(üreticiAdı, değerler, nitelikler);
         if (phantom) nitelikler["data-phantom"] = "";
 
         if (üretilenHtml) {
+          if (!seçimler.dev)
+            üretilenHtml = üretilenHtml.replace(
+              new RegExp(Object.keys(değiştirHaritası).join('|'), 'g'),
+              (sol) => değiştirHaritası[sol] || sol
+            );
           değiştirDerinliği = derinlik;
           değiştirMetni = üretilenHtml;
         }
@@ -288,6 +324,11 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
     lowerCaseTags: false,
     lowerCaseAttributeNames: false,
   });
+
+  if (!seçimler.dev && birimAdı.endsWith(".html")) {
+    keymapOku(`${seçimler.kök}build/${birimAdı.slice(0, -5)}.keymap`, değiştirHaritası);
+    keymapOku(`${seçimler.kök}build/${birimAdı.slice(0, -5)}-${seçimler.dil}.keymap`, değiştirHaritası);
+  }
 
   if (existsSync(seçimler.kök + birimAdı.slice(0, -4) + "css"))
     cssler.push(birimAdı.slice(0, -4) + "css");
