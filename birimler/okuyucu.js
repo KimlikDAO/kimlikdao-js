@@ -25,6 +25,8 @@ const Seçimler = {};
 
 /** @const {!Object<string, boolean>} */
 const KapalıTagler = {
+  animate: true,
+  animateTransform: true,
   circle: true,
   ellipse: true,
   feblend: true,
