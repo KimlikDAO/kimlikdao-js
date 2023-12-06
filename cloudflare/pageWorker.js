@@ -83,22 +83,32 @@ const create = (hostUrl, pages) => /** @type {!cloudflare.ModuleWorker} */({
     const fromCache = caches.default.match(cacheKey).then((response) => {
       if (!response) return Promise.reject();
       inCache = true;
+      response = new Response(response.body, {
+        headers: response.headers,
+        "encodeBody": "manual"
+      });
+      const cachedEnc = response.headers.get("content-encoding");
+      if (cachedEnc)
+        response.headers.set("content-encoding", cachedEnc.slice(1))
+      if (idx == hostUrl.lastIndexOf("."))
+        response.headers.set("cache-control", PAGE_CACHE_CONTROL);
       return response;
     });
 
     /**
      * @param {!ArrayBuffer} body
+     * @param {string} toCache
      * @return {!Response}
      */
-    const makeResponse = (body) => {
+    const makeResponse = (body, toCache) => {
       /** @const {string} */
       const suffix = url.slice(idx + 1);
       /** @type {!Object<string, string>} */
       let headers = {
-        "cache-control": idx == hostUrl.lastIndexOf(".")
-          ? PAGE_CACHE_CONTROL
-          : STATIC_CACHE_CONTROL,
-        "content-encoding": ext === ".br" ? "br" : ext === ".gz" ? "gzip" : "",
+        "cache-control": (toCache || idx != hostUrl.lastIndexOf("."))
+          ? STATIC_CACHE_CONTROL
+          : PAGE_CACHE_CONTROL,
+        "content-encoding": ext === ".br" ? (toCache + "br") : ext === ".gz" ? (toCache + "gzip") : "",
         "content-length": body.byteLength,
         "content-type": idx == hostUrl.lastIndexOf(".")
           ? "text/html;charset=utf-8"
@@ -106,9 +116,7 @@ const create = (hostUrl, pages) => /** @type {!cloudflare.ModuleWorker} */({
         "expires": "Sun, 01 Jan 2034 00:00:00 GMT",
         "vary": "accept-encoding",
       }
-      if (idx == hostUrl.lastIndexOf("."))
-        headers["cdn-cache-control"] = STATIC_CACHE_CONTROL;
-      else if (suffix == "woff2" || suffix == "ttf")
+      if (suffix == "woff2" || suffix == "ttf")
         headers["access-control-allow-origin"] = "*";
       return new Response(body, {
         headers,
@@ -138,9 +146,9 @@ const create = (hostUrl, pages) => /** @type {!cloudflare.ModuleWorker} */({
       // request.
       ctx.waitUntil(new Promise((/** function(?):void */ resolve) =>
         resolve(inCache ? null : caches.default.put(/** @type {string} */(cacheKey),
-          makeResponse(/** @type {!ArrayBuffer} */(body))))
+          makeResponse(/** @type {!ArrayBuffer} */(body), "Y")))
       ));
-      return makeResponse(body);
+      return makeResponse(body, "");
     })
 
     return Promise.any([fromCache, fromKV]).catch(err);
