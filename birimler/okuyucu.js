@@ -221,7 +221,7 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
         /** @type {string} */
         let inlineAdı = (nitelikler["data-inline"] || nitelikler.src).slice(1);
         if (!seçimler.dev && inlineAdı.endsWith(".svg"))
-          inlineAdı = `build/${inlineAdı}.inl`;
+          inlineAdı = `build/${inlineAdı.slice(0, -4)}.isvg`;
         delete nitelikler["data-inline"];
         delete nitelikler["src"];
         const {
@@ -338,9 +338,14 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
     lowerCaseAttributeNames: false,
   });
 
-  if (!seçimler.dev && birimAdı.endsWith(".html")) {
-    keymapOku(`${seçimler.kök}build/${birimAdı.slice(0, -5)}.keymap`, değiştirHaritası);
-    keymapOku(`${seçimler.kök}build/${birimAdı.slice(0, -5)}-${seçimler.dil}.keymap`, değiştirHaritası);
+  if (!seçimler.dev) {
+    /** @const {string} */
+    let önek = seçimler.kök;
+    if (!birimAdı.startsWith("build/")) önek += "build/";
+    /** @const {string} */
+    const nokta = birimAdı.lastIndexOf(".");
+    keymapOku(`${önek}${birimAdı.slice(0, nokta)}.keymap`, değiştirHaritası);
+    keymapOku(`${önek}${birimAdı.slice(0, nokta)}-${seçimler.dil}.keymap`, değiştirHaritası);
   }
 
   if (existsSync(seçimler.kök + birimAdı.slice(0, -4) + "css"))

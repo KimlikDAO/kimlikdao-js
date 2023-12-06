@@ -10,7 +10,7 @@ build/%.svg: %.svg lib/birimler/svgoConfig.js
 	node lib/birimler/işleyici $<
 	yarn svgo --config lib/birimler/svgoConfig.js $@ --output $@
 
-build/%.svg.inl: %.svg lib/birimler/svgoInlineConfig.js
+build/%.isvg: %.svg lib/birimler/svgoInlineConfig.js
 	mkdir -p $(dir $@)
 	yarn svgo --config lib/birimler/svgoInlineConfig.js $< --output $@
 
