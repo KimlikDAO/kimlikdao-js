@@ -2,12 +2,19 @@
 const MIMES = {
   "css": "text/css",
   "js": "application/javascript;charset=utf-8",
-  "svg": "image/svg+xml",
+  // Font
   "ttf": "font/ttf",
   "woff2": "font/woff2",
+  // Resim ve foto
+  "svg": "image/svg+xml",
   "png": "image/png",
+  "webp": "image/webp",
+  // Metin
   "txt": "text/plain",
 };
+/** @const {!Object<string, boolean>} */
+const COMPRESSED_MIMES = { "woff2": true, "png": true, "webp": true };
+
 /** @const {string} */
 const PAGE_CACHE_CONTROL = "max-age=90,public";
 /**
@@ -43,12 +50,15 @@ const create = (hostUrl, pages) => /** @type {!cloudflare.ModuleWorker} */({
     const url = req.url;
     /** @const {string} */
     const enc = req.cf.clientAcceptEncoding || "";
-    /** @const {string} */
-    const ext = (url.endsWith(".woff2") || url.endsWith(".png"))
-      ? ""
-      : enc.includes("br") ? ".br" : enc.includes("gz") ? ".gz" : "";
     /** @const {number} */
     const idx = url.lastIndexOf(".");
+    /** @const {string} */
+    const suffix = url.slice(idx + 1);
+
+    /** @const {string} */
+    const ext = suffix in COMPRESSED_MIMES
+      ? ""
+      : enc.includes("br") ? ".br" : enc.includes("gz") ? ".gz" : "";
 
     /** @type {?string} */
     let kvKey = url.slice(hostUrl.length);
@@ -101,8 +111,6 @@ const create = (hostUrl, pages) => /** @type {!cloudflare.ModuleWorker} */({
      * @return {!Response}
      */
     const makeResponse = (body, toCache) => {
-      /** @const {string} */
-      const suffix = url.slice(idx + 1);
       /** @type {!Object<string, string>} */
       let headers = {
         "cache-control": (toCache || idx != hostUrl.lastIndexOf("."))

@@ -39,7 +39,9 @@ for (let fileName of args) {
   if (parts.name.at(-3) === '-')
     fileName = `${parts.dir}/${parts.name.slice(0, -3)}${parts.ext}`;
 
-  fileName = fileName.slice(5);
+  fileName = fileName.startsWith("build")
+    ? fileName.slice(5)
+    : "/" + fileName;
   console.log(fileName + " -> " + hashExtension);
   await mapFile.write(fileName + " -> " + hashExtension + "\n");
 }
