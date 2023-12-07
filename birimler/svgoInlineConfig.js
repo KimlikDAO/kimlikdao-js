@@ -3,7 +3,6 @@ export default {
   plugins: [
     "cleanupAttrs",
     "cleanupEnableBackground",
-    "cleanupIds",
     "collapseGroups",
     "convertColors",
     "convertEllipseToCircle",
