@@ -203,11 +203,11 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
 
       if (ad.startsWith("altbirim:")) {
         /** @const {string} */
-        const sayfaAdı = birimAdı.slice(0, birimAdı.indexOf("/"));
+        const üstbirimAdı = birimAdı.slice(0, birimAdı.lastIndexOf("/"));
         const {
           html: /** @const {string} */ birimHtml,
           cssler: /** @const {!Array<string>} */ birimCssler
-        } = birimOku(`${sayfaAdı}/${ad.slice(9)}/birim.html`, seçimler, nitelikler);
+        } = birimOku(`${üstbirimAdı}/${ad.slice(9)}/birim.html`, seçimler, nitelikler);
         html += birimHtml;
         cssler.push(...birimCssler);
         return;
