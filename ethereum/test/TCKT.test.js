@@ -27,9 +27,6 @@ describe('0xa86a DOMAIN_SEPARATOR() check', () => {
 
     checkDomainSeparator(TokenData["0xa86a"][3], "0xa86a",
       "0x039e8aca8365b03d156cc819454c50146e9ad567b9929912528d9f270de1117a");
-
-    checkDomainSeparator(TokenData["0xa86a"][4], "0xa86a",
-      "0x7aabf5cc18d2bfe04aad7008a1e76f13101e3abc2c9181cc5afa93a99bc71cb8");
   });
 });
 

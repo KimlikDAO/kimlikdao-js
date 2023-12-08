@@ -58,11 +58,6 @@ const TokenData = {
       uzunAd: "BiLira",
       basamak: 6,
       sürüm: 0
-    }), /** @type {!TokenInfo} */({
-      adres: "4Fabb145d64652a948d72533023f6E7A623C7C53".toLowerCase(),
-      uzunAd: "Binance USD",
-      basamak: 18,
-      sürüm: 0
     })
   ],
   "0xa86a": [
@@ -81,11 +76,6 @@ const TokenData = {
       uzunAd: "BiLira",
       basamak: 6,
       sürüm: 2
-    }), /** @type {!TokenInfo} */({
-      adres: "9C9e5fD8bbc25984B178FdCE6117Defa39d2db39".toLowerCase(),
-      uzunAd: "BUSD Token",
-      basamak: 18,
-      sürüm: 1
     })
   ],
   // TODO(KimlikDAO-bot): Polygon default bridge contract computes domain
@@ -111,11 +101,6 @@ const TokenData = {
       uzunAd: "BiLira",
       basamak: 6,
       sürüm: 0
-    }), /** @type {!TokenInfo} */({
-      adres: "9C9e5fD8bbc25984B178FdCE6117Defa39d2db39".toLowerCase(),
-      uzunAd: "BUSD Token",
-      basamak: 18,
-      sürüm: 0
     })
   ],
   "0xa4b1": [
@@ -129,7 +114,7 @@ const TokenData = {
       uzunAd: "USD Coin (Arb1)",
       basamak: 6,
       sürüm: 1
-    }), null, null
+    }), null
   ],
   "0x38": [
     null, null, /** @type {!TokenInfo} */({
@@ -142,15 +127,10 @@ const TokenData = {
       uzunAd: "BiLira",
       basamak: 6,
       sürüm: 0
-    }), /** @type {!TokenInfo} */({
-      adres: "e9e7CEA3DedcA5984780Bafc599bD69ADd087D56".toLowerCase(),
-      uzunAd: "BUSD Token",
-      basamak: 18,
-      sürüm: 0
-    }),
+    })
   ],
   "0x406": [
-    null, null, null, null, null
+    null, null, null, null
   ],
   "0xfa": [
     null, null, /** @type {!TokenInfo} */({
@@ -158,8 +138,11 @@ const TokenData = {
       uzunAd: "USD Coin",
       basamak: 6,
       sürüm: 1
-    }), null, null
+    }), null
   ],
+  "0x144": [
+    null, null, null, null
+  ]
 };
 
 /** @type {!eth.Provider} */
@@ -439,6 +422,7 @@ const priceIn = (chainId, token) => {
     "0xa4b1": [600, 1 * MILLION, 1 * MILLION, 19 * MILLION, 0],
     "0x38": [3400, 1 * MILLION, 1 * MILLION, 19 * MILLION, 1 * MILLION],
     "0xfa": [2_300_000, 1 * MILLION, 1 * MILLION, 19 * MILLION, 0],
+    "0x144": [600, 1 * MILLION, 1 * MILLION, 19 * MILLION, 0],
   }
   return Promise.resolve([
     fiyat[chainId][token] * 1.5, fiyat[chainId][token]
@@ -458,6 +442,7 @@ const estimateNetworkFee = (chainId) => {
     "0x38": 400,
     "0x406": 100,
     "0xfa": 200,
+    "0x144": 200,
   }
   return Promise.resolve(placeholder[chainId]);
 }
