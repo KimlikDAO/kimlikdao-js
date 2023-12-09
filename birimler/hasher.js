@@ -2,6 +2,7 @@ import { createHash } from "crypto";
 import { copyFile, open, readFile, } from "fs/promises";
 import path from "path";
 import process from "process";
+import { CompressedMimes } from "./ayarlar.js";
 
 /** @const {string} */
 const mapFilePath = process.argv[2];
@@ -30,7 +31,7 @@ for (let fileName of args) {
 
   await copyFile(fileName, 'build/' + hashExtension);
 
-  if (compress)
+  if (compress && !CompressedMimes[parts.ext.slice(1)])
     await Promise.all([
       copyFile(fileName + '.gz', 'build/' + hashExtension + '.gz'),
       copyFile(fileName + '.br', 'build/' + hashExtension + '.br')
