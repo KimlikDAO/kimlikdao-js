@@ -195,7 +195,7 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
         const {
           html: /** @const {string} */ birimHtml,
           cssler: /** @const {!Array<string>} */ birimCssler
-        } = birimOku(`birim/${ad.slice(6)}/birim.html`, seçimler, nitelikler);
+        } = birimOku(`birim/${ad.slice(6).replace(":", "/")}/birim.html`, seçimler, nitelikler);
         html += birimHtml;
         cssler.push(...birimCssler);
         return;
@@ -207,7 +207,7 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
         const {
           html: /** @const {string} */ birimHtml,
           cssler: /** @const {!Array<string>} */ birimCssler
-        } = birimOku(`${üstbirimAdı}/${ad.slice(9)}/birim.html`, seçimler, nitelikler);
+        } = birimOku(`${üstbirimAdı}/${ad.slice(9).replace(":", "/")}/birim.html`, seçimler, nitelikler);
         html += birimHtml;
         cssler.push(...birimCssler);
         return;
