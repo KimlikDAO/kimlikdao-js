@@ -98,8 +98,7 @@ const create = (hostUrl, pages) => /** @type {!cloudflare.ModuleWorker} */({
         "encodeBody": "manual"
       });
       const cachedEnc = response.headers.get("content-encoding");
-      if (cachedEnc)
-        response.headers.set("content-encoding", cachedEnc.slice(1))
+      response.headers.set("content-encoding", cachedEnc.slice(1))
       if (idx == hostUrl.lastIndexOf("."))
         response.headers.set("cache-control", PAGE_CACHE_CONTROL);
       return response;
@@ -116,7 +115,7 @@ const create = (hostUrl, pages) => /** @type {!cloudflare.ModuleWorker} */({
         "cache-control": (toCache || idx != hostUrl.lastIndexOf("."))
           ? STATIC_CACHE_CONTROL
           : PAGE_CACHE_CONTROL,
-        "content-encoding": ext === ".br" ? (toCache + "br") : ext === ".gz" ? (toCache + "gzip") : "",
+        "content-encoding": toCache + (ext === ".br" ? "br" : ext === ".gz" ? "gzip" : ""),
         "content-length": body.byteLength,
         "content-type": idx == hostUrl.lastIndexOf(".")
           ? "text/html;charset=utf-8"
