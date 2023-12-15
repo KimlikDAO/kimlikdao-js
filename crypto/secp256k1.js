@@ -33,7 +33,7 @@ const N = (1n << 256n) - BigInt("0x14551231950b75fc4402da1732fc9bebf");
  * If positivity is not required, prefer the % operator.
  *
  * @param {!bigint} x
- * @returns {!bigint} y such that x = y (mod P) and 0 <= y < P.
+ * @return {!bigint} y such that x = y (mod P) and 0 <= y < P.
  */
 const modP = (x) => {
   let res = x % P;

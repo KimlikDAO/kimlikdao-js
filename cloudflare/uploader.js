@@ -27,7 +27,7 @@ const ZonesUrl = `${Url}/zones/${ZoneId}/`;
  *
  * @param {string} prefix
  * @param {string} filePath
- * @returns {!Array<string>}
+ * @return {!Array<string>}
  */
 const readVariable = (prefix, filePath) => {
   /** @const {!Array<string>} */
