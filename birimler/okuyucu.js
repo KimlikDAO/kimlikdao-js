@@ -190,24 +190,26 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
         delete nitelikler["data-inherit"];
       }
 
-      // TODO(KimlikDAO-bot): Birimin içini parse edip birime yolla.
-      if (ad.startsWith("birim:")) {
+      if (ad.startsWith("altbirim:") || ad.startsWith("submodule:")) {
+        /** @const {string} */
+        const birimDizini = birimAdı.slice(0, birimAdı.lastIndexOf("/") + 1)
+          + ad.slice(ad.indexOf(":") + 1).replaceAll(":", "/")
         const {
           html: /** @const {string} */ birimHtml,
           cssler: /** @const {!Array<string>} */ birimCssler
-        } = birimOku(`birim/${ad.slice(6).replace(":", "/")}/birim.html`, seçimler, nitelikler);
+        } = birimOku(birimDizini + "/birim.html", seçimler, nitelikler);
         html += birimHtml;
         cssler.push(...birimCssler);
         return;
       }
 
-      if (ad.startsWith("altbirim:")) {
-        /** @const {string} */
-        const üstbirimAdı = birimAdı.slice(0, birimAdı.lastIndexOf("/"));
+      // altbirim haricinde ":" içeren taglar dizin olarak parse ediliyor.
+      // TODO(KimlikDAO-bot): Birimin içini parse edip birime yolla.
+      if (ad.includes(":")) {
         const {
           html: /** @const {string} */ birimHtml,
           cssler: /** @const {!Array<string>} */ birimCssler
-        } = birimOku(`${üstbirimAdı}/${ad.slice(9).replace(":", "/")}/birim.html`, seçimler, nitelikler);
+        } = birimOku(ad.replaceAll(":", "/") + "/birim.html", seçimler, nitelikler);
         html += birimHtml;
         cssler.push(...birimCssler);
         return;
