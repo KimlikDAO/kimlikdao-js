@@ -6,6 +6,7 @@ import { sayfaOku } from "./okuyucu.js";
 
 /**
  * @param {{
+ *   codebaseLang: string,
  *   port: number,
  *   hostname: (string|undefined),
  *   kök: (string|undefined),
@@ -17,23 +18,25 @@ const çalıştır = (seçenekler) => createServer({
   server: { middlewareMode: true },
   appType: "custom"
 }).then((vite) => {
+  /** @const {string} */
+  const sayfaAdı = seçenekler.codebaseLang == "en" ? "/page.html" : "/sayfa.html";
   /** @const {!Object<string, {{ ad: string, dil: string}}>} */
   const harita = {};
   /** @const {string} */
   const kök = seçenekler.kök ? seçenekler.kök + "/" : "";
 
   harita["/"] = {
-    ad: `${kök}${seçenekler.dizin}/sayfa.html`,
+    ad: kök + seçenekler.dizin + sayfaAdı,
     dil: "tr"
   }
 
   for (const sayfa of seçenekler.sayfalar) {
     harita[`/${sayfa[0]}`] = {
-      ad: `${kök}${sayfa[0]}/sayfa.html`,
+      ad: kök + sayfa[0] + sayfaAdı,
       dil: "tr"
     }
     harita[`/${sayfa[1]}`] = {
-      ad: `${kök}${sayfa[0]}/sayfa.html`,
+      ad: kök + sayfa[0] + sayfaAdı,
       dil: "en"
     }
   }
@@ -64,13 +67,14 @@ const çalıştır = (seçenekler) => createServer({
       })
     }
   });
-  console.log(`Dev sunucu şu adreste çalışıyor: http://localhost:${seçenekler.port}`);
+  console.info((seçenekler.codebaseLang == "en"
+    ? "Dev server running at: "
+    : "Dev sunucu şu adreste çalışıyor: ")
+    + `http://localhost:${seçenekler.port}`);
   app.listen(seçenekler.port);
 });
 
-if (process.argv[2] == "--çalıştır")
+if (process.argv[2] == "--çalıştır" || process.argv[2] == "--run")
   çalıştır(parse(readFileSync(process.argv[3])));
 
-export {
-  çalıştır
-};
+export { çalıştır };

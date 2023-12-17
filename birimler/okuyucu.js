@@ -85,7 +85,9 @@ const keymapOku = (dosyaAdı, harita) => {
 * }}
 */
 const birimOku = (birimAdı, seçimler, anaNitelikler) => {
-  seçimler.kök ||= "";
+  /** @const {string} */
+  const birimDosyaAdı = birimAdı.endsWith("sayfa.html") || birimAdı.endsWith("birim.html")
+    ? "/birim.html" : "/comp.html";
   /** @const {boolean} */
   const EN = seçimler.dil == "en";
   /** @const {!Array<string>} */
@@ -106,6 +108,8 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
   let latexVar = false;
   /** @type {number} */
   let latexDerinliği = 0;
+
+  seçimler.kök ||= "";
 
   /** @const {!Object<string, string>} */
   const değerler = Object.assign({}, seçimler);
@@ -197,7 +201,7 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
         const {
           html: /** @const {string} */ birimHtml,
           cssler: /** @const {!Array<string>} */ birimCssler
-        } = birimOku(birimDizini + "/birim.html", seçimler, nitelikler);
+        } = birimOku(birimDizini + birimDosyaAdı, seçimler, nitelikler);
         html += birimHtml;
         cssler.push(...birimCssler);
         return;
@@ -209,7 +213,7 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
         const {
           html: /** @const {string} */ birimHtml,
           cssler: /** @const {!Array<string>} */ birimCssler
-        } = birimOku(ad.replaceAll(":", "/") + "/birim.html", seçimler, nitelikler);
+        } = birimOku(ad.replaceAll(":", "/") + birimDosyaAdı, seçimler, nitelikler);
         html += birimHtml;
         cssler.push(...birimCssler);
         return;
