@@ -1,7 +1,18 @@
 import express from "express";
+import { readFileSync } from "fs";
+import { parse } from "toml";
 import { createServer } from "vite";
 import { sayfaOku } from "./okuyucu.js";
 
+/**
+ * @param {{
+ *   port: number,
+ *   hostname: (string|undefined),
+ *   kök: (string|undefined),
+ *   dizin: string,
+ *   sayfalar: !Array<!Array<string>>
+ * }} seçenekler
+ */
 const çalıştır = (seçenekler) => createServer({
   server: { middlewareMode: true },
   appType: "custom"
@@ -56,6 +67,9 @@ const çalıştır = (seçenekler) => createServer({
   console.log(`Dev sunucu şu adreste çalışıyor: http://localhost:${seçenekler.port}`);
   app.listen(seçenekler.port);
 });
+
+if (process.argv[2] == "--çalıştır")
+  çalıştır(parse(readFileSync(process.argv[3])));
 
 export {
   çalıştır
