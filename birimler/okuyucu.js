@@ -194,7 +194,7 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
         delete nitelikler["data-inherit"];
       }
 
-      if (ad.startsWith("altbirim:") || ad.startsWith("submodule:")) {
+      if (ad.startsWith("altbirim:") || ad.startsWith("subcomponent:")) {
         /** @const {string} */
         const birimDizini = birimAdı.slice(0, birimAdı.lastIndexOf("/") + 1)
           + ad.slice(ad.indexOf(":") + 1).replaceAll(":", "/")
