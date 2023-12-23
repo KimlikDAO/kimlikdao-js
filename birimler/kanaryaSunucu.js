@@ -14,7 +14,7 @@ import { parse } from "toml";
  */
 const çalıştır = (seçenekler) => {
   /** @const {string} */
-  const kök = (seçenekler.kök || "build") + "/";
+  const kök = seçenekler.kök ? `build/${seçenekler.kök}/` : "build/"
 
   /** @const {!Express} */
   const app = express();
@@ -29,7 +29,7 @@ const çalıştır = (seçenekler) => {
     harita["/" + sayfa[1]] = kök + sayfa[1] + "-en.html";
   }
 
-  app.use(express.static(kök, {
+  app.use(express.static("build", {
     redirect: false
   }));
   app.use(Object.keys(harita), (req, res) => {
