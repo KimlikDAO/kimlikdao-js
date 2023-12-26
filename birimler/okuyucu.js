@@ -81,7 +81,7 @@ const keymapOku = (dosyaAdı, harita) => {
  * @param {!Object<string, string>}  anaNitelikler
  * @return {{
 *   html: string,
-*   cssler: !Array<string>
+*   cssler: !Set<string>
 * }}
 */
 const birimOku = (birimAdı, seçimler, anaNitelikler) => {
@@ -90,8 +90,8 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
     ? "/birim.html" : "/comp.html";
   /** @const {boolean} */
   const EN = seçimler.dil == "en";
-  /** @const {!Array<string>} */
-  const cssler = [];
+  /** @const {!Set<string>} */
+  const cssler = new Set();
   /** @const {!Object<string, string>} */
   const değiştirHaritası = {};
   /** @type {string} */
@@ -123,7 +123,7 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
     const üreticiBirim = require("./" + seçimler.kök + birimAdı, "utf8");
     return {
       html: "" + üreticiBirim.üret(değerler),
-      cssler: [],
+      cssler: new Set(),
     };
   }
 
@@ -179,8 +179,9 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
           const value = değerler[nitelikler[nitelik]];
           if (value)
             if (nitelik == "data-set-innertext") {
+              const valueEN = değerler[nitelikler[nitelik] + "-en"];
               değiştirDerinliği = derinlik;
-              değiştirMetni = value;
+              değiştirMetni = EN && valueEN ? valueEN : value;
             }
             else nitelikler[nitelik.slice("data-set-".length)] = value;
           delete nitelikler[nitelik];
@@ -200,10 +201,11 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
           + ad.slice(ad.indexOf(":") + 1).replaceAll(":", "/")
         const {
           html: /** @const {string} */ birimHtml,
-          cssler: /** @const {!Array<string>} */ birimCssler
+          cssler: /** @const {!Set<string>} */ birimCssler
         } = birimOku(birimDizini + birimDosyaAdı, seçimler, nitelikler);
         html += birimHtml;
-        cssler.push(...birimCssler);
+        for (const css of birimCssler)
+          cssler.add(css);
         return;
       }
 
@@ -212,10 +214,11 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
       if (ad.includes(":")) {
         const {
           html: /** @const {string} */ birimHtml,
-          cssler: /** @const {!Array<string>} */ birimCssler
+          cssler: /** @const {!Set<string>} */ birimCssler
         } = birimOku(ad.replaceAll(":", "/") + birimDosyaAdı, seçimler, nitelikler);
         html += birimHtml;
-        cssler.push(...birimCssler);
+        for (const css of birimCssler)
+          cssler.add(css);
         return;
       }
 
@@ -355,10 +358,10 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
   }
 
   if (existsSync(seçimler.kök + birimAdı.slice(0, -4) + "css"))
-    cssler.push(birimAdı.slice(0, -4) + "css");
+    cssler.add(birimAdı.slice(0, -4) + "css");
   parser.end(readFileSync(seçimler.kök + birimAdı, "utf8"));
   if (latexVar)
-    cssler.push("/lib/util/latex.css");
+    cssler.add("/lib/util/latex.css");
 
   return {
     html,
@@ -374,10 +377,17 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
 const sayfaOku = (sayfaAdı, seçimler) => {
   const { html, cssler } = birimOku(sayfaAdı, seçimler, {});
   if (seçimler.dev) {
-    /** @const {string} */
-    const linkler = cssler.slice(1)
-      .map((css) => `  <link href="${css}" rel="stylesheet" type="text/css" />\n`)
-      .join('');
+    /** @type {string} */
+    let linkler = "";
+    /** @type {boolean} */
+    let ilk = true;
+    for (const css of cssler) {
+      if (ilk) {
+        ilk = false;
+        continue
+      }
+      linkler += `  <link href="${css}" rel="stylesheet" type="text/css" />\n`
+    }
     return html.replace("</head>", linkler + "</head>");
   }
   return html;

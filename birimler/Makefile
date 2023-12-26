@@ -14,16 +14,20 @@ build/%.isvg: %.svg lib/birimler/svgoInlineConfig.js
 	mkdir -p $(dir $@)
 	yarn svgo --config lib/birimler/svgoInlineConfig.js $< --output $@
 
+build/%.webp: %.png
+	mkdir -p $(dir $@)
+	cwebp -m 6 -pass 10 -q 80 $< -o $@
+
 %.gz: %
 	cp $< $@.tmp
-	touch -d 2022-01-01T00:00:00 $@.tmp
+	touch -d 2023-01-01T00:00:00 $@.tmp
 	zopfli --force --best --i20 $@.tmp
 	mv $@.tmp.gz $<.gz
 	rm -f $@.tmp
 
 %.br: %
 	cp $< $@.tmp
-	touch -d 2022-01-01T00:00:00 $@.tmp
+	touch -d 2023-01-01T00:00:00 $@.tmp
 	brotli --force -w 24 --quality=11 --rm --output=$@ $@.tmp
 	touch $@
 
