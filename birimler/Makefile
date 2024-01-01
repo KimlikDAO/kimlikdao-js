@@ -20,14 +20,14 @@ build/%.webp: %.png
 
 %.gz: %
 	cp $< $@.tmp
-	touch -d 2023-01-01T00:00:00 $@.tmp
+	touch -d 2024-01-01T00:00:00 $@.tmp
 	zopfli --force --best --i20 $@.tmp
 	mv $@.tmp.gz $<.gz
 	rm -f $@.tmp
 
 %.br: %
 	cp $< $@.tmp
-	touch -d 2023-01-01T00:00:00 $@.tmp
+	touch -d 2024-01-01T00:00:00 $@.tmp
 	brotli --force -w 24 --quality=11 --rm --output=$@ $@.tmp
 	touch $@
 
