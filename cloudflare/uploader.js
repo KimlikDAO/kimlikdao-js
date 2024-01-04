@@ -1,5 +1,6 @@
 import { readFileSync, readdirSync } from "fs";
 import toml from "toml";
+import { CompressedMimes } from "../birimler/ayarlar.js";
 import { base64 } from "../util/çevir.js";
 
 /** @const */
@@ -128,30 +129,46 @@ const Ext = ['', '.br', '.gz'];
 /** @const {!Array<string>} */
 const existing = await getExisting();
 
-/** @const {!Array<string>} */
-const namedUpload = [
-  ...Sayfalar.flatMap((sayfa) => Dil.flatMap((d) => Ext.map((e) => `${sayfa}-${d}.html${e}`))),
-  ...NamedAssets.flatMap((named) => Ext.map(e => named + e))
-];
-/** @const {!Set<string>} */
-const namedUploadSet = new Set(namedUpload);
+/**
+ * @return {!Array<string>}
+ */
+const getNamedFiles = () => {
+  /** @const {!Array<string>} */
+  const namedFiles = [];
+  for (const asset of NamedAssets) {
+    /** @const {number} */
+    const idx = asset.lastIndexOf('.');
+    if (idx != -1 && CompressedMimes[asset.slice(idx + 1)])
+      namedFiles.push(asset)
+    else
+      namedFiles.push(...Ext.map((e) => asset + e));
+  }
+  return namedFiles.concat(Sayfalar.flatMap(
+    (sayfa) => Dil.flatMap((d) => Ext.map((e) => `${sayfa}-${d}.html${e}`))));
+}
 
 /** @const {!Array<string>} */
-const staticUpload = readdirSync("build", { withFileTypes: true })
-  .filter((file) => file.isFile() && !existing.has(file.name) && !namedUploadSet.has(file.name))
+const namedFiles = getNamedFiles();
+
+/** @const {!Set<string>} */
+const namedFilesSet = new Set(namedFiles);
+
+/** @const {!Array<string>} */
+const staticFiles = readdirSync("build", { withFileTypes: true })
+  .filter((file) => file.isFile() && !existing.has(file.name) && !namedFilesSet.has(file.name))
   .map((file) => file.name);
 
-// (1) Statik asset'leri yükle
-if (staticUpload.length > 0) {
-  console.log("🌀 Statik asset'ler yükleniyor", staticUpload);
-  await batchUpload(staticUpload);
+// (1) Statik dosyaları yükle
+if (staticFiles.length > 0) {
+  console.log("🌀 Statik dosyalar yükleniyor", staticFiles);
+  await batchUpload(staticFiles);
 } else
-  console.log("✅ Statik asset'ler aynı, bu adım atlanıyor");
+  console.log("✅ Statik dosyalar aynı, bu adım atlanıyor");
 
-// (2) Named asset'leri yükle
-console.log("🌀 Named asset'ler yükleniyor", namedUpload);
-await batchUpload(namedUpload);
+// (2) Named dosyaları yükle
+console.log("🌀 Named asset'ler yükleniyor", namedFiles);
+await batchUpload(namedFiles);
 
 // (3) Cache purge et
 console.log("🌀 Cache purge ediliyor");
-await purgeCache(namedUpload);
+await purgeCache(namedFiles);
