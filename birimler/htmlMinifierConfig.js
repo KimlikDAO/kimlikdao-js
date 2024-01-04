@@ -1,10 +1,10 @@
-{
+export default {
   "caseSensitive": false,
   "collapseBooleanAttributes": true,
   "collapseInlineTagWhitespace": false,
   "collapseWhitespace": true,
   "conservativeCollapse": false,
-  "customAttrCollapse": ".*",
+  "customAttrCollapse": /.*/,
   "decodeEntities": true,
   "html5": true,
   "ignoreCustomFragments": [],

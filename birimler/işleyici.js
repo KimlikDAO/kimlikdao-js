@@ -1,12 +1,14 @@
 import { writeFileSync } from "fs";
+import { minify } from "html-minifier";
+import htmlMinifierConfig from "./htmlMinifierConfig.js";
 import { sayfaOku } from "./okuyucu.js";
 
 /** @const {!Array<string>} */
 const args = process.argv;
 
-if (args.length >= 4) {
+if (args[3] != "--nominify") {
   /** @const {string} */
-  const out = sayfaOku(args[2], { dil: args[3] }, {});
+  const out = minify(sayfaOku(args[2], { dil: args[3] }, {}), htmlMinifierConfig);
 
   /** @const {!Array<string>} */
   const parts = args[2].split('.');
