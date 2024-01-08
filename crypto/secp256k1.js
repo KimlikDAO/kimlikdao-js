@@ -23,7 +23,7 @@ const P = (1n << 256n) - (1n << 32n) - 977n;
  * @const {!bigint}
  * @noinline
  */
-const N = (1n << 256n) - BigInt("0x14551231950b75fc4402da1732fc9bebf");
+const N = P - BigInt("0x14551231950b75fc4402da1722fc9baee");
 
 /**
  * Unlike the % operation, modP always returns a positive number y such that

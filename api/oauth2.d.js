@@ -24,6 +24,7 @@ oauth2.AccessToken;
  *   code: string,
  *   client_id: string,
  *   client_secret: string,
+ *   redirect_uri: (string | undefined)
  * }}
  */
 oauth2.AccessTokenRequest;
