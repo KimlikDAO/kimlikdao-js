@@ -25,7 +25,7 @@ for (let fileName of args) {
     .digest()
     .toString("base64")
     .slice(0, 8)
-    .replace("/", "+").replace("=", "-");
+    .replaceAll("/", "+").replaceAll("=", "-");
   /** @const {string} */
   const hashExtension = hash + parts.ext;
 
