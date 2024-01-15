@@ -5,8 +5,8 @@ import { G, Point } from '/crypto/secp256k1';
 /**
  * Remove the nobility of the point :/
  *
- * @param {NoblePoint} p
- * @return {Point}
+ * @param {!NoblePoint} p
+ * @return {!Point}
  */
 const derogate = (p) => {
   let q = p.toAffine();
