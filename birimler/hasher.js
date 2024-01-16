@@ -1,17 +1,15 @@
 import { createHash } from "crypto";
-import { copyFile, open, readFile, } from "fs/promises";
+import { copyFile, readFile, writeFile } from "fs/promises";
 import path from "path";
 import process from "process";
 import { CompressedMimes } from "./ayarlar.js";
 
-/** @const {string} */
-const mapFilePath = process.argv[2];
 /** @const {!Array<string>} */
 let args = process.argv.slice(3);
-
-const mapFile = await open(mapFilePath, 'a+');
 /** @type {boolean} */
 let compress = true;
+/** @type {string} */
+let out = "";
 
 for (let fileName of args) {
   if (fileName == "--nocompress") {
@@ -19,7 +17,9 @@ for (let fileName of args) {
     continue;
   }
 
+  /** @const {!Array<string>} */
   const parts = path.parse(fileName);
+  /** @const {string} */
   const hash = createHash('sha256')
     .update(await readFile(fileName))
     .digest()
@@ -44,7 +44,7 @@ for (let fileName of args) {
     ? fileName.slice(5)
     : "/" + fileName;
   console.log(fileName + " -> " + hashExtension);
-  await mapFile.write(fileName + " -> " + hashExtension + "\n");
+  out += `${fileName} -> ${hashExtension}\n`;
 }
 
-await mapFile.close();
+await writeFile(process.argv[2], out, "utf-8");
