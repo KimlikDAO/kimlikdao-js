@@ -19,6 +19,7 @@ const Op = {
   DUP4: "83",
   DUP5: "84",
   DUP6: "85",
+  DUP7: "86",
   DUP16: "8F",
   CREATE: "FO", // CREATE(value, offset, length)
   CALL: "F1", // CALL(gas, addr, value, argsOffset, argsLength, retOffset, retLength)
