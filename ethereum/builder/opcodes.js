@@ -7,12 +7,18 @@ const Op = {
   DIFFICULTY: "44",
   GASLIMIT: "45",
   CHAINID: "46",
+  POP: "50",
   MSTORE: "52",
   GAS: "5A",
   PUSH0: "5F",
   PUSH1: "60",
   PUSH20: "73",
   DUP1: "80",
+  DUP2: "81",
+  DUP3: "82",
+  DUP4: "83",
+  DUP5: "84",
+  DUP6: "85",
   DUP16: "8F",
   CREATE: "FO", // CREATE(value, offset, length)
   CALL: "F1", // CALL(gas, addr, value, argsOffset, argsLength, retOffset, retLength)

@@ -1,7 +1,7 @@
 import { EVM } from "@ethereumjs/evm";
 import { JsonRpcProvider, Wallet } from "ethers";
 import { hex } from "../../../util/çevir";
-import { ByteCode, SZABO, batchSendFixedAmount } from "../builder";
+import { ByteCode, SZABO, batchSendFixedAmountNoPush0 } from "../builder";
 
 const simulate = async (program) => {
   const evm = new EVM();
@@ -19,7 +19,7 @@ const simulate = async (program) => {
  * @const
  * @type {!ByteCode}
  */
-const batchSend = batchSendFixedAmount([
+const batchSend = batchSendFixedAmountNoPush0([
   "0x1111111111111111111111111111111111111111",
   "0x2222222222222222222222222222222222222222",
   "0x3333333333333333333333333333333333333333",
@@ -30,7 +30,7 @@ const batchSend = batchSendFixedAmount([
   "0xdddddddddddddddddddddddddddddddddddddddd",
   "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
   "0xffffffffffffffffffffffffffffffffffffffff",
-], 1_000);
+], 100);
 
 /**
  * @param {!ByteCode} program
@@ -40,12 +40,12 @@ const send = async (program) => {
    * @const
    * @type {!Provider}
    */
-  const provider = new JsonRpcProvider("https://goerli.drpc.org/");
+  const provider = new JsonRpcProvider("https://fantom-testnet.rpc.thirdweb.com");
   /** @const {!Wallet} */
   const wallet = new Wallet(process.argv[2], provider);
 
-  const res = await wallet.estimateGas({
-    value: 10_000n * SZABO,
+  const res = await wallet.sendTransaction({
+    value: 1_000n * SZABO,
     data: "0x" + hex(program),
   });
 
