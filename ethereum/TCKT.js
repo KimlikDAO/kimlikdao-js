@@ -1,8 +1,9 @@
 /**
  * @fileoverview TCKT akıllı sözleşmesinin js önyüzu.
  */
+import TCKT from "./TCKTLite";
 import evm from './evm';
-import { getContract } from "./TCKTLite";
+import { callMethod } from "./provider";
 
 /**
  * @const {string}
@@ -166,7 +167,7 @@ const addToWallet = (chainId, tokenId) => Provider.request(/** @type {!eth.Reque
   params: /** @type {!eth.WatchAssetParam} */({
     type: 'ERC721',
     options: {
-      address: getContract(chainId),
+      address: TCKT.getAddress(chainId),
       symbol: "TCKT",
       tokenId,
     }
@@ -214,23 +215,7 @@ const maybeGasLimit = (chainId, gasLimit) => chainId == "0xa4b1"
  * @return {!Promise<string>} transaction hash
  */
 const sendTransaction = (chainId, address, value, gas, calldata) =>
-  sendTransactionTo(address, getContract(chainId), value, gas, calldata);
-
-/**
- * @param {string} contract Contract adddress given with the 0x prefix
- * @param {string} calldata Calldata transmitted to the contract verbatim.
- * @param {string=} from
- * @return {!Promise<string>}
- */
-const callMethod = (contract, calldata, from) =>
-  Provider.request(/** @type {!eth.Request} */({
-    method: "eth_call",
-    params: [/** @type {!eth.Transaction} */({
-      to: contract,
-      data: calldata,
-      from,
-    }), "latest"]
-  }))
+  sendTransactionTo(address, TCKT.getAddress(chainId), value, gas, calldata);
 
 /** @const {!Object<string, string>} */
 const NonceCache = {};
@@ -244,7 +229,7 @@ const NonceCache = {};
 const getNonce = (chainId, address, token) => {
   const cached = NonceCache[chainId + address + token];
   return cached
-    ? Promise.resolve(cached) : callMethod(
+    ? Promise.resolve(cached) : callMethod(Provider,
       "0x" + TokenData[chainId][token].adres, "0x7ecebe00" + evm.address(address)
     ).then((nonce) => {
       NonceCache[chainId + address + token] = nonce;
@@ -257,8 +242,7 @@ const getNonce = (chainId, address, token) => {
  * @param {string} address
  * @return {!Promise<string>}
  */
-const handleOf = (chainId, address) =>
-  callMethod(getContract(chainId), "0xc50a1514" + evm.address(address));
+const handleOf = (chainId, address) => TCKT.handleOf(Provider, chainId, address);
 
 /**
  * @param {string} chainId
@@ -266,7 +250,7 @@ const handleOf = (chainId, address) =>
  * @return {!Promise<number>}
  */
 const revokesRemaining = (chainId, sender) =>
-  callMethod(getContract(chainId), "0x165c44f3", sender)
+  callMethod(Provider, TCKT.getAddress(chainId), "0x165c44f3", sender)
     .then((revokes) => parseInt(revokes.slice(-6), 16));
 
 /**
@@ -319,7 +303,7 @@ const getRevokeeAddresses = (chainId, revoker) =>
   Provider.request(/** @type {!eth.Request} */({
     method: "eth_getLogs",
     params: [/** @type {!eth.GetLogs} */({
-      address: getContract(chainId),
+      address: TCKT.getAddress(chainId),
       fromBlock: "0x12A3AE7",
       toBlock: "0x12A3AE7",
       topics: [
@@ -465,7 +449,7 @@ const getApprovalFor = (chainId, address, token) => sendTransactionTo(
   "0x" + TokenData[chainId][token].adres,
   "0",
   maybeGasLimit(chainId, 80_000),
-  "0x095ea7b3" + evm.address(getContract(chainId)) + evm.Uint256Max);
+  "0x095ea7b3" + evm.address(TCKT.getAddress(chainId)) + evm.Uint256Max);
 
 /**
  * @param {string} chainId       chainId for the chain we want the permit for
@@ -509,7 +493,7 @@ const getPermitFor = (chainId, owner, token, withRevokers) =>
         "primaryType": "Permit",
         "message": {
           "owner": owner,
-          "spender": getContract(chainId),
+          "spender": TCKT.getAddress(chainId),
           "value": "0x" + price[+withRevokers].toString(16),
           "nonce": nonce,
           "deadline": "0x" + deadline

@@ -29,10 +29,6 @@ const handleOf = (provider, chainId, addr) =>
  */
 const hasDID = (provider, chainId, addr) => handleOf(provider, chainId, addr).then(isNonzero);
 
-export {
-  getAddress as getContract,
-};
-
 export default {
   getAddress,
   handleOf,
