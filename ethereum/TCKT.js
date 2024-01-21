@@ -2,12 +2,7 @@
  * @fileoverview TCKT akıllı sözleşmesinin js önyüzu.
  */
 import evm from './evm';
-
-/**
- * @const {string}
- * @noinline
- */
-const TCKT_ADDR = "0xcCc0a9b023177549fcf26c947edb5bfD9B230cCc";
+import { getContract } from "./TCKTLite";
 
 /**
  * @const {string}
@@ -163,14 +158,15 @@ const setProvider = (provider) => Provider = provider;
  *
  * Sends a `wallet_watchAsset` request to the connected wallet.
  *
+ * @param {string} chainId
  * @param {string} tokenId
  */
-const addToWallet = (tokenId) => Provider.request(/** @type {!eth.Request} */({
+const addToWallet = (chainId, tokenId) => Provider.request(/** @type {!eth.Request} */({
   method: 'wallet_watchAsset',
   params: /** @type {!eth.WatchAssetParam} */({
     type: 'ERC721',
     options: {
-      address: TCKT_ADDR,
+      address: getContract(chainId),
       symbol: "TCKT",
       tokenId,
     }
@@ -210,14 +206,15 @@ const maybeGasLimit = (chainId, gasLimit) => chainId == "0xa4b1"
   : gasLimit;
 
 /**
+ * @param {string} chainId
  * @param {string} address
  * @param {string} value value in native tokens, encoded as a hex string.
  * @param {number | undefined} gas
  * @param {string} calldata hex encoded calldata.
  * @return {!Promise<string>} transaction hash
  */
-const sendTransaction = (address, value, gas, calldata) =>
-  sendTransactionTo(address, TCKT_ADDR, value, gas, calldata);
+const sendTransaction = (chainId, address, value, gas, calldata) =>
+  sendTransactionTo(address, getContract(chainId), value, gas, calldata);
 
 /**
  * @param {string} contract Contract adddress given with the 0x prefix
@@ -256,18 +253,20 @@ const getNonce = (chainId, address, token) => {
 }
 
 /**
+ * @param {string} chainId
  * @param {string} address
  * @return {!Promise<string>}
  */
-const handleOf = (address) =>
-  callMethod(TCKT_ADDR, "0xc50a1514" + evm.address(address));
+const handleOf = (chainId, address) =>
+  callMethod(getContract(chainId), "0xc50a1514" + evm.address(address));
 
 /**
+ * @param {string} chainId
  * @param {string} sender
  * @return {!Promise<number>}
  */
-const revokesRemaining = (sender) =>
-  callMethod(TCKT_ADDR, "0x165c44f3", sender)
+const revokesRemaining = (chainId, sender) =>
+  callMethod(getContract(chainId), "0x165c44f3", sender)
     .then((revokes) => parseInt(revokes.slice(-6), 16));
 
 /**
@@ -277,7 +276,7 @@ const revokesRemaining = (sender) =>
  * @return {!Promise<*>}
  */
 const reduceRevokeThreshold = (chainId, address, deltaWeight) =>
-  sendTransaction(address, "0", maybeGasLimit(chainId, 22_000),
+  sendTransaction(chainId, address, "0", maybeGasLimit(chainId, 22_000),
     "0xab505b1c" + evm.uint256(deltaWeight));
 
 /**
@@ -288,7 +287,7 @@ const reduceRevokeThreshold = (chainId, address, deltaWeight) =>
  * @return {!Promise<*>}
  */
 const addRevoker = (chainId, address, deltaWeight, revokerAddress) =>
-  sendTransaction(address, "0", maybeGasLimit(chainId, 49_000),
+  sendTransaction(chainId, address, "0", maybeGasLimit(chainId, 49_000),
     "0xf02b3297" + evm.uint96(deltaWeight) + evm.packedAddress(revokerAddress));
 
 /**
@@ -297,7 +296,7 @@ const addRevoker = (chainId, address, deltaWeight, revokerAddress) =>
  * @return {!Promise<*>}
  */
 const revoke = (chainId, address) =>
-  sendTransaction(address, "0", maybeGasLimit(chainId, 53_000), "0xb6549f75");
+  sendTransaction(chainId, address, "0", maybeGasLimit(chainId, 53_000), "0xb6549f75");
 
 /**
  * @param {string} chainId
@@ -306,20 +305,21 @@ const revoke = (chainId, address) =>
  * @return {!Promise<*>}
  */
 const revokeFriend = (chainId, address, friend) =>
-  sendTransaction(address, "0", maybeGasLimit(chainId, 80_000),
+  sendTransaction(chainId, address, "0", maybeGasLimit(chainId, 80_000),
     "0x3a2c82c7" + evm.address(friend));
 
 /**
  * Returns the list of addresses that can be revoked by `revoker`.
  *
+ * @param {string} chainId
  * @param {string} revoker
  * @return {!Promise<*>}
  */
-const getRevokeeAddresses = (revoker) =>
+const getRevokeeAddresses = (chainId, revoker) =>
   Provider.request(/** @type {!eth.Request} */({
     method: "eth_getLogs",
     params: [/** @type {!eth.GetLogs} */({
-      address: TCKT_ADDR,
+      address: getContract(chainId),
       fromBlock: "0x12A3AE7",
       toBlock: "0x12A3AE7",
       topics: [
@@ -343,9 +343,9 @@ const createWithRevokers = (chainId, address, cid, revokeThreshold, revokers) =>
     /** @const {string} */
     const price = (TRILLION * BigInt(revokeThreshold == 0 ? high : low)).toString(16);
     return revokeThreshold == 0
-      ? sendTransaction(address, price, maybeGasLimit(chainId, 49_000),
+      ? sendTransaction(chainId, address, price, maybeGasLimit(chainId, 49_000),
         "0x780900dc" + cid)
-      : sendTransaction(address, price, maybeGasLimit(chainId, 70_000 + 25_000 * Object.keys(revokers).length),
+      : sendTransaction(chainId, address, price, maybeGasLimit(chainId, 70_000 + 25_000 * Object.keys(revokers).length),
         "0xd3cfebc1" + cid + serializeRevokers(revokeThreshold, revokers));
   });
 
@@ -381,9 +381,9 @@ const serializeRevokers = (revokeThreshold, revokers) => {
  */
 const createWithRevokersWithTokenPermit = (chainId, address, cid, revokeThreshold, revokers, signature) =>
   revokeThreshold == 0
-    ? sendTransaction(address, "0", maybeGasLimit(chainId, 160_000),
+    ? sendTransaction(chainId, address, "0", maybeGasLimit(chainId, 160_000),
       "0xe0adf95b" + cid + signature)
-    : sendTransaction(address, "0",
+    : sendTransaction(chainId, address, "0",
       maybeGasLimit(chainId, 180_000 + 25_000 * Object.keys(revokers).length),
       "0x0633ddcb" + cid + serializeRevokers(revokeThreshold, revokers) + signature);
 
@@ -400,9 +400,9 @@ const createWithRevokersWithTokenPayment = (chainId, address, cid, revokeThresho
   /** @const {string} */
   const tokenSerialized = evm.uint96(0) + TokenData[chainId][token].adres;
   return revokeThreshold == 0
-    ? sendTransaction(address, "0", maybeGasLimit(chainId, 140_000),
+    ? sendTransaction(chainId, address, "0", maybeGasLimit(chainId, 140_000),
       "0xdaca45f7" + cid + tokenSerialized)
-    : sendTransaction(address, "0",
+    : sendTransaction(chainId, address, "0",
       maybeGasLimit(chainId, 160_000 + 25_000 * Object.keys(revokers).length),
       "0x3e36b2f7" + cid + serializeRevokers(revokeThreshold, revokers) + tokenSerialized);
 }
@@ -465,7 +465,7 @@ const getApprovalFor = (chainId, address, token) => sendTransactionTo(
   "0x" + TokenData[chainId][token].adres,
   "0",
   maybeGasLimit(chainId, 80_000),
-  "0x095ea7b3" + evm.address(TCKT_ADDR) + evm.Uint256Max);
+  "0x095ea7b3" + evm.address(getContract(chainId)) + evm.Uint256Max);
 
 /**
  * @param {string} chainId       chainId for the chain we want the permit for
@@ -509,7 +509,7 @@ const getPermitFor = (chainId, owner, token, withRevokers) =>
         "primaryType": "Permit",
         "message": {
           "owner": owner,
-          "spender": TCKT_ADDR,
+          "spender": getContract(chainId),
           "value": "0x" + price[+withRevokers].toString(16),
           "nonce": nonce,
           "deadline": "0x" + deadline
@@ -538,7 +538,7 @@ const isTokenAvailable = (chainId, token) => !!TokenData[chainId][token];
 const isTokenERC20Permit = (chainId, token) =>
   !!(TokenData[chainId][token] && TokenData[chainId][token].sürüm)
 
-export { TokenData, TCKT_ADDR };
+export { TokenData };
 
 export default {
   addRevoker,

@@ -40,8 +40,10 @@ build/ethereum/test/eravm.compiled-test.js: ethereum/test/eravm.compiled-test.js
 
 build/ethereum/test/TCKT.compiled-test.js: ethereum/test/TCKT.compiled-test.js \
     crypto/secp256k1.js crypto/sha3.js crypto/modular.js \
-    ethereum/eth.d.js ethereum/logs.d.js ethereum/transaction.d.js ethereum/provider.d.js \
-    ethereum/TCKT.js ethereum/evm.js \
+    ethereum/eth.d.js ethereum/logs.d.js ethereum/transaction.d.js \
+    ethereum/provider.d.js ethereum/provider.js \
+    ethereum/TCKTLite.js ethereum/TCKT.js \
+    ethereum/evm.js \
     testing/assert.js testing/nodejs.d.js \
     util/çevir.js
 	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \

@@ -4,7 +4,7 @@
  * @author KimlikDAO
  */
 
-import { TCKT_ADDR } from "../ethereum/TCKT";
+import { getContract } from "../ethereum/TCKTLite";
 import dom from "../util/dom";
 import { hex } from "../util/çevir";
 import { SectionGroup } from "./decryptedSections";
@@ -63,7 +63,7 @@ const bölüm = (bölümler, ağ, girişTr, girişEn) => /** @type {!SectionGrou
   userPrompt: imzaMetni(bölümler, girişTr, girişEn)
     + "Nonce: " + hex(/** @type {!Uint8Array} */(crypto.getRandomValues(new Uint8Array(8))))
     + "\nChainId: " + ağ
-    + "\nNFT: " + TCKT_ADDR
+    + "\nNFT: " + getContract(ağ)
 });
 
 /**
@@ -118,7 +118,7 @@ const OnaylamaAnahtarları = {
 };
 
 export {
-  imzaMetni,
-  metadataVeBölümler,
   OnaylamaAnahtarları,
+  imzaMetni,
+  metadataVeBölümler
 };

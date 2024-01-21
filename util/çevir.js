@@ -17,7 +17,7 @@ const hex = (buff) => {
 }
 
 /**
- * @param {string} str olarak kodlanmış veri.
+ * @param {string} str hex olarak kodlanmış veri.
  * @return {!Uint8Array} byte dizisi
  */
 const hexten = (str) => {
