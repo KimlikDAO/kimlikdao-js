@@ -4,6 +4,7 @@
  * @author KimlikDAO
  */
 
+import { ChainId } from "../crosschain/chainId";
 import TCKT from "../ethereum/TCKTLite";
 import dom from "../util/dom";
 import { hex } from "../util/çevir";
@@ -53,7 +54,7 @@ const imzaMetni = (bölümler, girişTr, girişEn) => {
 
 /**
  * @param {!Array<string>} bölümler
- * @param {string} ağ
+ * @param {ChainId} ağ
  * @param {string=} girişTr
  * @param {string=} girişEn
  * @return {!SectionGroup}
@@ -67,7 +68,7 @@ const bölüm = (bölümler, ağ, girişTr, girişEn) => /** @type {!SectionGrou
 });
 
 /**
- * @param {string} ağ
+ * @param {ChainId} ağ
  * @return {{
  *   metadata: !eth.ERC721Metadata,
  *   bölümler: !Array<SectionGroup>

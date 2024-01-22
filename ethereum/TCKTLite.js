@@ -1,4 +1,5 @@
-import { address, callMethod, isNonzero } from "../ethereum/provider";
+import { ChainId } from "../crosschain/chainId";
+import { address, callMethod, isNonzero } from "./provider";
 
 /** @const {!Array<string>} */
 const TCKT_ADDRS = [
@@ -7,14 +8,14 @@ const TCKT_ADDRS = [
 ];
 
 /**
- * @param {string} chainId
+ * @param {ChainId} chainId
  * @return {string} TCKT contract address
  */
-const getAddress = (chainId) => TCKT_ADDRS[+(chainId == "0x144")];
+const getAddress = (chainId) => TCKT_ADDRS[+(chainId == ChainId.x144)];
 
 /**
  * @param {!eth.Provider} provider
- * @param {string} chainId
+ * @param {ChainId} chainId
  * @param {string} addr
  * @return {!Promise<string>}
  */
@@ -23,7 +24,7 @@ const handleOf = (provider, chainId, addr) =>
 
 /**
  * @param {!eth.Provider} provider
- * @param {string} chainId
+ * @param {ChainId} chainId
  * @param {string} addr
  * @return {!Promise<boolean>}
  */

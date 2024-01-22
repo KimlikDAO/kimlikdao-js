@@ -1,3 +1,4 @@
+import { ChainId } from "./chainId";
 import { Signer } from "./signer";
 
 /**
@@ -18,8 +19,8 @@ Provider.prototype.initIfAvailable = function () { }
 Provider.prototype.downloadURL = function () { }
 
 /**
- * @param {string} chain
- * @param {function(string)} chainChanged
+ * @param {ChainId} chain
+ * @param {function(ChainId)} chainChanged
  * @param {function(!Array<string>)} addressChanged
  * @param {boolean=} onlyIfApproved
  * @return {!Promise<void>}

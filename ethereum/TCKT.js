@@ -1,6 +1,7 @@
 /**
  * @fileoverview TCKT akıllı sözleşmesinin js önyüzu.
  */
+import { ChainId } from "../crosschain/chainId";
 import TCKT from "./TCKTLite";
 import evm from './evm';
 import { callMethod } from "./provider";
@@ -36,7 +37,7 @@ TokenInfo.prototype.basamak;
 /** @const {number} */
 TokenInfo.prototype.sürüm;
 
-/** @const {!Object<string, !Array<TokenInfo>>} */
+/** @const {!Object<ChainId, !Array<TokenInfo>>} */
 const TokenData = {
   "0x1": [
     null, /** @type {!TokenInfo} */({
@@ -159,7 +160,7 @@ const setProvider = (provider) => Provider = provider;
  *
  * Sends a `wallet_watchAsset` request to the connected wallet.
  *
- * @param {string} chainId
+ * @param {ChainId} chainId
  * @param {string} tokenId
  */
 const addToWallet = (chainId, tokenId) => Provider.request(/** @type {!eth.Request} */({
@@ -197,17 +198,23 @@ const sendTransactionTo = (from, to, value, gas, calldata) => {
   }));
 }
 
+/** @const {!Object<ChainId, boolean>} */
+const NO_GAS_ESTIMATE = {
+  "0xa4b1": true,
+  "0x144": true,
+};
+
 /**
- * @param {string} chainId
+ * @param {ChainId} chainId
  * @param {number} gasLimit
  * @return {number | undefined}
  */
-const maybeGasLimit = (chainId, gasLimit) => chainId == "0xa4b1"
+const maybeGasLimit = (chainId, gasLimit) => chainId in NO_GAS_ESTIMATE
   ? undefined
   : gasLimit;
 
 /**
- * @param {string} chainId
+ * @param {ChainId} chainId
  * @param {string} address
  * @param {string} value value in native tokens, encoded as a hex string.
  * @param {number | undefined} gas
@@ -221,7 +228,7 @@ const sendTransaction = (chainId, address, value, gas, calldata) =>
 const NonceCache = {};
 
 /**
- * @param {string} chainId
+ * @param {ChainId} chainId
  * @param {string} address Owner address including the 0x.
  * @param {number} token
  * @return {!Promise<string>} The nonce for (chain, token, address).
@@ -238,14 +245,14 @@ const getNonce = (chainId, address, token) => {
 }
 
 /**
- * @param {string} chainId
+ * @param {ChainId} chainId
  * @param {string} address
  * @return {!Promise<string>}
  */
 const handleOf = (chainId, address) => TCKT.handleOf(Provider, chainId, address);
 
 /**
- * @param {string} chainId
+ * @param {ChainId} chainId
  * @param {string} sender
  * @return {!Promise<number>}
  */
@@ -254,7 +261,7 @@ const revokesRemaining = (chainId, sender) =>
     .then((revokes) => parseInt(revokes.slice(-6), 16));
 
 /**
- * @param {string} chainId
+ * @param {ChainId} chainId
  * @param {string} address
  * @param {number} deltaWeight
  * @return {!Promise<*>}
@@ -264,7 +271,7 @@ const reduceRevokeThreshold = (chainId, address, deltaWeight) =>
     "0xab505b1c" + evm.uint256(deltaWeight));
 
 /**
- * @param {string} chainId
+ * @param {ChainId} chainId
  * @param {string} address
  * @param {number} deltaWeight revoker weight.
  * @param {string} revokerAddress revoker address.
@@ -275,7 +282,7 @@ const addRevoker = (chainId, address, deltaWeight, revokerAddress) =>
     "0xf02b3297" + evm.uint96(deltaWeight) + evm.packedAddress(revokerAddress));
 
 /**
- * @param {string} chainId
+ * @param {ChainId} chainId
  * @param {string} address
  * @return {!Promise<*>}
  */
@@ -283,7 +290,7 @@ const revoke = (chainId, address) =>
   sendTransaction(chainId, address, "0", maybeGasLimit(chainId, 53_000), "0xb6549f75");
 
 /**
- * @param {string} chainId
+ * @param {ChainId} chainId
  * @param {string} address
  * @param {string} friend
  * @return {!Promise<*>}
@@ -295,7 +302,7 @@ const revokeFriend = (chainId, address, friend) =>
 /**
  * Returns the list of addresses that can be revoked by `revoker`.
  *
- * @param {string} chainId
+ * @param {ChainId} chainId
  * @param {string} revoker
  * @return {!Promise<*>}
  */
@@ -315,7 +322,7 @@ const getRevokeeAddresses = (chainId, revoker) =>
   }))
 
 /**
- * @param {string} chainId
+ * @param {ChainId} chainId
  * @param {string} address
  * @param {string} cid
  * @param {number} revokeThreshold
@@ -355,7 +362,7 @@ const serializeRevokers = (revokeThreshold, revokers) => {
 }
 
 /**
- * @param {string} chainId
+ * @param {ChainId} chainId
  * @param {string} address
  * @param {string} cid
  * @param {number} revokeThreshold
@@ -372,7 +379,7 @@ const createWithRevokersWithTokenPermit = (chainId, address, cid, revokeThreshol
       "0x0633ddcb" + cid + serializeRevokers(revokeThreshold, revokers) + signature);
 
 /**
- * @param {string} chainId
+ * @param {ChainId} chainId
  * @param {string} address
  * @param {string} cid
  * @param {number} revokeThreshold
@@ -392,7 +399,7 @@ const createWithRevokersWithTokenPayment = (chainId, address, cid, revokeThresho
 }
 
 /**
- * @param {string} chainId
+ * @param {ChainId} chainId
  * @param {number} token
  * @return {!Promise<!Array<number>>} price of TCKT in the given currency
  */
@@ -414,7 +421,7 @@ const priceIn = (chainId, token) => {
 }
 
 /**
- * @param {string} chainId
+ * @param {ChainId} chainId
  * @return {!Promise<number>}
  */
 const estimateNetworkFee = (chainId) => {
@@ -439,7 +446,7 @@ const estimateNetworkFee = (chainId) => {
 const getDeadline = () => 60 * 60 + (Date.now() / 1000 | 0);
 
 /**
- * @param {string} chainId
+ * @param {ChainId} chainId
  * @param {string} address     Address of the message sender (asset owner also).
  * @param {number} token       A ERC20 token address to get the approval from.
  * @return {!Promise<*>}
@@ -452,7 +459,7 @@ const getApprovalFor = (chainId, address, token) => sendTransactionTo(
   "0x095ea7b3" + evm.address(TCKT.getAddress(chainId)) + evm.Uint256Max);
 
 /**
- * @param {string} chainId       chainId for the chain we want the permit for
+ * @param {ChainId} chainId      chainId for the chain we want the permit for
  * @param {string} owner         Owner of the asset.
  * @param {number} token         dApp internal currency code, currently in
  *                               [1..3].
@@ -508,14 +515,14 @@ const getPermitFor = (chainId, owner, token, withRevokers) =>
     });
 
 /**
- * @param {string} chainId
+ * @param {ChainId} chainId
  * @param {number} token
  * @return {boolean}
  */
 const isTokenAvailable = (chainId, token) => !!TokenData[chainId][token];
 
 /**
- * @param {string} chainId
+ * @param {ChainId} chainId
  * @param {number} token internal token id; see `TokenData`.
  * @return {boolean}
  */
