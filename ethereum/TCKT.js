@@ -529,7 +529,7 @@ const isTokenAvailable = (chainId, token) => !!TokenData[chainId][token];
 const isTokenERC20Permit = (chainId, token) =>
   !!(TokenData[chainId][token] && TokenData[chainId][token].sürüm)
 
-export { TokenData };
+export { TokenData, TokenInfo };
 
 export default {
   addRevoker,

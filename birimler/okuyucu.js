@@ -1,9 +1,6 @@
 import { existsSync, readFileSync } from "fs";
 import { Parser } from "htmlparser2";
-import { createRequire } from "module";
 import { renderParagraph } from "./latex.js";
-
-const require = createRequire(process.cwd() + "/");
 
 /**
  * @enum {number}
@@ -120,7 +117,7 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
     }
 
   if (birimAdı.endsWith(".cjs")) {
-    const üreticiBirim = require("./" + seçimler.kök + birimAdı, "utf8");
+    const üreticiBirim = require(process.cwd() + "/" + seçimler.kök + birimAdı, "utf8");
     return {
       html: "" + üreticiBirim.üret(değerler),
       cssler: new Set(),

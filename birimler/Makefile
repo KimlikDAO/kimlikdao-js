@@ -7,11 +7,11 @@ Lang-tr := true
 
 build/%.svg: %.svg lib/birimler/svgoConfig.js
 	mkdir -p $(dir $@)
-	node lib/birimler/işleyici $< --svg
+	bun lib/birimler/işleyici.js $< --svg
 
 build/%.isvg: %.svg lib/birimler/svgoInlineConfig.js
 	mkdir -p $(dir $@)
-	yarn svgo --config lib/birimler/svgoInlineConfig.js $< --output $@
+	bun svgo --config lib/birimler/svgoInlineConfig.js $< --output $@
 
 build/%.webp: %.png
 	mkdir -p $(dir $@)

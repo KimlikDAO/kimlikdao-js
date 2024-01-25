@@ -7,18 +7,17 @@ build/crypto/test/integration.compiled-test.js: crypto/test/integration.compiled
     testing/vm.js \
     util/çevir.js
 	mkdir -p $(dir $@)
-	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
-                             --jscomp_error=strictCheckTypes \
-                             --jscomp_error=unusedLocalVariables \
-                             --emit_use_strict \
-                             --module_resolution NODE \
-                             --assume_function_wrapper \
-                             --dependency_mode PRUNE \
-                             --entry_point $< \
-                             --js $^ \
-                             --js_output_file $@
-	yarn uglifyjs testing/nodejs.js $@ -m -c toplevel,unsafe -o $@
-	node $@
+	bun google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
+                            --jscomp_error=strictCheckTypes \
+                            --jscomp_error=unusedLocalVariables \
+                            --emit_use_strict \
+                            --module_resolution NODE \
+                            --assume_function_wrapper \
+                            --dependency_mode PRUNE \
+                            --entry_point $< \
+                            --js $^ \
+                            --js_output_file $@
+	bun uglifyjs testing/nodejs.js $@ -m -c toplevel,unsafe -o $@
 	wc $@
 
 build/crypto/test/modular.compiled-test.js: crypto/test/modular.compiled-test.js \
@@ -26,18 +25,17 @@ build/crypto/test/modular.compiled-test.js: crypto/test/modular.compiled-test.js
     testing/assert.js testing/nodejs.d.js \
     util/çevir.js
 	mkdir -p $(dir $@)
-	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
-                             --jscomp_error=strictCheckTypes \
-                             --jscomp_error=unusedLocalVariables \
-                             --emit_use_strict \
-                             --module_resolution NODE \
-                             --assume_function_wrapper \
-                             --dependency_mode PRUNE \
-                             --entry_point $< \
-                             --js $^ \
-                             --js_output_file $@
-	yarn uglifyjs $@ -m -c toplevel,unsafe -o $@
-	node $@
+	bun google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
+                            --jscomp_error=strictCheckTypes \
+                            --jscomp_error=unusedLocalVariables \
+                            --emit_use_strict \
+                            --module_resolution NODE \
+                            --assume_function_wrapper \
+                            --dependency_mode PRUNE \
+                            --entry_point $< \
+                            --js $^ \
+                            --js_output_file $@
+	bun uglifyjs $@ -m -c toplevel,unsafe -o $@
 	wc $@
 
 build/crypto/test/sha3.compiled-test.js: crypto/test/sha3.compiled-test.js crypto/test/sha3_*.js \
@@ -45,18 +43,17 @@ build/crypto/test/sha3.compiled-test.js: crypto/test/sha3.compiled-test.js crypt
     testing/assert.js testing/nodejs.d.js \
     util/çevir.js
 	mkdir -p $(dir $@)
-	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
-                             --jscomp_error=strictCheckTypes \
-                             --jscomp_error=unusedLocalVariables \
-                             --emit_use_strict \
-                             --module_resolution NODE \
-                             --assume_function_wrapper \
-                             --dependency_mode PRUNE \
-                             --entry_point $< \
-                             --js $^ \
-                             --js_output_file $@
-	yarn uglifyjs $@ -m -c toplevel,unsafe -o $@
-	node $@
+	bun google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
+                            --jscomp_error=strictCheckTypes \
+                            --jscomp_error=unusedLocalVariables \
+                            --emit_use_strict \
+                            --module_resolution NODE \
+                            --assume_function_wrapper \
+                            --dependency_mode PRUNE \
+                            --entry_point $< \
+                            --js $^ \
+                            --js_output_file $@
+	bun uglifyjs $@ -m -c toplevel,unsafe -o $@
 	wc $@
 
 build/crypto/test/wesolowski.compiled-test.js: crypto/test/wesolowski.compiled-test.js \
@@ -65,40 +62,34 @@ build/crypto/test/wesolowski.compiled-test.js: crypto/test/wesolowski.compiled-t
     testing/assert.js testing/nodejs.d.js \
     util/çevir.js
 	mkdir -p $(dir $@)
-	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
-                             --jscomp_error=checkTypes \
-                             --jscomp_error=strictCheckTypes \
-                             --jscomp_error=unusedLocalVariables \
-                             --emit_use_strict \
-                             --module_resolution NODE \
-                             --assume_function_wrapper \
-                             --dependency_mode PRUNE \
-                             --entry_point $< \
-                             --js $^ \
-                             --js_output_file $@
-	yarn uglifyjs $@ -m -c toplevel,unsafe -o $@
-	node $@
+	bun google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
+                            --jscomp_error=checkTypes \
+                            --jscomp_error=strictCheckTypes \
+                            --jscomp_error=unusedLocalVariables \
+                            --emit_use_strict \
+                            --module_resolution NODE \
+                            --assume_function_wrapper \
+                            --dependency_mode PRUNE \
+                            --entry_point $< \
+                            --js $^ \
+                            --js_output_file $@
+	bun uglifyjs $@ -m -c toplevel,unsafe -o $@
 	wc $@
 
 build/crypto/test/primes.compiled-test.js: crypto/test/primes.compiled-test.js \
     crypto/primes.js crypto/modular.js \
     testing/assert.js testing/nodejs.d.js
 	mkdir -p $(dir $@)
-	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
-                             --jscomp_error=checkTypes \
-                             --jscomp_error=strictCheckTypes \
-                             --jscomp_error=unusedLocalVariables \
-                             --emit_use_strict \
-                             --module_resolution NODE \
-                             --assume_function_wrapper \
-                             --dependency_mode PRUNE \
-                             --entry_point $< \
-                             --js $^ \
-                             --js_output_file $@
-	yarn uglifyjs $@ -m -c toplevel,unsafe -o $@
-	node $@
+	bun google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
+                            --jscomp_error=checkTypes \
+                            --jscomp_error=strictCheckTypes \
+                            --jscomp_error=unusedLocalVariables \
+                            --emit_use_strict \
+                            --module_resolution NODE \
+                            --assume_function_wrapper \
+                            --dependency_mode PRUNE \
+                            --entry_point $< \
+                            --js $^ \
+                            --js_output_file $@
+	bun uglifyjs $@ -m -c toplevel,unsafe -o $@
 	wc $@
-
-.PHONY: crypto.test
-crypto.test: $(addprefix build/, $(wildcard crypto/test/*/*.compiled-test.js) \
-    $(wildcard crypto/test/*.compiled-test.js))

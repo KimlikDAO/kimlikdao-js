@@ -28,15 +28,15 @@ kimlikdao-js, KimlikDAO projeleri için gerekli olan javascript modüllerinin tu
 ```shell 
 git clone https://github.com/KimlikDAO/kimlikdao-js
 cd kimlikdao-js
-yarn
+bun i
 ``` 
 komutları ile repoyu yerel geliştirme ortamına klonlanıp sonra reponun çalışması için gerekli olan paketler indirilir.
 
 # Testler
 
 Bu repoda iki tür test var:
-* `compiled-test`: Makefile kullanarak GCC (Google Closure Compiler) ile derlenip node veya tarayıcı ortamında çalıştırılan testler.
-* `vitest`: Vitest kullanılarak node / vite ortamında çalıştırılan testler.
+* `compiled-test`: Makefile kullanarak GCC (Google Closure Compiler) ile derlenip bun veya tarayıcı ortamında çalıştırılan testler.
+* `bun test`: Bun test koşucusu ile bun ortamında çalıştırılan testler.
 
 ### compiled-test'ler nasıl çalıştırılır?
 
@@ -44,11 +44,9 @@ Bu repoda iki tür test var:
 
 ![](.github/img/modular.compiled-test.js_ornek_cikti.png "Örnek modular.compiled-test.js çıktısı")
 
-### vitest'ler nasıl çalıştırılır?
+### Bun testler nasıl çalıştırılır?
 
-Vitest'leri çalıştırmak için `yarn vitest` komutunu çalıştırmak yeterli olacaktır. Sorunsuz çalıştırılması durumunda aşağıdaki gibi bir çıktı oluşur:
-
-![](.github/img/vitest_ornek_cikti.png "Örnek vitest çıktısı")
+Bun testleri çalıştırmak için `bun test` komutunu çalıştırmak yeterli olacaktır. Sorunsuz çalıştırılması durumunda aşağıdaki gibi bir çıktı oluşur:
 
 # Yeni modüller
 

@@ -10,17 +10,16 @@ build/did/test/decryptedSections.compiled-test.js: did/test/decryptedSections.co
     testing/vm.js testing/crosschain.js \
     util/çevir.js
 	mkdir -p $(dir $@)
-	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
-                             --jscomp_error=strictCheckTypes \
-                             --jscomp_error=unusedLocalVariables \
-                             --module_resolution NODE \
-                             --assume_function_wrapper \
-                             --dependency_mode PRUNE \
-                             --entry_point $< \
-                             --js $^ \
-                             --js_output_file $@
-	yarn uglifyjs testing/nodejs.js $@ -m -c toplevel,unsafe -o $@
-	node $@
+	bun google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
+                            --jscomp_error=strictCheckTypes \
+                            --jscomp_error=unusedLocalVariables \
+                            --module_resolution NODE \
+                            --assume_function_wrapper \
+                            --dependency_mode PRUNE \
+                            --entry_point $< \
+                            --js $^ \
+                            --js_output_file $@
+	bun uglifyjs testing/nodejs.js $@ -m -c toplevel,unsafe -o $@
 	wc $@
 
 build/did/test/section.compiled-test.js: did/test/section.compiled-test.js \
@@ -33,17 +32,16 @@ build/did/test/section.compiled-test.js: did/test/section.compiled-test.js \
     testing/vm.js \
     util/çevir.js
 	mkdir -p $(dir $@)
-	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
-                             --jscomp_error=strictCheckTypes \
-                             --jscomp_error=unusedLocalVariables \
-                             --module_resolution NODE \
-                             --assume_function_wrapper \
-                             --dependency_mode PRUNE \
-                             --entry_point $< \
-                             --js $^ \
-                             --js_output_file $@
-	yarn uglifyjs testing/nodejs.js $@ -m -c toplevel,unsafe -o $@
-	node $@
+	bun google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
+                            --jscomp_error=strictCheckTypes \
+                            --jscomp_error=unusedLocalVariables \
+                            --module_resolution NODE \
+                            --assume_function_wrapper \
+                            --dependency_mode PRUNE \
+                            --entry_point $< \
+                            --js $^ \
+                            --js_output_file $@
+	bun uglifyjs testing/nodejs.js $@ -m -c toplevel,unsafe -o $@
 	wc $@
 
 build/did/test/verifiableID.compiled-test.js: did/test/verifiableID.compiled-test.js \
@@ -56,19 +54,15 @@ build/did/test/verifiableID.compiled-test.js: did/test/verifiableID.compiled-tes
     testing/assert.js testing/nodejs.d.js testing/nodejs.js \
     util/çevir.js
 	mkdir -p $(dir $@)
-	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
-                             --jscomp_error=strictCheckTypes \
-                             --jscomp_error=checkTypes \
-                             --jscomp_error=unusedLocalVariables \
-                             --module_resolution NODE \
-                             --assume_function_wrapper \
-                             --dependency_mode PRUNE \
-                             --entry_point $< \
-                             --js $^ \
-                             --js_output_file $@
-	yarn uglifyjs testing/nodejs.js $@ -m -c toplevel,unsafe -o $@
-	node $@
+	bun google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
+                            --jscomp_error=strictCheckTypes \
+                            --jscomp_error=checkTypes \
+                            --jscomp_error=unusedLocalVariables \
+                            --module_resolution NODE \
+                            --assume_function_wrapper \
+                            --dependency_mode PRUNE \
+                            --entry_point $< \
+                            --js $^ \
+                            --js_output_file $@
+	bun uglifyjs testing/nodejs.js $@ -m -c toplevel,unsafe -o $@
 	wc $@
-
-.PHONY: did.test
-did.test: $(addprefix build/, $(wildcard did/test/*.compiled-test.js))

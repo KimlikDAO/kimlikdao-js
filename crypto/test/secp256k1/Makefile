@@ -3,18 +3,17 @@ build/crypto/test/secp256k1/unit.compiled-test.js: crypto/test/secp256k1/unit.co
     testing/assert.js testing/nodejs.js testing/nodejs.d.js \
     util/çevir.js
 	mkdir -p $(dir $@)
-	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
-                             --jscomp_error=strictCheckTypes \
-                             --jscomp_error=unusedLocalVariables \
-                             --emit_use_strict \
-                             --module_resolution NODE \
-                             --assume_function_wrapper \
-                             --dependency_mode PRUNE \
-                             --entry_point $< \
-                             --js $^ \
-                             --js_output_file $@
-	yarn uglifyjs testing/nodejs.js $@ -m -c toplevel,unsafe -o $@
-	node $@
+	bun google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
+                            --jscomp_error=strictCheckTypes \
+                            --jscomp_error=unusedLocalVariables \
+                            --emit_use_strict \
+                            --module_resolution NODE \
+                            --assume_function_wrapper \
+                            --dependency_mode PRUNE \
+                            --entry_point $< \
+                            --js $^ \
+                            --js_output_file $@
+	bun uglifyjs testing/nodejs.js $@ -m -c toplevel,unsafe -o $@
 	wc $@
 
 build/crypto/test/secp256k1/nobleVectors.compiled-test.js: \
@@ -24,16 +23,15 @@ build/crypto/test/secp256k1/nobleVectors.compiled-test.js: \
 		testing/nodejs.d.js \
 		util/çevir.js
 	mkdir -p $(dir $@)
-	yarn google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
-                             --jscomp_error=strictCheckTypes \
-                             --jscomp_error=unusedLocalVariables \
-                             --emit_use_strict \
-                             --module_resolution NODE \
-                             --assume_function_wrapper \
-                             --dependency_mode PRUNE \
-                             --entry_point $< \
-                             --js $^ \
-                             --js_output_file $@
-	yarn uglifyjs testing/fsPromises.js $@ -m -c toplevel,unsafe -o $@
-	node $@
+	bun google-closure-compiler -W VERBOSE -O ADVANCED --charset UTF-8 \
+                            --jscomp_error=strictCheckTypes \
+                            --jscomp_error=unusedLocalVariables \
+                            --emit_use_strict \
+                            --module_resolution NODE \
+                            --assume_function_wrapper \
+                            --dependency_mode PRUNE \
+                            --entry_point $< \
+                            --js $^ \
+                            --js_output_file $@
+	bun uglifyjs testing/fsPromises.js $@ -m -c toplevel,unsafe -o $@
 	wc $@

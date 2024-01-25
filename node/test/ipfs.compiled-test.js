@@ -34,7 +34,7 @@ const IPFS_URL = "https://ipfs.kimlikdao.org";
 const testYazOku = () => {
   /** @const {string} */
   const text = "Everything not saved will be lost";
-  return ipfs.yaz(IPFS_URL, text, "text/plain")
+  return ipfs.yaz(IPFS_URL, text, "application/text")
     .then((h) => ipfs.cidBytetanOku(IPFS_URL, h))
     .then((/** string */ gelen) => assertEq(gelen, text));
 }
