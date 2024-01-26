@@ -1,4 +1,4 @@
-const { SVGPathData } = require("svg-pathdata");
+import { SVGPathData } from "svg-pathdata";
 
 const yuvarla = (f) => f.toFixed(2).replace(/\.?0+$/, '');
 
@@ -28,7 +28,7 @@ Point.prototype.sc = function (c) {
   return `x${c}="${yuvarla(this.x)}" y${c}="${yuvarla(this.y)}"`;
 }
 
-Point.prototype.s1 = function() {
+Point.prototype.s1 = function () {
   return this.sc("1");
 }
 
@@ -40,7 +40,7 @@ Point.prototype.s = function () {
   return this.sc("");
 }
 
-exports.sayıDoğrusu = (en, boy, renk) =>
+const sayıDoğrusu = (en, boy, renk) =>
   `<path d="M0 ${boy / 2}h${en}M${en / 2} 0v${boy}" stroke="${renk}"/>`;
 
 /**
@@ -51,7 +51,7 @@ exports.sayıDoğrusu = (en, boy, renk) =>
  * @param {string} renk
  * @return {string}
  */
-exports.gerçelEliptikEğri = (a, b, en, boy, renk) => {
+const gerçelEliptikEğri = (a, b, en, boy, renk) => {
   const delta0 = 20;
 
   const y0 = delta0 * Math.sqrt(b);
@@ -108,4 +108,9 @@ exports.gerçelEliptikEğri = (a, b, en, boy, renk) => {
   return `<path d="${d}" stroke="${renk}" fill="none" stroke-width="2"/>`;
 }
 
-exports.Point = Point;
+export {
+  Point,
+  gerçelEliptikEğri,
+  sayıDoğrusu
+};
+

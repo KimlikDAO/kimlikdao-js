@@ -116,7 +116,7 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
       delete anaNitelikler[nitelik];
     }
 
-  if (birimAdı.endsWith(".cjs")) {
+  if (birimAdı.endsWith(".js")) {
     const üreticiBirim = require(process.cwd() + "/" + seçimler.kök + birimAdı, "utf8");
     return {
       html: "" + üreticiBirim.üret(değerler),
@@ -259,7 +259,7 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
         const phantom = "data-phantom" in nitelikler;
         /** @const {string} */
         const üreticiAdı =
-          `${birimAdı.slice(0, birimAdı.lastIndexOf("/"))}/${nitelikler["data-generate"]}.cjs`;
+          `${birimAdı.slice(0, birimAdı.lastIndexOf("/"))}/${nitelikler["data-generate"]}.js`;
         delete nitelikler["data-generate"];
         let {
           html: üretilenHtml,

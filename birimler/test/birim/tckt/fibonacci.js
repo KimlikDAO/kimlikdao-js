@@ -1,4 +1,4 @@
-exports.üret = (values) => {
+const üret = (values) => {
   let n = values.n;
   let a = 0n;
   let b = 1n;
@@ -10,3 +10,5 @@ exports.üret = (values) => {
   }
   return a.toString();
 }
+
+export { üret };
