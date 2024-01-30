@@ -18,4 +18,17 @@ const ChainGroup = {
   MINA: "m:"
 };
 
-export { ChainId, ChainGroup };
+/**
+ * Avoid using `Object.values(ChainGroup)` to iterate and instead prefer
+ * iterating over this array. This way the `ChainGroup` enum can be completely
+ * optimized away.
+ *
+ * @const {!Array<ChainGroup>}
+ */
+const ChainGroups = [ChainGroup.EVM, ChainGroup.MINA];
+
+export {
+  ChainGroup,
+  ChainGroups,
+  ChainId
+};

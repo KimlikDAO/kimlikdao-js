@@ -62,7 +62,7 @@ mina.Provider = function () { }
 mina.Provider.prototype.getAccounts = function () { };
 
 /**
- * @return {!Promise<!Array<string>|!mina.ProviderError>}
+ * @return {!Promise<!Array<string>>}
  */
 mina.Provider.prototype.requestAccounts = function () { };
 
@@ -73,18 +73,18 @@ mina.Provider.prototype.requestNetwork = function () { };
 
 /**
  * @param {!mina.SignMessageArgs} signMessageArgs
- * @return {!Promise<!mina.SignedData|!mina.ProviderError>}
+ * @return {!Promise<!mina.SignedData>}
  */
 mina.Provider.prototype.signMessage = function (signMessageArgs) { };
 
 /**
  * @param {!mina.SwitchChainArgs} switchChainArgs
- * @return {!Promise<!mina.ChainInfoArgs|!mina.ProviderError>}
+ * @return {!Promise<!mina.ChainInfoArgs>}
  */
 mina.Provider.prototype.switchChain = function (switchChainArgs) { };
 
 /**
  * @param {string} eventName
- * @param {function(*)} handler
+ * @param {function(?)} handler
  */
 mina.Provider.prototype.on = function (eventName, handler) { };
