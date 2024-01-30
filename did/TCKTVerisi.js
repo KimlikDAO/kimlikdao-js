@@ -4,7 +4,7 @@
  * @author KimlikDAO
  */
 
-import { ChainId } from "../crosschain/chainId";
+import { ChainId } from "../crosschain/chains";
 import TCKT from "../ethereum/TCKTLite";
 import dom from "../util/dom";
 import { hex } from "../util/çevir";

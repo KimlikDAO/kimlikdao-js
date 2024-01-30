@@ -1,4 +1,4 @@
-import { ChainId } from "../crosschain/chainId";
+import { ChainId } from "../crosschain/chains";
 import { address, callMethod, isNonzero } from "./provider";
 
 /** @const {!Array<string>} */
@@ -19,8 +19,9 @@ const getAddress = (chainId) => TCKT_ADDRS[+(chainId == ChainId.x144)];
  * @param {string} addr
  * @return {!Promise<string>}
  */
-const handleOf = (provider, chainId, addr) =>
-  callMethod(provider, getAddress(chainId), "0xc50a1514" + address(addr));
+const handleOf = (provider, chainId, addr) => chainId.startsWith("m:")
+  ? fetch("//demo-mapping.kimlikdao.org/" + addr).then((res) => res.text())
+  : callMethod(provider, getAddress(chainId), "0xc50a1514" + address(addr));
 
 /**
  * @param {!eth.Provider} provider

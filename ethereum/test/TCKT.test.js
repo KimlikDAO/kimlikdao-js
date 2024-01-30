@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { ethers } from "ethers";
-import { ChainId } from "../../crosschain/chainId";
+import { ChainId } from "../../crosschain/chains";
 import { TokenData } from "../TCKT";
 
 /**

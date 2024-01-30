@@ -1,4 +1,4 @@
-import { ChainId } from "/crosschain/chainId";
+import { ChainId } from "/crosschain/chains";
 import TCKT from "/ethereum/TCKT";
 import { assertEq } from "/testing/assert";
 

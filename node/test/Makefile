@@ -17,4 +17,4 @@ build/node/test/ipfs.compiled-test.js: node/test/ipfs.compiled-test.js \
 	wc $@
 
 build/node/test/ipfs.compiled-test.bun:
-	echo "\x1b[41mSkipping bun tests as bun support for FormData and Blog is WIP.\x1b[0m"
+	echo "\x1b[41mSkipping bun tests as bun support for FormData and Blob is WIP.\x1b[0m"

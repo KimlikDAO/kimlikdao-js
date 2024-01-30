@@ -51,7 +51,7 @@ cloudflare.KeyValue = function () { }
 /**
  * @nosideeffects
  * @param {string} key
- * @param {string} type
+ * @param {string=} type
  * @return {!Promise<ArrayBuffer>}
  */
 cloudflare.KeyValue.prototype.get = function (key, type) { }

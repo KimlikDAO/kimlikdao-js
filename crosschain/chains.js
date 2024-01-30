@@ -8,6 +8,14 @@ const ChainId = {
   xa4b1: "0xa4b1",
   xa86a: "0xa86a",
   xfa: "0xfa",
+  MinaBerkeley: "m:berkeley",
+  MinaMainnet: "m:mainnet",
 };
 
-export { ChainId };
+/** @enum {string} */
+const ChainGroup = {
+  EVM: "0x",
+  MINA: "m:"
+};
+
+export { ChainId, ChainGroup };

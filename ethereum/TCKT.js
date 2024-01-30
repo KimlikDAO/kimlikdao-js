@@ -1,7 +1,7 @@
 /**
  * @fileoverview TCKT akıllı sözleşmesinin js önyüzu.
  */
-import { ChainId } from "../crosschain/chainId";
+import { ChainId } from "../crosschain/chains";
 import TCKT from "./TCKTLite";
 import evm from './evm';
 import { callMethod } from "./provider";
