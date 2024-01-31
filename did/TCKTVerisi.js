@@ -25,13 +25,13 @@ const İmzaİsteğiTR = `TCKT Erişim İsteği:
 
 bölüm<>ne erişebilecek. Bu mesajı sadece bu bilgileri paylaşmak istiyorsanız imzalayın.\n\n\n`
 /** @const {string} */
-const İmzaİsteğiEN = `TCKT Access Request:
+const İmzaİsteğiEN = `KimlikDAO Pass Access Request:
 -------------------------------------------------
 ()When you sign this message, the connected app will have access to
 
   {}
 
-section<> of your TCKT. Only sign this message if you would like to share this information.\n\n\n`
+section<> of your KimlikDAO Pass. Only sign this message if you would like to share this information.\n\n\n`
 
 /**
  * @param {!Array<string>} bölümler

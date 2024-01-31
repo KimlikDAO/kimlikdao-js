@@ -139,7 +139,8 @@ const TokenData = {
   ],
   "0x144": [
     null, null, null, null
-  ]
+  ],
+  "m:berkeley": [null, null, null, null]
 };
 
 /** @type {!eth.Provider} */
@@ -414,6 +415,8 @@ const priceIn = (chainId, token) => {
     "0x38": [3400, 1 * MILLION, 1 * MILLION, 19 * MILLION, 1 * MILLION],
     "0xfa": [2_300_000, 1 * MILLION, 1 * MILLION, 19 * MILLION, 0],
     "0x144": [600, 1 * MILLION, 1 * MILLION, 19 * MILLION, 0],
+
+    "m:berkeley": [MILLION],
   }
   return Promise.resolve([
     fiyat[chainId][token] * 1.5, fiyat[chainId][token]
@@ -434,6 +437,7 @@ const estimateNetworkFee = (chainId) => {
     "0x406": 100,
     "0xfa": 200,
     "0x144": 200,
+    "m:berkeley": 200
   }
   return Promise.resolve(placeholder[chainId]);
 }

@@ -52,6 +52,21 @@ mina.SignedData;
 mina.ProviderError;
 
 /**
+ * @typedef {{
+ *   label: string,
+ *   value: string
+ * }}
+ */
+mina.JsonMessageData;
+
+/**
+ * @typedef {{
+ *   message: !Array<!mina.JsonMessageData>
+ * }}
+ */
+mina.SignJsonMessageArgs;
+
+/**
  * @interface
  */
 mina.Provider = function () { }
@@ -82,6 +97,12 @@ mina.Provider.prototype.signMessage = function (signMessageArgs) { };
  * @return {!Promise<!mina.ChainInfoArgs>}
  */
 mina.Provider.prototype.switchChain = function (switchChainArgs) { };
+
+/**
+ * @param {!mina.SignJsonMessageArgs} jsonMessage
+ * @return {!Promise<!mina.SignedData>}
+ */
+mina.Provider.prototype.signJsonMessage = function (jsonMessage) { };
 
 /**
  * @param {string} eventName
