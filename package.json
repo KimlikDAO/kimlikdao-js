@@ -1,5 +1,5 @@
 {
-  "name": "kimlikdao-js",
+  "name": "@kimlikdao/lib",
   "description": "KimlikDAO JavaScript kitaplığı",
   "author": "KimlikDAO <dao@kimlikdao.org>",
   "license": "GPL",

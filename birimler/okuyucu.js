@@ -225,7 +225,7 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
           process.exit(HataKodu.UNSUPPORTED_INLINE);
         }
         /** @type {string} */
-        let inlineAdı = (nitelikler["data-inline"] || nitelikler.src).slice(1);
+        let inlineAdı = nitelikler.src.slice(1);
         if (!seçimler.dev && inlineAdı.endsWith(".svg"))
           inlineAdı = `build/${inlineAdı.slice(0, -4)}.isvg`;
         delete nitelikler["data-inline"];
@@ -356,7 +356,14 @@ const birimOku = (birimAdı, seçimler, anaNitelikler) => {
 
   if (existsSync(seçimler.kök + birimAdı.slice(0, -4) + "css"))
     cssler.add(birimAdı.slice(0, -4) + "css");
-  parser.end(readFileSync(seçimler.kök + birimAdı, "utf8"));
+
+  const jsxDosyaAdı = seçimler.kök + birimAdı.slice(0, -4) + "jsx";
+  if (existsSync(jsxDosyaAdı)) {
+    const üreticiBirim = require(process.cwd() + "/" + jsxDosyaAdı, "utf8");
+    parser.end(üreticiBirim.default());
+  } else
+    parser.end(readFileSync(seçimler.kök + birimAdı, "utf8"));
+
   if (latexVar)
     cssler.add("/lib/util/latex.css");
 
