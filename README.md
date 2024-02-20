@@ -42,7 +42,7 @@ Bu repoda iki tür test var:
 
 Örnek olarak `crypto/test/modular.compiled-test.js`'i çalıştırmak için `make build/crypto/test/modular.compiled-test.js` komutunu çalıştırmak gerekir. Sorunsuz çalıştırılması durumunda aşağıdaki gibi bir çıktı oluşur:
 
-![](.github/img/modular.compiled-test.js_ornek_cikti.png "Örnek modular.compiled-test.js çıktısı")
+![](.github/img/modular.compiled-test.png "Örnek modular.compiled-test.js çıktısı")
 
 ### Bun testler nasıl çalıştırılır?
 
