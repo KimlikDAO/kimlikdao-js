@@ -1,19 +1,4 @@
-
-/**
- * @param {string} ad
- * @param {!Object<string, string>} nitelikler
- * @param {boolean} kapalı
- * @return {string}
- */
-const tagYaz = (ad, nitelikler, kapalı) => {
-  /** @type {string} */
-  let html = "<" + ad;
-  for (const /** string */ nitelik in nitelikler)
-    html += nitelikler[nitelik]
-      ? ` ${nitelik}="${nitelikler[nitelik]}"`
-      : " " + nitelik;
-  return html + (kapalı ? "/>" : ">");
-}
+import { tagYaz } from "../util/html.js";
 
 export const jsx = (type, props = {}) => {
   // Extract children from props, if present
