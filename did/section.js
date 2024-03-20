@@ -63,7 +63,7 @@ const hash = (sectionName, section) => {
     }
   }
   /** @const {!Set<string>} */
-  const notHashed = new Set(["secp256k1", "bls12_381", "commitmentR"]);
+  const notHashed = new Set(["secp256k1", "minaSchnorr", "bls12_381", "commitmentR"]);
   return keccak256(
     KIMLIKDAO_HASH_PREFIX + JSON.stringify(section,
       Object.keys(section).filter((x) => !notHashed.has(x)).sort())
@@ -121,7 +121,7 @@ const signSection = (sectionName, section, commitment, signatureTs, privateKey) 
   const d = BigInt("0x" + hash(sectionName, section));
   let { r, s, yParity } = sign(d, privateKey);
   if (yParity) s += (1n << 255n);
-  section.secp256k1 = [evm.uint256(r) + evm.uint256(s)];
+  section.secp256k1 = section.minaSchnorr = [evm.uint256(r) + evm.uint256(s)];
 }
 
 export {
