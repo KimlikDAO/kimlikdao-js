@@ -56,6 +56,16 @@ did.Section.prototype.bls12_381;
 did.Section.prototype.secp256k1;
 
 /**
+ * The Schnorr signatures kept as a list of 64 bytes compact signatures,
+ * sorted in lex order.
+ * 
+ * Each signature must be from a different (valid) signer node.
+ * 
+ * @type {Array<string>}
+ */
+did.Section.prototype.minaSchnorr;
+
+/**
  * Contains the fundamental identification data of a person such as
  * name, date of birth, national id etc.
  *
